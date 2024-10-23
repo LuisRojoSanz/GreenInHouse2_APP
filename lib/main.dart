@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart'; // Importa intl
+import 'package:flutter_localizations/flutter_localizations.dart'; // Importa localizaciones
 
 void main() {
   runApp(const MyApp());
@@ -7,46 +10,31 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Crear Planta',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'GreenInHouse2'),
+      home: const MyHomePage(title: 'Añadir Planta'),
+      locale: const Locale('es', ''), // Establece el idioma a español
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('es', ''),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -55,71 +43,255 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _maxTempController = TextEditingController();
+  final TextEditingController _minTempController = TextEditingController();
+  final TextEditingController _maxHumidityController = TextEditingController();
+  final TextEditingController _minHumidityController = TextEditingController();
+  final TextEditingController _typeController = TextEditingController();
+  final TextEditingController _maxLightController = TextEditingController();
+  final TextEditingController _minLightController = TextEditingController();
+  final TextEditingController _waterController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
 
-  void _incrementCounter() {
+  DateTime? _plantDate;
+
+  final List<Map<String, String>> _plants = [];
+
+  Future<void> _selectPlantDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _plantDate) {
+      setState(() {
+        _plantDate = picked;
+        // Formato la fecha en día, mes y año
+        _dateController.text = DateFormat('dd/MM/yyyy').format(_plantDate!);
+      });
+    }
+  }
+
+  void _addPlant() {
+
+    // Verificar que el nombre de la planta no esté vacío
+    if (_nameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, ingresa el nombre de la planta.')),
+      );
+      return; // Salir del método si el nombre está vacío
+    }
+
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _plants.add({
+        'name': _nameController.text,
+        'maxTemp': _maxTempController.text,
+        'minTemp': _minTempController.text,
+        'maxHumidity': _maxHumidityController.text,
+        'minHumidity': _minHumidityController.text,
+        'type': _typeController.text,
+        'plantDate': _plantDate != null ? DateFormat('dd/MM/yyyy').format(_plantDate!) : 'No seleccionada',
+        'maxLight': _maxLightController.text,
+        'minLight': _minLightController.text,
+        'water': _waterController.text,
+      });
+      // Limpiar los campos
+      _nameController.clear();
+      _maxTempController.clear();
+      _minTempController.clear();
+      _maxHumidityController.clear();
+      _minHumidityController.clear();
+      _typeController.clear();
+      _maxLightController.clear();
+      _minLightController.clear();
+      _waterController.clear();
+      _dateController.clear();
+      _plantDate = null;
     });
+  }
+
+  void _removePlant(int index) {
+    setState(() {
+      _plants.removeAt(index);
+    });
+  }
+
+  void _validateLightHours() {
+    final double? minLight = double.tryParse(_minLightController.text);
+    final double? maxLight = double.tryParse(_maxLightController.text);
+
+    if (minLight != null && maxLight != null) {
+      if (minLight > maxLight) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('La luz mínima no puede ser mayor que la luz máxima')),
+        );
+        _minLightController.clear();
+      }
+    }
+  }
+
+  void _validateTemperature() {
+    final double? minTemp = double.tryParse(_minTempController.text);
+    final double? maxTemp = double.tryParse(_maxTempController.text);
+
+    if (minTemp != null && maxTemp != null) {
+      if (minTemp > maxTemp) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('La temperatura mínima no puede ser mayor que la máxima')),
+        );
+        _minTempController.clear();
+      }
+    }
+  }
+
+  void _validateHumidity() {
+    final double? minHumidity = double.tryParse(_minHumidityController.text);
+    final double? maxHumidity = double.tryParse(_maxHumidityController.text);
+
+    if (minHumidity != null && maxHumidity != null) {
+      if (minHumidity > maxHumidity) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('La humedad mínima no puede ser mayor que la máxima')),
+        );
+        _minHumidityController.clear();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        centerTitle: true,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Nombre de la planta'),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            TextField(
+              controller: _typeController,
+              decoration: const InputDecoration(labelText: 'Tipo de planta'),
+            ),
+            TextField(
+              controller: _dateController,
+              decoration: const InputDecoration(
+                labelText: 'Fecha de Plantación',
+                suffixIcon: Icon(Icons.calendar_today),
+              ),
+              readOnly: true,
+              onTap: () => _selectPlantDate(context),
+            ),
+            TextField(
+              controller: _maxTempController,
+              decoration: const InputDecoration(labelText: 'Temperatura Máxima (°C)'),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+              onChanged: (value) => _validateTemperature(),
+            ),
+            TextField(
+              controller: _minTempController,
+              decoration: const InputDecoration(labelText: 'Temperatura Mínima (°C)'),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+              onChanged: (value) => _validateTemperature(),
+            ),
+            TextField(
+              controller: _maxHumidityController,
+              decoration: const InputDecoration(labelText: 'Humedad Máxima (%)'),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              onChanged: (value) => _validateHumidity(),
+            ),
+            TextField(
+              controller: _minHumidityController,
+              decoration: const InputDecoration(labelText: 'Humedad Mínima (%)'),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              onChanged: (value) => _validateHumidity(),
+            ),
+            TextField(
+              controller: _maxLightController,
+              decoration: const InputDecoration(labelText: 'Horas Máximas de Luz (h)'),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+              onChanged: (value) => _validateLightHours(),
+            ),
+            TextField(
+              controller: _minLightController,
+              decoration: const InputDecoration(labelText: 'Horas Mínimas de Luz (h)'),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+              onChanged: (value) => _validateLightHours(),
+            ),
+            TextField(
+              controller: _waterController,
+              decoration: const InputDecoration(labelText: 'Agua Diaria (ml)'),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Align(
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                onPressed: _addPlant,
+                child: const Text('Añadir Planta'),
+              ),
+            ),
+            SizedBox(
+              height: 300,
+              child: ListView.builder(
+                itemCount: _plants.length,
+                itemBuilder: (context, index) {
+                  return ExpansionTile(
+                    title: Text(_plants[index]['name'] ?? ''),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _removePlant(index),
+                    ),
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          'Tipo: ${_plants[index]['type']}\n'
+                              'Fecha de Plantación: ${_plants[index]['plantDate']}\n'
+                              'Temp Máx: ${_plants[index]['maxTemp']}°C\n'
+                              'Temp Mín: ${_plants[index]['minTemp']}°C\n'
+                              'Humedad Máx: ${_plants[index]['maxHumidity']}%\n'
+                              'Humedad Mín: ${_plants[index]['minHumidity']}%\n'
+                              'Luz: ${_plants[index]['minLight']}-${_plants[index]['maxLight']}h\n'
+                              'Agua: ${_plants[index]['water']}ml/día',
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
