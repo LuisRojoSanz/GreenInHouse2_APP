@@ -1,0 +1,30 @@
+{
+  "@@locale": "en",
+  "MaterialApp": "GreenInHouse_2",
+  "PantallaMain": "1.0",
+  "MainTitle": "GreenInHouse_2",
+
+  "PantallaCreacionPlantas": "1.0",
+  "title": "Plant Creation",
+  "nameLabel": "Plant Name",
+  "typeLabel": "Plant Type",
+  "plantDateLabel": "Planting Date",
+  "maxTempLabel": "Max Temperature (°C)",
+  "minTempLabel": "Min Temperature (°C)",
+  "maxHumidityLabel": "Max Humidity (%)",
+  "minHumidityLabel": "Min Humidity (%)",
+  "maxLightLabel": "Max Light Hours (h)",
+  "minLightLabel": "Min Light Hours (h)",
+  "waterLabel": "Daily Water (ml)",
+  "addPlantButton": "Add Plant",
+  "pleaseEnterName": "Please enter the plant name",
+  "tempMinGreaterThanMax": "Min temperature cannot be greater than max",
+  "humidityMinGreaterThanMax": "Min humidity cannot be greater than max",
+  "lightMinGreaterThanMax": "Min light hours cannot be greater than max",
+  "plant_info": "Type: {type}\nPlanting Date: {date}\nMax Temp: {maxTemp}°C\nMin Temp: {minTemp}°C\nMax Humidity: {maxHumidity}%\nMin Humidity: {minHumidity}%\nLight: {minLight}-{maxLight}h\nWater: {water}ml/day",
+  "delete": "Delete"
+
+
+
+}
+
