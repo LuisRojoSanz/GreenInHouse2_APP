@@ -1,7 +1,7 @@
-// pantalla_creacionplantas.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'generated/l10n.dart'; // Asegúrate de que este archivo esté importado
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _addPlant() {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, ingresa el nombre de la planta.')),
+        SnackBar(content: Text(S.of(context).pleaseEnterName)),
       );
       return;
     }
@@ -83,48 +83,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _validateLightHours() {
-    final double? minLight = double.tryParse(_minLightController.text);
-    final double? maxLight = double.tryParse(_maxLightController.text);
-
-    if (minLight != null && maxLight != null) {
-      if (minLight > maxLight) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('La luz mínima no puede ser mayor que la luz máxima')),
-        );
-        _minLightController.clear();
-      }
-    }
-  }
-
-  void _validateTemperature() {
-    final double? minTemp = double.tryParse(_minTempController.text);
-    final double? maxTemp = double.tryParse(_maxTempController.text);
-
-    if (minTemp != null && maxTemp != null) {
-      if (minTemp > maxTemp) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('La temperatura mínima no puede ser mayor que la máxima')),
-        );
-        _minTempController.clear();
-      }
-    }
-  }
-
-  void _validateHumidity() {
-    final double? minHumidity = double.tryParse(_minHumidityController.text);
-    final double? maxHumidity = double.tryParse(_maxHumidityController.text);
-
-    if (minHumidity != null && maxHumidity != null) {
-      if (minHumidity > maxHumidity) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('La humedad mínima no puede ser mayor que la máxima')),
-        );
-        _minHumidityController.clear();
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,16 +97,16 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nombre de la planta'),
+              decoration: InputDecoration(labelText: S.of(context).nameLabel),
             ),
             TextField(
               controller: _typeController,
-              decoration: const InputDecoration(labelText: 'Tipo de planta'),
+              decoration: InputDecoration(labelText: S.of(context).typeLabel),
             ),
             TextField(
               controller: _dateController,
-              decoration: const InputDecoration(
-                labelText: 'Fecha de Plantación',
+              decoration: InputDecoration(
+                labelText: S.of(context).plantDateLabel,
                 suffixIcon: Icon(Icons.calendar_today),
               ),
               readOnly: true,
@@ -156,72 +114,52 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             TextField(
               controller: _maxTempController,
-              decoration: const InputDecoration(labelText: 'Temperatura Máxima (°C)'),
+              decoration: InputDecoration(labelText: S.of(context).maxTempLabel),
               keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-              ],
-              onChanged: (value) => _validateTemperature(),
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
             ),
             TextField(
               controller: _minTempController,
-              decoration: const InputDecoration(labelText: 'Temperatura Mínima (°C)'),
+              decoration: InputDecoration(labelText: S.of(context).minTempLabel),
               keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-              ],
-              onChanged: (value) => _validateTemperature(),
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
             ),
             TextField(
               controller: _maxHumidityController,
-              decoration: const InputDecoration(labelText: 'Humedad Máxima (%)'),
+              decoration: InputDecoration(labelText: S.of(context).maxHumidityLabel),
               keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly,
-              ],
-              onChanged: (value) => _validateHumidity(),
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
             ),
             TextField(
               controller: _minHumidityController,
-              decoration: const InputDecoration(labelText: 'Humedad Mínima (%)'),
+              decoration: InputDecoration(labelText: S.of(context).minHumidityLabel),
               keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly,
-              ],
-              onChanged: (value) => _validateHumidity(),
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
             ),
             TextField(
               controller: _maxLightController,
-              decoration: const InputDecoration(labelText: 'Horas Máximas de Luz (h)'),
+              decoration: InputDecoration(labelText: S.of(context).maxLightLabel),
               keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-              ],
-              onChanged: (value) => _validateLightHours(),
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
             ),
             TextField(
               controller: _minLightController,
-              decoration: const InputDecoration(labelText: 'Horas Mínimas de Luz (h)'),
+              decoration: InputDecoration(labelText: S.of(context).minLightLabel),
               keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-              ],
-              onChanged: (value) => _validateLightHours(),
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
             ),
             TextField(
               controller: _waterController,
-              decoration: const InputDecoration(labelText: 'Agua Diaria (ml)'),
+              decoration: InputDecoration(labelText: S.of(context).waterLabel),
               keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-              ],
+              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
             ),
             const SizedBox(height: 20),
             Align(
               alignment: Alignment.center,
               child: ElevatedButton(
                 onPressed: _addPlant,
-                child: const Text('Añadir Planta'),
+                child: Text(S.of(context).addPlantButton),
               ),
             ),
             SizedBox(
@@ -235,20 +173,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () => _removePlant(index),
                     ),
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          'Tipo: ${_plants[index]['type']}\n'
-                              'Fecha de Plantación: ${_plants[index]['plantDate']}\n'
-                              'Temp Máx: ${_plants[index]['maxTemp']}°C\n'
-                              'Temp Mín: ${_plants[index]['minTemp']}°C\n'
-                              'Humedad Máx: ${_plants[index]['maxHumidity']}%\n'
-                              'Humedad Mín: ${_plants[index]['minHumidity']}%\n'
-                              'Luz: ${_plants[index]['minLight']}-${_plants[index]['maxLight']}h\n'
-                              'Agua: ${_plants[index]['water']}ml/día',
-                        ),
-                      ),
+                    children: [
+                      ListTile(title: Text('${S.of(context).maxTempLabel}: ${_plants[index]['maxTemp']}')),
+                      ListTile(title: Text('${S.of(context).minTempLabel}: ${_plants[index]['minTemp']}')),
+                      ListTile(title: Text('${S.of(context).maxHumidityLabel}: ${_plants[index]['maxHumidity']}')),
+                      ListTile(title: Text('${S.of(context).minHumidityLabel}: ${_plants[index]['minHumidity']}')),
+                      ListTile(title: Text('${S.of(context).maxLightLabel}: ${_plants[index]['maxLight']}')),
+                      ListTile(title: Text('${S.of(context).minLightLabel}: ${_plants[index]['minLight']}')),
+                      ListTile(title: Text('${S.of(context).waterLabel}: ${_plants[index]['water']}')),
+                      ListTile(title: Text('${S.of(context).plantDateLabel}: ${_plants[index]['plantDate']}')),
                     ],
                   );
                 },

@@ -1,7 +1,7 @@
-// main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'pantalla_creacionplantas.dart';
+import 'pantalla_inicio.dart';  // Importa tu archivo pantalla_inicio.dart
+import 'generated/l10n.dart'; // Importa el archivo generado correctamente
 
 void main() {
   runApp(const MyApp());
@@ -13,13 +13,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Crear Planta',
+      title: 'GreenInHouse2',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Añadir Planta'),
-      locale: const Locale('es', ''),
+      home: const PantallaInicio(),  // Cambia para que use PantallaInicio
+      locale: const Locale('en', ''), // Cambia a 'en' para inglés
       supportedLocales: const [
         Locale('en', ''),
         Locale('es', ''),
@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
+        S.delegate,  // Aquí debes usar el delegado generado por intl_utils
       ],
     );
   }
