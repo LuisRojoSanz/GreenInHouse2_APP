@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'pantalla_inicio.dart';  // Importa tu archivo pantalla_inicio.dart
-import 'generated/l10n.dart'; // Importa el archivo generado correctamente
+import 'pantalla_inicio.dart';
+import 'generated/l10n.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        S.delegate,  // Aquí debes usar el delegado generado por intl_utils
+        S.delegate,
       ],
     );
   }

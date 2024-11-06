@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/pantalla_creacionplantas.dart';
-import 'generated/l10n.dart'; // Importa el archivo generado correctamente
+import 'generated/l10n.dart';
 
 class PantallaInicio extends StatelessWidget {
   const PantallaInicio({super.key});
