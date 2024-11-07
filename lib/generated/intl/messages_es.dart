@@ -29,9 +29,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "MainTitle": MessageLookupByLibrary.simpleMessage("GreenInHouse_2"),
         "MaterialApp": MessageLookupByLibrary.simpleMessage("GreenInHouse_2"),
         "PantallaCreacionPlantas": MessageLookupByLibrary.simpleMessage("1.0"),
+        "PantallaInicio": MessageLookupByLibrary.simpleMessage("1.0"),
         "PantallaMain": MessageLookupByLibrary.simpleMessage("1.0"),
         "addPlantButton": MessageLookupByLibrary.simpleMessage("Añadir Planta"),
+        "daysWithLife": MessageLookupByLibrary.simpleMessage("Días con vida"),
         "delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
+        "drawer_header":
+            MessageLookupByLibrary.simpleMessage("Listado de Opciones"),
+        "graphs": MessageLookupByLibrary.simpleMessage("Gráficos"),
+        "home": MessageLookupByLibrary.simpleMessage("Inicio"),
         "humidityMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
             "La humedad mínima no puede ser mayor que la máxima"),
         "lightMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
@@ -42,6 +48,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Horas Máximas de Luz (h)"),
         "maxTempLabel":
             MessageLookupByLibrary.simpleMessage("Temperatura Máxima (°C)"),
+        "menu_create_plant":
+            MessageLookupByLibrary.simpleMessage("Crear Planta"),
+        "menu_delete_plant":
+            MessageLookupByLibrary.simpleMessage("Eliminar Planta"),
+        "menu_modify_plant":
+            MessageLookupByLibrary.simpleMessage("Modificar Planta"),
+        "menu_plant_tips":
+            MessageLookupByLibrary.simpleMessage("Consejos Planta"),
+        "menu_sensor_check":
+            MessageLookupByLibrary.simpleMessage("Comprobación Sensores"),
+        "milestones": MessageLookupByLibrary.simpleMessage("Hitos"),
         "minHumidityLabel":
             MessageLookupByLibrary.simpleMessage("Humedad Mínima (%)"),
         "minLightLabel":
@@ -52,13 +69,20 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nombre de la Planta"),
         "plantDateLabel":
             MessageLookupByLibrary.simpleMessage("Fecha de Plantación"),
+        "plantHealth":
+            MessageLookupByLibrary.simpleMessage("Estado de Salud: 75%"),
+        "plantName": MessageLookupByLibrary.simpleMessage("Planta de Interior"),
+        "plantStatus": MessageLookupByLibrary.simpleMessage("En buen estado"),
         "plant_info": m0,
         "pleaseEnterName": MessageLookupByLibrary.simpleMessage(
             "Por favor, ingresa el nombre de la planta"),
+        "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "tempMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
             "La temperatura mínima no puede ser mayor que la máxima"),
         "title": MessageLookupByLibrary.simpleMessage("Creación de Plantas"),
         "typeLabel": MessageLookupByLibrary.simpleMessage("Tipo de Planta"),
-        "waterLabel": MessageLookupByLibrary.simpleMessage("Agua Diaria (ml)")
+        "viewDetails": MessageLookupByLibrary.simpleMessage("Ver Detalles"),
+        "waterLabel": MessageLookupByLibrary.simpleMessage("Agua Diaria (ml)"),
+        "welcomeMessage": MessageLookupByLibrary.simpleMessage("TOMATERA")
       };
 }

@@ -288,6 +288,176 @@ class S {
       args: [],
     );
   }
+
+  /// `1.0`
+  String get PantallaInicio {
+    return Intl.message(
+      '1.0',
+      name: 'PantallaInicio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Days with life`
+  String get daysWithLife {
+    return Intl.message(
+      'Days with life',
+      name: 'daysWithLife',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TOMATO`
+  String get welcomeMessage {
+    return Intl.message(
+      'TOMATO',
+      name: 'welcomeMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Indoor Plant`
+  String get plantName {
+    return Intl.message(
+      'Indoor Plant',
+      name: 'plantName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In good condition`
+  String get plantStatus {
+    return Intl.message(
+      'In good condition',
+      name: 'plantStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Health Status: 75%`
+  String get plantHealth {
+    return Intl.message(
+      'Health Status: 75%',
+      name: 'plantHealth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Details`
+  String get viewDetails {
+    return Intl.message(
+      'View Details',
+      name: 'viewDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Graphs`
+  String get graphs {
+    return Intl.message(
+      'Graphs',
+      name: 'graphs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Milestones`
+  String get milestones {
+    return Intl.message(
+      'Milestones',
+      name: 'milestones',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home`
+  String get home {
+    return Intl.message(
+      'Home',
+      name: 'home',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get settings {
+    return Intl.message(
+      'Settings',
+      name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Plant`
+  String get menu_create_plant {
+    return Intl.message(
+      'Create Plant',
+      name: 'menu_create_plant',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modify Plant`
+  String get menu_modify_plant {
+    return Intl.message(
+      'Modify Plant',
+      name: 'menu_modify_plant',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant Tips`
+  String get menu_plant_tips {
+    return Intl.message(
+      'Plant Tips',
+      name: 'menu_plant_tips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Plant`
+  String get menu_delete_plant {
+    return Intl.message(
+      'Delete Plant',
+      name: 'menu_delete_plant',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sensor Check`
+  String get menu_sensor_check {
+    return Intl.message(
+      'Sensor Check',
+      name: 'menu_sensor_check',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `List of Options`
+  String get drawer_header {
+    return Intl.message(
+      'List of Options',
+      name: 'drawer_header',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

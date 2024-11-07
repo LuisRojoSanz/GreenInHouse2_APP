@@ -29,9 +29,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "MainTitle": MessageLookupByLibrary.simpleMessage("GreenInHouse_2"),
         "MaterialApp": MessageLookupByLibrary.simpleMessage("GreenInHouse_2"),
         "PantallaCreacionPlantas": MessageLookupByLibrary.simpleMessage("1.0"),
+        "PantallaInicio": MessageLookupByLibrary.simpleMessage("1.0"),
         "PantallaMain": MessageLookupByLibrary.simpleMessage("1.0"),
         "addPlantButton": MessageLookupByLibrary.simpleMessage("Add Plant"),
+        "daysWithLife": MessageLookupByLibrary.simpleMessage("Days with life"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "drawer_header":
+            MessageLookupByLibrary.simpleMessage("List of Options"),
+        "graphs": MessageLookupByLibrary.simpleMessage("Graphs"),
+        "home": MessageLookupByLibrary.simpleMessage("Home"),
         "humidityMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
             "Min humidity cannot be greater than max"),
         "lightMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
@@ -42,6 +48,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Max Light Hours (h)"),
         "maxTempLabel":
             MessageLookupByLibrary.simpleMessage("Max Temperature (°C)"),
+        "menu_create_plant":
+            MessageLookupByLibrary.simpleMessage("Create Plant"),
+        "menu_delete_plant":
+            MessageLookupByLibrary.simpleMessage("Delete Plant"),
+        "menu_modify_plant":
+            MessageLookupByLibrary.simpleMessage("Modify Plant"),
+        "menu_plant_tips": MessageLookupByLibrary.simpleMessage("Plant Tips"),
+        "menu_sensor_check":
+            MessageLookupByLibrary.simpleMessage("Sensor Check"),
+        "milestones": MessageLookupByLibrary.simpleMessage("Milestones"),
         "minHumidityLabel":
             MessageLookupByLibrary.simpleMessage("Min Humidity (%)"),
         "minLightLabel":
@@ -50,13 +66,21 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Min Temperature (°C)"),
         "nameLabel": MessageLookupByLibrary.simpleMessage("Plant Name"),
         "plantDateLabel": MessageLookupByLibrary.simpleMessage("Planting Date"),
+        "plantHealth":
+            MessageLookupByLibrary.simpleMessage("Health Status: 75%"),
+        "plantName": MessageLookupByLibrary.simpleMessage("Indoor Plant"),
+        "plantStatus":
+            MessageLookupByLibrary.simpleMessage("In good condition"),
         "plant_info": m0,
         "pleaseEnterName":
             MessageLookupByLibrary.simpleMessage("Please enter the plant name"),
+        "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "tempMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
             "Min temperature cannot be greater than max"),
         "title": MessageLookupByLibrary.simpleMessage("Plant Creation"),
         "typeLabel": MessageLookupByLibrary.simpleMessage("Plant Type"),
-        "waterLabel": MessageLookupByLibrary.simpleMessage("Daily Water (ml)")
+        "viewDetails": MessageLookupByLibrary.simpleMessage("View Details"),
+        "waterLabel": MessageLookupByLibrary.simpleMessage("Daily Water (ml)"),
+        "welcomeMessage": MessageLookupByLibrary.simpleMessage("TOMATO")
       };
 }

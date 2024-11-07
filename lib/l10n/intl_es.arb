@@ -5,6 +5,7 @@
   "PantallaMain": "1.0",
   "MainTitle": "GreenInHouse_2",
 
+
   "PantallaCreacionPlantas": "1.0",
   "title": "Creación de Plantas",
   "nameLabel": "Nombre de la Planta",
@@ -23,5 +24,25 @@
   "humidityMinGreaterThanMax": "La humedad mínima no puede ser mayor que la máxima",
   "lightMinGreaterThanMax": "La luz mínima no puede ser mayor que la máxima",
   "plant_info": "Tipo: {type}\nFecha de Plantación: {date}\nTemp Máx: {maxTemp}°C\nTemp Mín: {minTemp}°C\nHumedad Máx: {maxHumidity}%\nHumedad Mín: {minHumidity}%\nLuz: {minLight}-{maxLight}h\nAgua: {water}ml/día",
-  "delete": "Eliminar"
+  "delete": "Eliminar",
+
+
+  "PantallaInicio": "1.0",
+  "daysWithLife": "Días con vida",
+  "welcomeMessage": "TOMATERA",
+  "plantName": "Planta de Interior",
+  "plantStatus": "En buen estado",
+  "plantHealth": "Estado de Salud: 75%",
+  "viewDetails": "Ver Detalles",
+  "graphs": "Gráficos",
+  "milestones": "Hitos",
+  "home": "Inicio",
+  "settings": "Ajustes",
+  "menu_create_plant": "Crear Planta",
+  "menu_modify_plant": "Modificar Planta",
+  "menu_plant_tips": "Consejos Planta",
+  "menu_delete_plant": "Eliminar Planta",
+  "menu_sensor_check": "Comprobación Sensores",
+  "drawer_header": "Listado de Opciones"
+
 }

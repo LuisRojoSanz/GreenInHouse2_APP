@@ -22,9 +22,26 @@
   "humidityMinGreaterThanMax": "Min humidity cannot be greater than max",
   "lightMinGreaterThanMax": "Min light hours cannot be greater than max",
   "plant_info": "Type: {type}\nPlanting Date: {date}\nMax Temp: {maxTemp}°C\nMin Temp: {minTemp}°C\nMax Humidity: {maxHumidity}%\nMin Humidity: {minHumidity}%\nLight: {minLight}-{maxLight}h\nWater: {water}ml/day",
-  "delete": "Delete"
+  "delete": "Delete",
 
-
-
+  "PantallaInicio": "1.0",
+  "daysWithLife": "Days with life",
+  "welcomeMessage": "TOMATO",
+  "plantName": "Indoor Plant",
+  "plantStatus": "In good condition",
+  "plantHealth": "Health Status: 75%",
+  "viewDetails": "View Details",
+  "graphs": "Graphs",
+  "milestones": "Milestones",
+  "home": "Home",
+  "settings": "Settings",
+  "menu_create_plant": "Create Plant",
+  "menu_modify_plant": "Modify Plant",
+  "menu_plant_tips": "Plant Tips",
+  "menu_delete_plant": "Delete Plant",
+  "menu_sensor_check": "Sensor Check",
+  "drawer_header": "List of Options"
 }
+
+
 
