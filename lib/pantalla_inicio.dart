@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'generated/l10n.dart';
 import 'pantalla_creacionplantas.dart';
-import 'botones_inicio.dart'; // Importa el nuevo archivo
+import 'botones_inicio.dart';
 
 class PantallaInicio extends StatefulWidget {
   const PantallaInicio({super.key});
