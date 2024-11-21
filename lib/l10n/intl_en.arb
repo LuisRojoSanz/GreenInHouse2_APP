@@ -4,7 +4,7 @@
   "PantallaMain": "1.0",
   "MainTitle": "GreenInHouse_2",
 
-  "PantallaCreacionPlantas": "1.0",
+  "@@PantallaCreacionPlantas": "1.0",
   "title": "Plant Creation",
   "nameLabel": "Plant Name",
   "typeLabel": "Plant Type",
@@ -24,7 +24,7 @@
   "plant_info": "Type: {type}\nPlanting Date: {date}\nMax Temp: {maxTemp}°C\nMin Temp: {minTemp}°C\nMax Humidity: {maxHumidity}%\nMin Humidity: {minHumidity}%\nLight: {minLight}-{maxLight}h\nWater: {water}ml/day",
   "delete": "Delete",
 
-  "PantallaInicio": "1.0",
+  "@@PantallaInicio": "1.0",
   "daysWithLife": "Days with life",
   "welcomeMessage": "TOMATO",
   "plantName": "Indoor Plant",
@@ -37,10 +37,38 @@
   "settings": "Settings",
   "menu_create_plant": "Create Plant",
   "menu_modify_plant": "Modify Plant",
-  "menu_plant_tips": "Plant Tips",
+  "change_language": "Language",
   "menu_delete_plant": "Delete Plant",
   "menu_sensor_check": "Sensor Check",
-  "drawer_header": "List of Options"
+  "drawer_header": "List of Options",
+
+  "@@PantallaIdiomas": "1.0",
+  "spanish": "Spanish",
+  "english": "English",
+
+  "appTitleplants": "Plant Tips",
+  "screenTitleplants": "Plant Tips",
+  "loadingMessage": "Loading...",
+  "errorMessage": "Could not fetch plant tips",
+  "zoneLabel": "Zone: {zone}",
+  "measurementTypeLabel": "Measurement Type: {type}",
+  "unitLabel": "Unit: {unit}",
+  "rangeLabel": "Range: {min} - {max}",
+  "hoursLabel": "Min Hours: {min}, Max Hours: {max}",
+  "@appTitle": {
+    "description": "The title of the app."
+  },
+  "@screenTitle": {
+    "description": "The title of the Plant Tips screen."
+  },
+
+  "appTitlesensors": "Active Sensors",
+  "screenTitlesensors": "Active Sensors",
+  "errorMessagesensors": "Could not fetch sensors",
+  "modelLabel": "Model: {model}",
+  "typeLabelsensors": "Type: {type}",
+  "readingLabel": "Reading: {reading} {unit}"
+
 }
 
 

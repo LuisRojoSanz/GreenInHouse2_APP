@@ -80,16 +80,6 @@ class S {
     );
   }
 
-  /// `1.0`
-  String get PantallaCreacionPlantas {
-    return Intl.message(
-      '1.0',
-      name: 'PantallaCreacionPlantas',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Plant Creation`
   String get title {
     return Intl.message(
@@ -289,16 +279,6 @@ class S {
     );
   }
 
-  /// `1.0`
-  String get PantallaInicio {
-    return Intl.message(
-      '1.0',
-      name: 'PantallaInicio',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Days with life`
   String get daysWithLife {
     return Intl.message(
@@ -419,11 +399,11 @@ class S {
     );
   }
 
-  /// `Plant Tips`
-  String get menu_plant_tips {
+  /// `Language`
+  String get change_language {
     return Intl.message(
-      'Plant Tips',
-      name: 'menu_plant_tips',
+      'Language',
+      name: 'change_language',
       desc: '',
       args: [],
     );
@@ -456,6 +436,176 @@ class S {
       name: 'drawer_header',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Spanish`
+  String get spanish {
+    return Intl.message(
+      'Spanish',
+      name: 'spanish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `English`
+  String get english {
+    return Intl.message(
+      'English',
+      name: 'english',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant Tips`
+  String get appTitleplants {
+    return Intl.message(
+      'Plant Tips',
+      name: 'appTitleplants',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant Tips`
+  String get screenTitleplants {
+    return Intl.message(
+      'Plant Tips',
+      name: 'screenTitleplants',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading...`
+  String get loadingMessage {
+    return Intl.message(
+      'Loading...',
+      name: 'loadingMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not fetch plant tips`
+  String get errorMessage {
+    return Intl.message(
+      'Could not fetch plant tips',
+      name: 'errorMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zone: {zone}`
+  String zoneLabel(Object zone) {
+    return Intl.message(
+      'Zone: $zone',
+      name: 'zoneLabel',
+      desc: '',
+      args: [zone],
+    );
+  }
+
+  /// `Measurement Type: {type}`
+  String measurementTypeLabel(Object type) {
+    return Intl.message(
+      'Measurement Type: $type',
+      name: 'measurementTypeLabel',
+      desc: '',
+      args: [type],
+    );
+  }
+
+  /// `Unit: {unit}`
+  String unitLabel(Object unit) {
+    return Intl.message(
+      'Unit: $unit',
+      name: 'unitLabel',
+      desc: '',
+      args: [unit],
+    );
+  }
+
+  /// `Range: {min} - {max}`
+  String rangeLabel(Object min, Object max) {
+    return Intl.message(
+      'Range: $min - $max',
+      name: 'rangeLabel',
+      desc: '',
+      args: [min, max],
+    );
+  }
+
+  /// `Min Hours: {min}, Max Hours: {max}`
+  String hoursLabel(Object min, Object max) {
+    return Intl.message(
+      'Min Hours: $min, Max Hours: $max',
+      name: 'hoursLabel',
+      desc: '',
+      args: [min, max],
+    );
+  }
+
+  /// `Active Sensors`
+  String get appTitlesensors {
+    return Intl.message(
+      'Active Sensors',
+      name: 'appTitlesensors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active Sensors`
+  String get screenTitlesensors {
+    return Intl.message(
+      'Active Sensors',
+      name: 'screenTitlesensors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not fetch sensors`
+  String get errorMessagesensors {
+    return Intl.message(
+      'Could not fetch sensors',
+      name: 'errorMessagesensors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Model: {model}`
+  String modelLabel(Object model) {
+    return Intl.message(
+      'Model: $model',
+      name: 'modelLabel',
+      desc: '',
+      args: [model],
+    );
+  }
+
+  /// `Type: {type}`
+  String typeLabelsensors(Object type) {
+    return Intl.message(
+      'Type: $type',
+      name: 'typeLabelsensors',
+      desc: '',
+      args: [type],
+    );
+  }
+
+  /// `Reading: {reading} {unit}`
+  String readingLabel(Object reading, Object unit) {
+    return Intl.message(
+      'Reading: $reading $unit',
+      name: 'readingLabel',
+      desc: '',
+      args: [reading, unit],
     );
   }
 }

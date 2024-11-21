@@ -6,7 +6,7 @@
   "MainTitle": "GreenInHouse_2",
 
 
-  "PantallaCreacionPlantas": "1.0",
+  "@@PantallaCreacionPlantas": "1.0",
   "title": "Creación de Plantas",
   "nameLabel": "Nombre de la Planta",
   "typeLabel": "Tipo de Planta",
@@ -27,7 +27,7 @@
   "delete": "Eliminar",
 
 
-  "PantallaInicio": "1.0",
+  "@@PantallaInicio": "1.0",
   "daysWithLife": "Días con vida",
   "welcomeMessage": "TOMATERA",
   "plantName": "Planta de Interior",
@@ -40,9 +40,41 @@
   "settings": "Ajustes",
   "menu_create_plant": "Crear Planta",
   "menu_modify_plant": "Modificar Planta",
-  "menu_plant_tips": "Consejos Planta",
+  "change_language": "Idioma",
   "menu_delete_plant": "Eliminar Planta",
   "menu_sensor_check": "Comprobación Sensores",
-  "drawer_header": "Listado de Opciones"
+  "drawer_header": "Opciones",
+
+  "@@PantallaIdiomas": "1.0",
+  "spanish": "Español",
+  "english": "Inglés",
+
+  "appTitle": "Consejos de Plantas",
+  "screenTitle": "Consejos de Plantas",
+  "loadingMessage": "Cargando...",
+  "errorMessage": "No se pudieron obtener los consejos",
+  "zoneLabel": "Zona: {zone}",
+  "measurementTypeLabel": "Tipo de medida: {type}",
+  "unitLabel": "Unidad: {unit}",
+  "rangeLabel": "Rango: {min} - {max}",
+  "hoursLabel": "Horas mínimas: {min}, Horas máximas: {max}",
+  "@appTitle": {
+    "description": "El título de la aplicación."
+  },
+  "@screenTitle": {
+    "description": "El título de la pantalla de consejos de plantas."
+  },
+
+
+  "appTitlesensors": "Sensores Activos",
+  "screenTitlesensors": "Sensores Activos",
+  "errorMessagesensors": "No se pudieron obtener los sensores",
+  "modelLabel": "Modelo: {model}",
+  "typeLabelsensors": "Tipo: {type}",
+  "readingLabel": "Lectura: {reading} {unit}"
 
 }
+
+
+
+
