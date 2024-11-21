@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/pantalla_cambio_idioma.dart';
 import 'generated/l10n.dart';
 import 'pantalla_creacionplantas.dart';
 import 'botones_inicio.dart';
+import 'consejos_plantas.dart'; // Importación de la pantalla de consejos
+import 'pantalla_comprobacion_sensores.dart';
 
 class PantallaInicio extends StatefulWidget {
-  const PantallaInicio({super.key});
+  final void Function(Locale locale) onLocaleChange; // Agregar el parámetro para el cambio de idioma
+
+  const PantallaInicio({super.key, required this.onLocaleChange});
 
   @override
   PantallaInicioState createState() => PantallaInicioState();
 }
 
 class PantallaInicioState extends State<PantallaInicio> {
-  final int plantLifeDays = 120;
+  final int plantLifeDays = 10;
   int _currentIndex = 2;
 
   void _onTabTapped(int index) {
@@ -163,12 +168,29 @@ class PantallaInicioState extends State<PantallaInicio> {
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () {
-                      // Navegar a una pantalla de detalles de la planta o interacción
+                      // Navegar a la pantalla de detalles de la planta o interacción
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     child: Text(
                       S.of(context).viewDetails,
                       style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Botón para acceder a la pantalla de consejos
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ConsejosPlantasScreen(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                    child: const Text(
+                      'Ver Consejos de Plantas',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -212,12 +234,6 @@ class PantallaInicioState extends State<PantallaInicio> {
               },
             ),
             ListTile(
-              title: Text(S.of(context).menu_plant_tips),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
               title: Text(S.of(context).menu_delete_plant),
               onTap: () {
                 Navigator.pop(context);
@@ -226,7 +242,27 @@ class PantallaInicioState extends State<PantallaInicio> {
             ListTile(
               title: Text(S.of(context).menu_sensor_check),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(context); // Cierra el drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SensoresActivosScreen(), // Navega a la nueva pantalla
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text(S.of(context).change_language), // El texto de cambio de idioma
+              onTap: () {
+                Navigator.pop(context);  // Cierra el drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PantallaCambioIdioma(
+                      onLocaleChange: widget.onLocaleChange, // Pasamos la función
+                    ),
+                  ),
+                );
               },
             ),
           ],
