@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'generated/l10n.dart';
 import 'api_service.dart';
+import 'package:intl/intl.dart';
 
 class SensoresActivosScreen extends StatefulWidget {
   const SensoresActivosScreen({super.key});
@@ -14,6 +14,7 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
   List<Map<String, dynamic>> sensores = [];
   bool isLoading = true;
   String errorMessage = '';
+  final String planta = 'Mi tomatera';
 
   @override
   void initState() {
@@ -24,34 +25,55 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
   Future<void> fetchSensores() async {
     setState(() {
       isLoading = true;
-      errorMessage = ''; // Limpiamos cualquier mensaje de error anterior
+      errorMessage = '';
     });
 
     try {
-      final data = await apiService.get('Sensores/All'); // Llama al endpoint de sensores
+      final sensoresData = await apiService.get('Sensores/All');
+      if (sensoresData != null) {
+        final now = DateTime.now();
+        final thirtyMinutesAgo = now.subtract(const Duration(minutes: 30));
+        final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(thirtyMinutesAgo);
 
-      if (data != null) {
+        final registrosData = await apiService.get(
+          'RegistrosSensores/All/FromPlant/BetweenDates?np=$planta&fi=$formattedDate',
+        );
+
         setState(() {
-          sensores = List<Map<String, dynamic>>.from(data.map((item) => {
-            'nombre_sensor': item['nombre_sensor'] ?? S.of(context).errorMessagesensors,
-            'modelo_sensor': item['modelo_sensor']['nombre'] ?? 'Modelo desconocido',
-            'tipo_sensor': item['tipo_sensor']['nombre'] ?? 'Tipo desconocido',
-            'zona_sensor': item['zona_sensor']['nombre'] ?? 'Zona no especificada',
-            'lectura': item['patilla_0_lectura'] ?? 'Sin lectura',
-            'unidad': item['unidad_medida_0']['nombre'] ?? 'Sin unidad',
+          sensores = List<Map<String, dynamic>>.from(sensoresData.map((sensor) {
+            final registros = registrosData.where((registro) {
+              return registro['numero_sensor'] == sensor['numero_sensor'];
+            }).toList();
+
+            bool isActive = registros.isNotEmpty;
+            String lastLog = 'Sin datos';
+            if (isActive) {
+              final latestLog = registros.last;
+              lastLog = latestLog['fecha'];
+            }
+
+            return {
+              'nombre_sensor': sensor['nombre_sensor'] ?? 'Nombre desconocido',
+              'modelo_sensor': sensor['modelo_sensor']['nombre'] ?? 'Modelo desconocido',
+              'tipo_sensor': sensor['tipo_sensor']['nombre'] ?? 'Tipo desconocido',
+              'zona_sensor': sensor['zona_sensor']['nombre'] ?? 'Zona no especificada',
+              'lectura': sensor['patilla_0_lectura'] ?? 'Sin lectura',
+              'unidad': sensor['unidad_medida_0']['nombre'] ?? 'Sin unidad',
+              'activo': isActive,
+              'ultima_fecha': lastLog,
+            };
           }));
           isLoading = false;
         });
       } else {
         setState(() {
-          errorMessage = S.of(context).errorMessagesensors;
+          errorMessage = 'No se pudieron obtener los sensores.';
           isLoading = false;
         });
       }
     } catch (e) {
-      print('Error al obtener los sensores: $e');
       setState(() {
-        errorMessage = S.of(context).errorMessagesensors;
+        errorMessage = 'Error al obtener los sensores: $e';
         isLoading = false;
       });
     }
@@ -61,11 +83,12 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).screenTitlesensors),
+        title: const Text('Sensores Activos'),
         centerTitle: true,
+        backgroundColor: Colors.green,
       ),
       body: isLoading
-          ? Center(child: Text(S.of(context).loadingMessage))
+          ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
           ? Center(
         child: Text(
@@ -77,30 +100,73 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
         itemCount: sensores.length,
         itemBuilder: (context, index) {
           final sensor = sensores[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(
-                vertical: 8, horizontal: 16),
-            child: ListTile(
-              title: Text(
-                sensor['nombre_sensor'],
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(S.of(context)
-                      .modelLabel(sensor['modelo_sensor'])),
-                  Text(S.of(context).typeLabelsensors(sensor['tipo_sensor'])),
-                  Text(S.of(context).zoneLabel(sensor['zona_sensor'])),
-                  Text(S.of(context).readingLabel(sensor['lectura'],
-                      sensor['unidad'])),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: sensor['activo'] ? Colors.green.shade300 : Colors.red.shade300,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(2, 4),
+                  ),
                 ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      sensor['activo'] ? Icons.check_circle : Icons.error,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            sensor['nombre_sensor'],
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          _buildInfoRow(Icons.precision_manufacturing, 'Modelo', sensor['modelo_sensor']),
+                          _buildInfoRow(Icons.category, 'Tipo', sensor['tipo_sensor']),
+                          _buildInfoRow(Icons.place, 'Zona', sensor['zona_sensor']),
+                          _buildInfoRow(Icons.timer, 'Última lectura', sensor['ultima_fecha']),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         },
       ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: Colors.white70),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            '$label: $value',
+            style: const TextStyle(color: Colors.white70, fontSize: 16),
+          ),
+        ),
+      ],
     );
   }
 }
