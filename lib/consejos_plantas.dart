@@ -24,7 +24,7 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
   Future<void> fetchConsejos() async {
     setState(() {
       isLoading = true;
-      errorMessage = ''; // Limpiamos cualquier mensaje de error anterior
+      errorMessage = '';
     });
 
     final data = await apiService.get('Consejos/Plantas/All');
@@ -32,8 +32,7 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
       setState(() {
         consejos = List<Map<String, dynamic>>.from(data.map((item) => {
           'descripcion': item['descripcion'] ?? 'Descripción no disponible',
-          'tipo_medida':
-          item['tipo_medida']['nombre'] ?? 'Tipo de medida no disponible',
+          'tipo_medida': item['tipo_medida']['nombre'] ?? 'Tipo de medida no disponible',
           'unidad_medida': item['unidad_medida']['nombre'] ?? '',
           'valor_maximo': item['valor_maximo'] ?? 'No especificado',
           'valor_minimo': item['valor_minimo'] ?? 'No especificado',
@@ -57,11 +56,15 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
       appBar: AppBar(
         title: Text(S.of(context).screenTitleplants),
         centerTitle: true,
+        backgroundColor: Colors.green,
       ),
       body: isLoading
-          ? Center(child: Text(S.of(context).loadingMessage))
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
           : errorMessage.isNotEmpty
-          ? Center(child: Text(
+          ? Center(
+        child: Text(
           errorMessage,
           style: const TextStyle(color: Colors.red, fontSize: 16),
         ),
@@ -70,31 +73,110 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
         itemCount: consejos.length,
         itemBuilder: (context, index) {
           final consejo = consejos[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(
+          return Padding(
+            padding: const EdgeInsets.symmetric(
                 vertical: 8, horizontal: 16),
-            child: ListTile(
-              title: Text(
-                consejo['descripcion'],
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(S.of(context)
-                      .zoneLabel(consejo['zona_consejo'])),
-                  Text(S.of(context).measurementTypeLabel(
-                      consejo['tipo_medida'])),
-                  Text(S.of(context).unitLabel(
-                      consejo['unidad_medida'])),
-                  Text(S.of(context).rangeLabel(
-                      consejo['valor_minimo'],
-                      consejo['valor_maximo'])),
-                  Text(S.of(context).hoursLabel(
-                      consejo['horas_minimas'],
-                      consejo['horas_maximas'])),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.green.shade100,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(2, 4),
+                  ),
                 ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.info_outline,
+                            color: Colors.green.shade700),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            consejo['descripcion'],
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(thickness: 1),
+                    Row(
+                      children: [
+                        Icon(Icons.place, color: Colors.green.shade700),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            S.of(context).zoneLabel(
+                                consejo['zona_consejo']),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black54),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.category,
+                            color: Colors.green.shade700),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            S.of(context).measurementTypeLabel(
+                                consejo['tipo_medida']),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black54),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.speed, color: Colors.green.shade700),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            S.of(context).rangeLabel(
+                              '${consejo['valor_minimo']}${consejo['unidad_medida']}',
+                              '${consejo['valor_maximo']}${consejo['unidad_medida']}',
+                            ),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black54),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time,
+                            color: Colors.green.shade700),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            S.of(context).hoursLabel(
+                                consejo['horas_minimas'],
+                                consejo['horas_maximas']),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black54),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );
