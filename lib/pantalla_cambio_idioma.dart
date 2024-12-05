@@ -33,11 +33,17 @@ class PantallaCambioIdiomaState extends State<PantallaCambioIdioma> {
           children: [
             _buildLanguageTile(
               locale: const Locale('en', ''),
-              language: (S.of(context).english),
+              language: S.of(context).english,
+              flag: 'assets/flags/uk.png',
+              flagWidth: 30, // Tamaño de la bandera del Reino Unido
+              flagHeight: 30,
             ),
             _buildLanguageTile(
               locale: const Locale('es', ''),
-              language: (S.of(context).spanish),
+              language: S.of(context).spanish,
+              flag: 'assets/flags/spain.png',
+              flagWidth: 30, // Tamaño ajustado para la bandera de España
+              flagHeight: 30,
             ),
           ],
         ),
@@ -45,9 +51,25 @@ class PantallaCambioIdiomaState extends State<PantallaCambioIdioma> {
     );
   }
 
-  Widget _buildLanguageTile({required Locale locale, required String language}) {
+  Widget _buildLanguageTile({
+    required Locale locale,
+    required String language,
+    required String flag,
+    required double flagWidth,
+    required double flagHeight,
+  }) {
     return ListTile(
-      leading: const Icon(Icons.language),
+      leading: SizedBox(
+        width: flagWidth,
+        height: flagHeight,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(flagWidth / 2), // Circular según el tamaño
+          child: Image.asset(
+            flag,
+            fit: BoxFit.contain, // Ajusta la imagen dentro del contenedor
+          ),
+        ),
+      ),
       title: Text(language),
       trailing: _selectedLocale == locale
           ? const Icon(Icons.check, color: Colors.green)
@@ -56,7 +78,7 @@ class PantallaCambioIdiomaState extends State<PantallaCambioIdioma> {
         setState(() {
           _selectedLocale = locale;
         });
-        widget.onLocaleChange(locale); // Cambia el idioma de toda la app
+        widget.onLocaleChange(locale);
       },
     );
   }
