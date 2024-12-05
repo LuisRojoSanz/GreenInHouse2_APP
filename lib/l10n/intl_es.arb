@@ -44,13 +44,14 @@
   "menu_delete_plant": "Eliminar Planta",
   "menu_sensor_check": "Comprobación Sensores",
   "drawer_header": "Opciones",
+  "viewPlantTips": "Ver Consejos de Plantas",
 
   "@@PantallaIdiomas": "1.0",
   "spanish": "Español",
   "english": "Inglés",
 
-  "appTitle": "Consejos de Plantas",
-  "screenTitle": "Consejos de Plantas",
+  "appTitleplants": "Consejos de Plantas",
+  "screenTitleplants": "Consejos de Plantas",
   "loadingMessage": "Cargando...",
   "errorMessage": "No se pudieron obtener los consejos",
   "zoneLabel": "Zona: {zone}",
@@ -71,7 +72,13 @@
   "errorMessagesensors": "No se pudieron obtener los sensores",
   "modelLabel": "Modelo: {model}",
   "typeLabelsensors": "Tipo: {type}",
-  "readingLabel": "Lectura: {reading} {unit}"
+  "readingLabel": "Lectura: {reading} {unit}",
+
+
+  "pleaseEnterAllFields": "Por favor, rellene todos los campos.",
+  "plantCreatedSuccess": "¡Planta creada con éxito!",
+  "errorCreatingPlant": "Error al crear la planta",
+  "errorConnectingToServer": "Error al conectar con el servidor."
 
 }
 

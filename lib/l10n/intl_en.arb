@@ -41,6 +41,7 @@
   "menu_delete_plant": "Delete Plant",
   "menu_sensor_check": "Sensor Check",
   "drawer_header": "List of Options",
+  "viewPlantTips": "View Plant Tips",
 
   "@@PantallaIdiomas": "1.0",
   "spanish": "Spanish",
@@ -67,7 +68,14 @@
   "errorMessagesensors": "Could not fetch sensors",
   "modelLabel": "Model: {model}",
   "typeLabelsensors": "Type: {type}",
-  "readingLabel": "Reading: {reading} {unit}"
+  "readingLabel": "Reading: {reading} {unit}",
+
+
+  "pleaseEnterAllFields": "Please enter all fields.",
+  "plantCreatedSuccess": "Plant created successfully!",
+  "errorCreatingPlant": "Error creating plant",
+  "errorConnectingToServer": "Error connecting to the server."
+
 
 }
 

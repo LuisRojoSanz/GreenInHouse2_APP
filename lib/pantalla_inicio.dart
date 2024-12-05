@@ -3,11 +3,11 @@ import 'package:greeninhouse2/pantalla_cambio_idioma.dart';
 import 'generated/l10n.dart';
 import 'pantalla_creacionplantas.dart';
 import 'botones_inicio.dart';
-import 'consejos_plantas.dart'; // Importación de la pantalla de consejos
+import 'consejos_plantas.dart';
 import 'pantalla_comprobacion_sensores.dart';
 
 class PantallaInicio extends StatefulWidget {
-  final void Function(Locale locale) onLocaleChange; // Agregar el parámetro para el cambio de idioma
+  final void Function(Locale locale) onLocaleChange;
 
   const PantallaInicio({super.key, required this.onLocaleChange});
 
@@ -188,8 +188,8 @@ class PantallaInicioState extends State<PantallaInicio> {
                       );
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
-                    child: const Text(
-                      'Ver Consejos de Plantas',
+                    child: Text(
+                      S.of(context).viewPlantTips,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -246,20 +246,20 @@ class PantallaInicioState extends State<PantallaInicio> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SensoresActivosScreen(), // Navega a la nueva pantalla
+                    builder: (context) => const SensoresActivosScreen(),
                   ),
                 );
               },
             ),
             ListTile(
-              title: Text(S.of(context).change_language), // El texto de cambio de idioma
+              title: Text(S.of(context).change_language),
               onTap: () {
                 Navigator.pop(context);  // Cierra el drawer
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => PantallaCambioIdioma(
-                      onLocaleChange: widget.onLocaleChange, // Pasamos la función
+                      onLocaleChange: widget.onLocaleChange,
                     ),
                   ),
                 );

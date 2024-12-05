@@ -439,6 +439,16 @@ class S {
     );
   }
 
+  /// `View Plant Tips`
+  String get viewPlantTips {
+    return Intl.message(
+      'View Plant Tips',
+      name: 'viewPlantTips',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Spanish`
   String get spanish {
     return Intl.message(
@@ -606,6 +616,46 @@ class S {
       name: 'readingLabel',
       desc: '',
       args: [reading, unit],
+    );
+  }
+
+  /// `Please enter all fields.`
+  String get pleaseEnterAllFields {
+    return Intl.message(
+      'Please enter all fields.',
+      name: 'pleaseEnterAllFields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant created successfully!`
+  String get plantCreatedSuccess {
+    return Intl.message(
+      'Plant created successfully!',
+      name: 'plantCreatedSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error creating plant`
+  String get errorCreatingPlant {
+    return Intl.message(
+      'Error creating plant',
+      name: 'errorCreatingPlant',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error connecting to the server.`
+  String get errorConnectingToServer {
+    return Intl.message(
+      'Error connecting to the server.',
+      name: 'errorConnectingToServer',
+      desc: '',
+      args: [],
     );
   }
 }

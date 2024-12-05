@@ -55,6 +55,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "drawer_header":
             MessageLookupByLibrary.simpleMessage("List of Options"),
         "english": MessageLookupByLibrary.simpleMessage("English"),
+        "errorConnectingToServer": MessageLookupByLibrary.simpleMessage(
+            "Error connecting to the server."),
+        "errorCreatingPlant":
+            MessageLookupByLibrary.simpleMessage("Error creating plant"),
         "errorMessage":
             MessageLookupByLibrary.simpleMessage("Could not fetch plant tips"),
         "errorMessagesensors":
@@ -91,6 +95,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Min Temperature (°C)"),
         "modelLabel": m2,
         "nameLabel": MessageLookupByLibrary.simpleMessage("Plant Name"),
+        "plantCreatedSuccess":
+            MessageLookupByLibrary.simpleMessage("Plant created successfully!"),
         "plantDateLabel": MessageLookupByLibrary.simpleMessage("Planting Date"),
         "plantHealth":
             MessageLookupByLibrary.simpleMessage("Health Status: 75%"),
@@ -98,6 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "plantStatus":
             MessageLookupByLibrary.simpleMessage("In good condition"),
         "plant_info": m3,
+        "pleaseEnterAllFields":
+            MessageLookupByLibrary.simpleMessage("Please enter all fields."),
         "pleaseEnterName":
             MessageLookupByLibrary.simpleMessage("Please enter the plant name"),
         "rangeLabel": m4,
@@ -114,6 +122,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "typeLabelsensors": m6,
         "unitLabel": m7,
         "viewDetails": MessageLookupByLibrary.simpleMessage("View Details"),
+        "viewPlantTips":
+            MessageLookupByLibrary.simpleMessage("View Plant Tips"),
         "waterLabel": MessageLookupByLibrary.simpleMessage("Daily Water (ml)"),
         "welcomeMessage": MessageLookupByLibrary.simpleMessage("TOMATO"),
         "zoneLabel": m8

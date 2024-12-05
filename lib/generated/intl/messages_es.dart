@@ -46,6 +46,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "MaterialApp": MessageLookupByLibrary.simpleMessage("GreenInHouse_2"),
         "PantallaMain": MessageLookupByLibrary.simpleMessage("1.0"),
         "addPlantButton": MessageLookupByLibrary.simpleMessage("Añadir Planta"),
+        "appTitleplants":
+            MessageLookupByLibrary.simpleMessage("Consejos de Plantas"),
         "appTitlesensors":
             MessageLookupByLibrary.simpleMessage("Sensores Activos"),
         "change_language": MessageLookupByLibrary.simpleMessage("Idioma"),
@@ -53,6 +55,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
         "drawer_header": MessageLookupByLibrary.simpleMessage("Opciones"),
         "english": MessageLookupByLibrary.simpleMessage("Inglés"),
+        "errorConnectingToServer": MessageLookupByLibrary.simpleMessage(
+            "Error al conectar con el servidor."),
+        "errorCreatingPlant":
+            MessageLookupByLibrary.simpleMessage("Error al crear la planta"),
         "errorMessage": MessageLookupByLibrary.simpleMessage(
             "No se pudieron obtener los consejos"),
         "errorMessagesensors": MessageLookupByLibrary.simpleMessage(
@@ -90,6 +96,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "modelLabel": m2,
         "nameLabel":
             MessageLookupByLibrary.simpleMessage("Nombre de la Planta"),
+        "plantCreatedSuccess":
+            MessageLookupByLibrary.simpleMessage("¡Planta creada con éxito!"),
         "plantDateLabel":
             MessageLookupByLibrary.simpleMessage("Fecha de Plantación"),
         "plantHealth":
@@ -97,10 +105,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "plantName": MessageLookupByLibrary.simpleMessage("Planta de Interior"),
         "plantStatus": MessageLookupByLibrary.simpleMessage("En buen estado"),
         "plant_info": m3,
+        "pleaseEnterAllFields": MessageLookupByLibrary.simpleMessage(
+            "Por favor, rellene todos los campos."),
         "pleaseEnterName": MessageLookupByLibrary.simpleMessage(
             "Por favor, ingresa el nombre de la planta"),
         "rangeLabel": m4,
         "readingLabel": m5,
+        "screenTitleplants":
+            MessageLookupByLibrary.simpleMessage("Consejos de Plantas"),
         "screenTitlesensors":
             MessageLookupByLibrary.simpleMessage("Sensores Activos"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
@@ -112,6 +124,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "typeLabelsensors": m6,
         "unitLabel": m7,
         "viewDetails": MessageLookupByLibrary.simpleMessage("Ver Detalles"),
+        "viewPlantTips":
+            MessageLookupByLibrary.simpleMessage("Ver Consejos de Plantas"),
         "waterLabel": MessageLookupByLibrary.simpleMessage("Agua Diaria (ml)"),
         "welcomeMessage": MessageLookupByLibrary.simpleMessage("TOMATERA"),
         "zoneLabel": m8
