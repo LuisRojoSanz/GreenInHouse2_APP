@@ -24,6 +24,23 @@
   "plant_info": "Type: {type}\nPlanting Date: {date}\nMax Temp: {maxTemp}°C\nMin Temp: {minTemp}°C\nMax Humidity: {maxHumidity}%\nMin Humidity: {minHumidity}%\nLight: {minLight}-{maxLight}h\nWater: {water}ml/day",
   "delete": "Delete",
 
+
+  "step1Title": "Step 1: Select or Create Plant Type",
+  "step2Title": "Step 2: Create Plant",
+  "tipoPlantaLabel": "Plant Type",
+  "createNewTipoPlanta": "Create a new plant type",
+  "nombreTipoPlantaLabel": "Plant Type Name",
+  "descripcionPlantaLabel": "Plant Type Description",
+  "guardarTipoPlantaButton": "Save Plant Type",
+  "nombrePlantaLabel": "Plant Name",
+  "crearPlantaButton": "Create Plant",
+  "completeFieldsMessage": "Please complete all fields",
+  "tipoPlantaCreatedMessage": "Plant type created successfully",
+  "plantaCreatedMessage": "Plant created successfully",
+
+
+
+
   "@@PantallaInicio": "1.0",
   "daysWithLife": "Days with life",
   "welcomeMessage": "TOMATO",

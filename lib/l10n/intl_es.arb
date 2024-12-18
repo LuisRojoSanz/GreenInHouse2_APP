@@ -26,6 +26,22 @@
   "plant_info": "Tipo: {type}\nFecha de Plantación: {date}\nTemp Máx: {maxTemp}°C\nTemp Mín: {minTemp}°C\nHumedad Máx: {maxHumidity}%\nHumedad Mín: {minHumidity}%\nLuz: {minLight}-{maxLight}h\nAgua: {water}ml/día",
   "delete": "Eliminar",
 
+  "step1Title": "Paso 1: Seleccionar o Crear Tipo de Planta",
+  "step2Title": "Paso 2: Crear Planta",
+  "tipoPlantaLabel": "Tipo de Planta",
+  "createNewTipoPlanta": "Crear un nuevo tipo de planta",
+  "nombreTipoPlantaLabel": "Nombre del Tipo de Planta",
+  "descripcionPlantaLabel": "Descripción del Tipo de Planta",
+  "guardarTipoPlantaButton": "Guardar Tipo de Planta",
+  "nombrePlantaLabel": "Nombre de la Planta",
+  "crearPlantaButton": "Crear Planta",
+  "completeFieldsMessage": "Por favor, completa todos los campos",
+  "tipoPlantaCreatedMessage": "Tipo de planta creado correctamente",
+  "plantaCreatedMessage": "Planta creada correctamente",
+
+
+
+
 
   "@@PantallaInicio": "1.0",
   "daysWithLife": "Días con vida",

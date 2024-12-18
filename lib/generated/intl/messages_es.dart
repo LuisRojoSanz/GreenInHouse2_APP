@@ -51,8 +51,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "appTitlesensors":
             MessageLookupByLibrary.simpleMessage("Sensores Activos"),
         "change_language": MessageLookupByLibrary.simpleMessage("Idioma"),
+        "completeFieldsMessage": MessageLookupByLibrary.simpleMessage(
+            "Por favor, completa todos los campos"),
+        "crearPlantaButton":
+            MessageLookupByLibrary.simpleMessage("Crear Planta"),
+        "createNewTipoPlanta": MessageLookupByLibrary.simpleMessage(
+            "Crear un nuevo tipo de planta"),
         "daysWithLife": MessageLookupByLibrary.simpleMessage("Días con vida"),
         "delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
+        "descripcionPlantaLabel": MessageLookupByLibrary.simpleMessage(
+            "Descripción del Tipo de Planta"),
         "drawer_header": MessageLookupByLibrary.simpleMessage("Opciones"),
         "english": MessageLookupByLibrary.simpleMessage("Inglés"),
         "errorConnectingToServer": MessageLookupByLibrary.simpleMessage(
@@ -64,6 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorMessagesensors": MessageLookupByLibrary.simpleMessage(
             "No se pudieron obtener los sensores"),
         "graphs": MessageLookupByLibrary.simpleMessage("Gráficos"),
+        "guardarTipoPlantaButton":
+            MessageLookupByLibrary.simpleMessage("Guardar Tipo de Planta"),
         "home": MessageLookupByLibrary.simpleMessage("Inicio"),
         "hoursLabel": m0,
         "humidityMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
@@ -96,6 +106,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "modelLabel": m2,
         "nameLabel":
             MessageLookupByLibrary.simpleMessage("Nombre de la Planta"),
+        "nombrePlantaLabel":
+            MessageLookupByLibrary.simpleMessage("Nombre de la Planta"),
+        "nombreTipoPlantaLabel":
+            MessageLookupByLibrary.simpleMessage("Nombre del Tipo de Planta"),
         "plantCreatedSuccess":
             MessageLookupByLibrary.simpleMessage("¡Planta creada con éxito!"),
         "plantDateLabel":
@@ -105,6 +119,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "plantName": MessageLookupByLibrary.simpleMessage("Planta de Interior"),
         "plantStatus": MessageLookupByLibrary.simpleMessage("En buen estado"),
         "plant_info": m3,
+        "plantaCreatedMessage":
+            MessageLookupByLibrary.simpleMessage("Planta creada correctamente"),
         "pleaseEnterAllFields": MessageLookupByLibrary.simpleMessage(
             "Por favor, rellene todos los campos."),
         "pleaseEnterName": MessageLookupByLibrary.simpleMessage(
@@ -117,8 +133,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sensores Activos"),
         "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
         "spanish": MessageLookupByLibrary.simpleMessage("Español"),
+        "step1Title": MessageLookupByLibrary.simpleMessage(
+            "Paso 1: Seleccionar o Crear Tipo de Planta"),
+        "step2Title":
+            MessageLookupByLibrary.simpleMessage("Paso 2: Crear Planta"),
         "tempMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
             "La temperatura mínima no puede ser mayor que la máxima"),
+        "tipoPlantaCreatedMessage": MessageLookupByLibrary.simpleMessage(
+            "Tipo de planta creado correctamente"),
+        "tipoPlantaLabel":
+            MessageLookupByLibrary.simpleMessage("Tipo de Planta"),
         "title": MessageLookupByLibrary.simpleMessage("Creación de Plantas"),
         "typeLabel": MessageLookupByLibrary.simpleMessage("Tipo de Planta"),
         "typeLabelsensors": m6,

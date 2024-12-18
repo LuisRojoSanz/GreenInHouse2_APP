@@ -27,7 +27,7 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
       errorMessage = '';
     });
 
-    final data = await apiService.get('Consejos/Plantas/All');
+    final data = await apiService.get('Consejos/Plantas/All/FromPlant?np=Mi%20tomatera');
     if (data != null) {
       setState(() {
         consejos = List<Map<String, dynamic>>.from(data.map((item) => {

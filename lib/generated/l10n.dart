@@ -279,6 +279,126 @@ class S {
     );
   }
 
+  /// `Step 1: Select or Create Plant Type`
+  String get step1Title {
+    return Intl.message(
+      'Step 1: Select or Create Plant Type',
+      name: 'step1Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 2: Create Plant`
+  String get step2Title {
+    return Intl.message(
+      'Step 2: Create Plant',
+      name: 'step2Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant Type`
+  String get tipoPlantaLabel {
+    return Intl.message(
+      'Plant Type',
+      name: 'tipoPlantaLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a new plant type`
+  String get createNewTipoPlanta {
+    return Intl.message(
+      'Create a new plant type',
+      name: 'createNewTipoPlanta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant Type Name`
+  String get nombreTipoPlantaLabel {
+    return Intl.message(
+      'Plant Type Name',
+      name: 'nombreTipoPlantaLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant Type Description`
+  String get descripcionPlantaLabel {
+    return Intl.message(
+      'Plant Type Description',
+      name: 'descripcionPlantaLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Plant Type`
+  String get guardarTipoPlantaButton {
+    return Intl.message(
+      'Save Plant Type',
+      name: 'guardarTipoPlantaButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant Name`
+  String get nombrePlantaLabel {
+    return Intl.message(
+      'Plant Name',
+      name: 'nombrePlantaLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Plant`
+  String get crearPlantaButton {
+    return Intl.message(
+      'Create Plant',
+      name: 'crearPlantaButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please complete all fields`
+  String get completeFieldsMessage {
+    return Intl.message(
+      'Please complete all fields',
+      name: 'completeFieldsMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant type created successfully`
+  String get tipoPlantaCreatedMessage {
+    return Intl.message(
+      'Plant type created successfully',
+      name: 'tipoPlantaCreatedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plant created successfully`
+  String get plantaCreatedMessage {
+    return Intl.message(
+      'Plant created successfully',
+      name: 'plantaCreatedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Days with life`
   String get daysWithLife {
     return Intl.message(

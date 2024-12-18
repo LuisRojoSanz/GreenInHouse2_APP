@@ -50,8 +50,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "appTitlesensors":
             MessageLookupByLibrary.simpleMessage("Active Sensors"),
         "change_language": MessageLookupByLibrary.simpleMessage("Language"),
+        "completeFieldsMessage":
+            MessageLookupByLibrary.simpleMessage("Please complete all fields"),
+        "crearPlantaButton":
+            MessageLookupByLibrary.simpleMessage("Create Plant"),
+        "createNewTipoPlanta":
+            MessageLookupByLibrary.simpleMessage("Create a new plant type"),
         "daysWithLife": MessageLookupByLibrary.simpleMessage("Days with life"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "descripcionPlantaLabel":
+            MessageLookupByLibrary.simpleMessage("Plant Type Description"),
         "drawer_header":
             MessageLookupByLibrary.simpleMessage("List of Options"),
         "english": MessageLookupByLibrary.simpleMessage("English"),
@@ -64,6 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorMessagesensors":
             MessageLookupByLibrary.simpleMessage("Could not fetch sensors"),
         "graphs": MessageLookupByLibrary.simpleMessage("Graphs"),
+        "guardarTipoPlantaButton":
+            MessageLookupByLibrary.simpleMessage("Save Plant Type"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
         "hoursLabel": m0,
         "humidityMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
@@ -95,6 +105,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Min Temperature (°C)"),
         "modelLabel": m2,
         "nameLabel": MessageLookupByLibrary.simpleMessage("Plant Name"),
+        "nombrePlantaLabel": MessageLookupByLibrary.simpleMessage("Plant Name"),
+        "nombreTipoPlantaLabel":
+            MessageLookupByLibrary.simpleMessage("Plant Type Name"),
         "plantCreatedSuccess":
             MessageLookupByLibrary.simpleMessage("Plant created successfully!"),
         "plantDateLabel": MessageLookupByLibrary.simpleMessage("Planting Date"),
@@ -104,6 +117,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "plantStatus":
             MessageLookupByLibrary.simpleMessage("In good condition"),
         "plant_info": m3,
+        "plantaCreatedMessage":
+            MessageLookupByLibrary.simpleMessage("Plant created successfully"),
         "pleaseEnterAllFields":
             MessageLookupByLibrary.simpleMessage("Please enter all fields."),
         "pleaseEnterName":
@@ -115,8 +130,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Active Sensors"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "spanish": MessageLookupByLibrary.simpleMessage("Spanish"),
+        "step1Title": MessageLookupByLibrary.simpleMessage(
+            "Step 1: Select or Create Plant Type"),
+        "step2Title":
+            MessageLookupByLibrary.simpleMessage("Step 2: Create Plant"),
         "tempMinGreaterThanMax": MessageLookupByLibrary.simpleMessage(
             "Min temperature cannot be greater than max"),
+        "tipoPlantaCreatedMessage": MessageLookupByLibrary.simpleMessage(
+            "Plant type created successfully"),
+        "tipoPlantaLabel": MessageLookupByLibrary.simpleMessage("Plant Type"),
         "title": MessageLookupByLibrary.simpleMessage("Plant Creation"),
         "typeLabel": MessageLookupByLibrary.simpleMessage("Plant Type"),
         "typeLabelsensors": m6,

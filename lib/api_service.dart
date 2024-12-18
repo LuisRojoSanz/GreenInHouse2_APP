@@ -27,6 +27,28 @@ class ApiService {
     }
   }
 
+  // Método genérico para hacer peticiones POST
+  Future<dynamic> post(String endpoint, Map<String, dynamic> body) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/$endpoint'), // Combina la base con el endpoint
+        headers: {'Content-Type': 'application/json'}, // Encabezado JSON
+        body: jsonEncode(body), // Codifica el cuerpo en JSON
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body); // Respuesta exitosa
+      } else {
+        print('Error en POST $endpoint: ${response.statusCode}');
+        print('Respuesta: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error en POST $endpoint: $e');
+      return null;
+    }
+  }
+
   // Método para verificar la conexión
   Future<bool> testConnection() async {
     try {
