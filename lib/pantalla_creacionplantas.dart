@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'generated/l10n.dart';
-import 'package:intl/intl.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
