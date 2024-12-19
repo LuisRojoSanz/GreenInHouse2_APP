@@ -5,6 +5,7 @@ import 'pantalla_creacionplantas.dart';
 import 'botones_inicio.dart';
 import 'consejos_plantas.dart';
 import 'pantalla_comprobacion_sensores.dart';
+import 'pantalla_eliminarplanta.dart';
 
 class PantallaInicio extends StatefulWidget {
   final void Function(Locale locale)? onLocaleChange; // Ahora es opcional
@@ -228,6 +229,10 @@ class PantallaInicioState extends State<PantallaInicio> {
               title: Text(S.of(context).menu_delete_plant), // Mantiene Eliminar Planta
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EliminarPlantaScreen()),
+                );
               },
             ),
             ListTile(
