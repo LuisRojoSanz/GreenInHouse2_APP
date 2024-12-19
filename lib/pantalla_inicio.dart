@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/pantalla_cambio_idioma.dart';
+import 'package:greeninhouse2/pantalla_modificarplanta.dart';
 import 'generated/l10n.dart';
 import 'pantalla_creacionplantas.dart';
 import 'botones_inicio.dart';
@@ -223,6 +224,10 @@ class PantallaInicioState extends State<PantallaInicio> {
               title: Text(S.of(context).menu_modify_plant), // Mantiene Modificar Planta
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ModificarPlantaScreen()),
+                );
               },
             ),
             ListTile(
