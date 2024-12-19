@@ -59,4 +59,25 @@ class ApiService {
       return false;
     }
   }
+
+  // Método genérico para hacer peticiones DELETE
+  Future<dynamic> delete(String endpoint) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/$endpoint'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return response.body.isNotEmpty ? jsonDecode(response.body) : null; // Decodifica si hay contenido
+      } else {
+        print('Error en DELETE $endpoint: ${response.statusCode}');
+        print('Respuesta: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error en DELETE $endpoint: $e');
+      return null;
+    }
+  }
 }
