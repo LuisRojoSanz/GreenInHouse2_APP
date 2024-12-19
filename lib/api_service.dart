@@ -80,4 +80,26 @@ class ApiService {
       return null;
     }
   }
+
+  // Método genérico para hacer peticiones PUT
+  Future<dynamic> put(String endpoint, Map<String, dynamic> body) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/$endpoint'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      } else {
+        print('Error en PUT $endpoint: ${response.statusCode}');
+        print('Respuesta: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error en PUT $endpoint: $e');
+      return null;
+    }
+  }
 }
