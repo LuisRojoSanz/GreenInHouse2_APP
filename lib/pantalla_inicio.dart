@@ -7,9 +7,9 @@ import 'consejos_plantas.dart';
 import 'pantalla_comprobacion_sensores.dart';
 
 class PantallaInicio extends StatefulWidget {
-  final void Function(Locale locale) onLocaleChange;
+  final void Function(Locale locale)? onLocaleChange; // Ahora es opcional
 
-  const PantallaInicio({super.key, required this.onLocaleChange});
+  const PantallaInicio({super.key, this.onLocaleChange}); // onLocaleChange es opcional
 
   @override
   PantallaInicioState createState() => PantallaInicioState();
@@ -38,7 +38,6 @@ class PantallaInicioState extends State<PantallaInicio> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Contenido de la pantalla
             Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
@@ -167,9 +166,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: () {
-                      // Navegar a la pantalla de detalles de la planta o interacción
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     child: Text(
                       S.of(context).viewDetails,
@@ -177,7 +174,6 @@ class PantallaInicioState extends State<PantallaInicio> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Botón para acceder a la pantalla de consejos
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -190,7 +186,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
                     child: Text(
                       S.of(context).viewPlantTips,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -204,16 +200,11 @@ class PantallaInicioState extends State<PantallaInicio> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.teal,
-              ),
+              decoration: const BoxDecoration(color: Colors.teal),
               child: Center(
                 child: Text(
                   S.of(context).drawer_header,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ),
             ),
@@ -228,13 +219,13 @@ class PantallaInicioState extends State<PantallaInicio> {
               },
             ),
             ListTile(
-              title: Text(S.of(context).menu_modify_plant),
+              title: Text(S.of(context).menu_modify_plant), // Mantiene Modificar Planta
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text(S.of(context).menu_delete_plant),
+              title: Text(S.of(context).menu_delete_plant), // Mantiene Eliminar Planta
               onTap: () {
                 Navigator.pop(context);
               },
@@ -242,7 +233,7 @@ class PantallaInicioState extends State<PantallaInicio> {
             ListTile(
               title: Text(S.of(context).menu_sensor_check),
               onTap: () {
-                Navigator.pop(context); // Cierra el drawer
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -254,12 +245,12 @@ class PantallaInicioState extends State<PantallaInicio> {
             ListTile(
               title: Text(S.of(context).change_language),
               onTap: () {
-                Navigator.pop(context);  // Cierra el drawer
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => PantallaCambioIdioma(
-                      onLocaleChange: widget.onLocaleChange,
+                      onLocaleChange: widget.onLocaleChange ?? (locale) {}, // Manejo seguro
                     ),
                   ),
                 );

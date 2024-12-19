@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'pantalla_graficas.dart';
+import 'pantalla_inicio.dart';
 import 'generated/l10n.dart';
 
 class BottomNavigationCustom extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final ValueChanged<Locale>? onLocaleChange; // Totalmente opcional
 
   const BottomNavigationCustom({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.onLocaleChange, // Este parámetro es opcional
   });
 
   @override
@@ -36,7 +40,26 @@ class BottomNavigationCustom extends StatelessWidget {
       currentIndex: currentIndex,
       selectedItemColor: Colors.teal,
       unselectedItemColor: Colors.grey,
-      onTap: onTap,
+      onTap: (index) {
+        if (index == 0) { // Gráficas
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const GraficasScreen()),
+          );
+        } else if (index == 2) { // Home
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PantallaInicio()),
+          );
+        } else {
+          onTap(index);
+        }
+
+        // Solo llama a onLocaleChange si no es null
+        if (onLocaleChange != null) {
+          onLocaleChange!(Locale('es')); // Ejemplo: Cambiar al español
+        }
+      },
     );
   }
 }
