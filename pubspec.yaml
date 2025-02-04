@@ -62,6 +62,9 @@ flutter:
     - assets/plant_image.png
     - assets/flags/uk.png
     - assets/flags/spain.png
+    - assets/cara_sonriente.png
+    - assets/cara_seria.png
+    - assets/cara_enfadada.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'api_service.dart';
 import 'package:intl/intl.dart';
-import 'botones_inicio.dart'; // Importa la clase de botones
+import 'botones_inicio.dart';
 
 class GraficasScreen extends StatefulWidget {
   const GraficasScreen({super.key});
@@ -19,6 +19,8 @@ class GraficasScreenState extends State<GraficasScreen> {
   // Fechas y horas seleccionadas
   DateTime startDateTime = DateTime.now().subtract(const Duration(hours: 1));
   DateTime endDateTime = DateTime.now();
+
+  bool showGraph = false;
 
   @override
   void initState() {
@@ -60,11 +62,24 @@ class GraficasScreenState extends State<GraficasScreen> {
             dateTime: parsedDate,
             value: (item['valor'] as double) * 100,
           );
-        })
-            .toList();
+        }).toList();
 
         humidityData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
       });
+    }
+  }
+
+  Widget getFaceImage(double value) {
+    if (value <= 5) {
+      return Image.asset('assets/cara_enfadada.png', width: 32, height: 32);
+    } else if (value > 5 && value <= 8) {
+      return Image.asset('assets/cara_seria.png', width: 32, height: 32);
+    } else if (value > 8 && value <= 20) {
+      return Image.asset('assets/cara_sonriente.png', width: 32, height: 32);
+    } else if (value > 20 && value <= 30) {
+      return Image.asset('assets/cara_seria.png', width: 32, height: 32);
+    } else {
+      return Image.asset('assets/cara_enfadada.png', width: 32, height: 32);
     }
   }
 
@@ -105,105 +120,150 @@ class GraficasScreenState extends State<GraficasScreen> {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Inicio: ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        DateTime? picked = await pickDateTime(startDateTime);
-                        if (picked != null) {
-                          setState(() {
-                            startDateTime = picked;
-                          });
-                        }
-                      },
-                      child: Text(
-                        DateFormat('dd/MM/yyyy HH:mm').format(startDateTime),
-                        style: const TextStyle(fontSize: 16),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Inicio: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Fin: ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        DateTime? picked = await pickDateTime(endDateTime);
-                        if (picked != null) {
-                          setState(() {
-                            endDateTime = picked;
-                          });
-                        }
-                      },
-                      child: Text(
-                        DateFormat('dd/MM/yyyy HH:mm').format(endDateTime),
-                        style: const TextStyle(fontSize: 16),
+                      TextButton(
+                        onPressed: () async {
+                          DateTime? picked = await pickDateTime(startDateTime);
+                          if (picked != null) {
+                            setState(() {
+                              startDateTime = picked;
+                            });
+                          }
+                        },
+                        child: Text(
+                          DateFormat('dd/MM/yyyy HH:mm').format(startDateTime),
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: fetchSensorData,
-                  child: const Text("Actualizar Gráfica"),
-                ),
-              ],
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "Humedad (%)",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          SizedBox(
-            height: 300,
-            child: humidityData.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : SfCartesianChart(
-              primaryXAxis: DateTimeAxis(
-                title: AxisTitle(text: 'Hora'),
-                dateFormat: DateFormat.Hm(),
-                intervalType: DateTimeIntervalType.minutes,
-              ),
-              primaryYAxis: NumericAxis(
-                title: AxisTitle(text: 'Porcentaje (%)'),
-                minimum: 0,
-                maximum: 100,
-                interval: 10,
-              ),
-              series: <ChartSeries>[
-                LineSeries<HumidityData, DateTime>(
-                  dataSource: humidityData,
-                  xValueMapper: (data, _) => data.dateTime,
-                  yValueMapper: (data, _) => data.value,
-                  name: "Humedad",
-                  color: Colors.blue,
-                  markerSettings: const MarkerSettings(
-                    isVisible: true,
-                    shape: DataMarkerType.circle,
+                    ],
                   ),
-                ),
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Fin: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          DateTime? picked = await pickDateTime(endDateTime);
+                          if (picked != null) {
+                            setState(() {
+                              endDateTime = picked;
+                            });
+                          }
+                        },
+                        child: Text(
+                          DateFormat('dd/MM/yyyy HH:mm').format(endDateTime),
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: fetchSensorData,
+                    child: const Text("Actualizar Gráfica"),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("SENSOR HUMEDAD"),
+                  getFaceImage(humidityData.isNotEmpty
+                      ? humidityData.last.value
+                      : 0),
+                ],
+              ),
+              trailing: IconButton(
+                icon: Icon(
+                    showGraph ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                onPressed: () {
+                  setState(() {
+                    showGraph = !showGraph;
+                  });
+                },
+              ),
+            ),
+            if (showGraph)
+              SizedBox(
+                height: MediaQuery.of(context).orientation ==
+                    Orientation.landscape
+                    ? MediaQuery.of(context).size.height * 0.6
+                    : 300,
+                child: humidityData.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : SfCartesianChart(
+                  primaryXAxis: DateTimeAxis(
+                    title: AxisTitle(text: 'Hora'),
+                    dateFormat: DateFormat.Hm(),
+                    intervalType: DateTimeIntervalType.minutes,
+                  ),
+                  primaryYAxis: NumericAxis(
+                    title: AxisTitle(text: 'Porcentaje (%)'),
+                    minimum: 0,
+                    maximum: 60,
+                    interval: 10,
+                    plotBands: <PlotBand>[
+                      PlotBand(
+                        start: 0,
+                        end: 5,
+                        color: const Color(0xFFFCBBBB).withOpacity(0.3),
+                      ),
+                      PlotBand(
+                        start: 5,
+                        end: 8,
+                        color: const Color(0xFFFFF59D).withOpacity(0.3),
+                      ),
+                      PlotBand(
+                        start: 8,
+                        end: 20,
+                        color: const Color(0xFFB9F6CA).withOpacity(0.3),
+                      ),
+                      PlotBand(
+                        start: 20,
+                        end: 30,
+                        color: const Color(0xFFFFF59D).withOpacity(0.3),
+                      ),
+                      PlotBand(
+                        start: 30,
+                        end: 60,
+                        color: const Color(0xFFFCBBBB).withOpacity(0.3),
+                      ),
+                    ],
+                  ),
+                  series: <ChartSeries>[
+                    LineSeries<HumidityData, DateTime>(
+                      dataSource: humidityData,
+                      xValueMapper: (data, _) => data.dateTime,
+                      yValueMapper: (data, _) => data.value,
+                      name: "Humedad",
+                      color: Colors.blue,
+                      markerSettings: const MarkerSettings(
+                        isVisible: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationCustom(
         currentIndex: _currentIndex,
