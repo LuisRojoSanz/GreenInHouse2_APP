@@ -19,10 +19,14 @@ class HumidityGraphState extends State<HumidityGraph> {
   bool showGraph = false;
   final TextEditingController daysController = TextEditingController(text: "1");
 
+  double optimalMin = 15.0;
+  double optimalMax = 30.0;
+
   @override
   void initState() {
     super.initState();
     fetchSensorData();
+    fetchOptimalRanges();
   }
 
   Future<void> fetchSensorData() async {
@@ -51,17 +55,35 @@ class HumidityGraphState extends State<HumidityGraph> {
     }
   }
 
+  Future<void> fetchOptimalRanges() async {
+    String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
+    final data = await apiService.get(endpoint);
+    if (!mounted) return;
+
+    if (data != null && data is List) {
+      for (var item in data) {
+        if (item['descripcion'] == 'Humedad de suelo optima.' &&
+            item['tipo_medida']['tipo'] == 'HUMEDAD') {
+          setState(() {
+            optimalMin = double.tryParse(item['valor_minimo']) ?? 15.0;
+            optimalMax = double.tryParse(item['valor_maximo']) ?? 30.0;
+          });
+        }
+      }
+    }
+  }
+
   Widget getFaceImage(double value) {
-    if (value <= 10) {
+    double lowerSeriousLimit = optimalMin - 15;
+    double upperSeriousLimit = optimalMax + 15;
+
+    if (value <= lowerSeriousLimit || value >= upperSeriousLimit) {
       return Image.asset('assets/cara_enfadada.png', width: 32, height: 32);
-    } else if (value > 10 && value <= 15) {
-      return Image.asset('assets/cara_seria.png', width: 32, height: 32);
-    } else if (value > 15 && value <= 30) {
-      return Image.asset('assets/cara_sonriente.png', width: 32, height: 32);
-    } else if (value > 30 && value <= 35) {
+    } else if ((value > lowerSeriousLimit && value < optimalMin) ||
+        (value > optimalMax && value < upperSeriousLimit)) {
       return Image.asset('assets/cara_seria.png', width: 32, height: 32);
     } else {
-      return Image.asset('assets/cara_enfadada.png', width: 32, height: 32);
+      return Image.asset('assets/cara_sonriente.png', width: 32, height: 32);
     }
   }
 
@@ -82,6 +104,51 @@ class HumidityGraphState extends State<HumidityGraph> {
         );
       });
     }
+  }
+
+  Future<void> _showDayPicker(BuildContext context) async {
+    int selectedDay = daysBack;
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        return Container(
+          height: 250,
+          color: Colors.white,
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              const Text("Selecciona los días", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Expanded(
+                child: ListWheelScrollView.useDelegate(
+                  itemExtent: 40,
+                  perspective: 0.005,
+                  physics: const FixedExtentScrollPhysics(),
+                  controller: FixedExtentScrollController(initialItem: selectedDay - 1),
+                  onSelectedItemChanged: (index) {
+                    selectedDay = index + 1;
+                  },
+                  childDelegate: ListWheelChildBuilderDelegate(
+                    builder: (context, index) {
+                      return Center(child: Text("${index + 1} días", style: const TextStyle(fontSize: 16)));
+                    },
+                    childCount: 30,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    daysBack = selectedDay;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text("Aceptar"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -115,36 +182,15 @@ class HumidityGraphState extends State<HumidityGraph> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Seleccionar Hora: "),
-                        TextButton(
-                          onPressed: pickTime,
-                          child: Text(
-                            DateFormat('HH:mm').format(selectedTime),
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
                         const Text("Días atrás: "),
-                        SizedBox(
-                          width: 60,
-                          child: TextField(
-                            controller: daysController,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            decoration: const InputDecoration(border: OutlineInputBorder()),
-                            onChanged: (value) {
-                              setState(() {
-                                daysBack = int.tryParse(value) ?? 1;
-                              });
-                            },
-                          ),
+                        TextButton(
+                          onPressed: () => _showDayPicker(context),
+                          child: Text("$daysBack días",
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: fetchSensorData,
@@ -168,14 +214,14 @@ class HumidityGraphState extends State<HumidityGraph> {
                   primaryYAxis: NumericAxis(
                     title: AxisTitle(text: 'Porcentaje (%)'),
                     minimum: 0,
-                    maximum: 60,
+                    maximum: 100,
                     interval: 10,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: 10, color: const Color(0xFFFCBBBB).withOpacity(0.3)), // Rojo
-                      PlotBand(start: 10, end: 15, color: const Color(0xFFFFF59D).withOpacity(0.3)), // Amarillo
-                      PlotBand(start: 15, end: 30, color: const Color(0xFFB9F6CA).withOpacity(0.3)), // Verde
-                      PlotBand(start: 30, end: 35, color: const Color(0xFFFFF59D).withOpacity(0.3)), // Amarillo
-                      PlotBand(start: 35, end: 60, color: const Color(0xFFFCBBBB).withOpacity(0.3)), // Rojo
+                      PlotBand(start: 0, end: optimalMin - 15, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: optimalMin - 15, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3),),
+                      PlotBand(start: optimalMax, end: optimalMax + 15, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: optimalMax + 15, end: 100, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
                     ],
                   ),
                   series: <ChartSeries>[
