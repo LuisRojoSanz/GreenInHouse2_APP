@@ -19,10 +19,14 @@ class TemperatureGraphState extends State<TemperatureGraph> {
   bool showGraph = false;
   final TextEditingController daysController = TextEditingController(text: "1");
 
+  double optimalMin = 10.0;
+  double optimalMax = 35.0;
+
   @override
   void initState() {
     super.initState();
     fetchSensorData();
+    fetchOptimalRanges();
   }
 
   Future<void> fetchSensorData() async {
@@ -34,10 +38,10 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     final data = await apiService.get(endpoint);
     if (!mounted) return;
 
-    if (data != null && data['MACETA'] != null && data['MACETA']['HUMEDAD'] != null) {
+    if (data != null && data['AMBIENTE'] != null && data['AMBIENTE']['TEMPERATURA'] != null) {
       setState(() {
-        List<dynamic> fechas = data['MACETA']['HUMEDAD']['lista_fechas_cortas'];
-        List<dynamic> valores = data['MACETA']['HUMEDAD']['lista_valores'];
+        List<dynamic> fechas = data['AMBIENTE']['TEMPERATURA']['lista_fechas_cortas'];
+        List<dynamic> valores = data['AMBIENTE']['TEMPERATURA']['lista_valores'];
 
         temperatureData = List.generate(fechas.length, (index) {
           return TemperatureData(
@@ -51,19 +55,40 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     }
   }
 
-  Widget getFaceImage(double value) {
-    if (value <= 10) {
-      return Image.asset('assets/cara_enfadada.png', width: 32, height: 32);
-    } else if (value > 10 && value <= 15) {
-      return Image.asset('assets/cara_seria.png', width: 32, height: 32);
-    } else if (value > 15 && value <= 25) {
-      return Image.asset('assets/cara_sonriente.png', width: 32, height: 32);
-    } else if (value > 25 && value <= 30) {
-      return Image.asset('assets/cara_seria.png', width: 32, height: 32);
-    } else {
-      return Image.asset('assets/cara_enfadada.png', width: 32, height: 32);
+
+  Future<void> fetchOptimalRanges() async {
+    String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
+    final data = await apiService.get(endpoint);
+    if (!mounted) return;
+
+    if (data != null && data is List) {
+      for (var item in data) {
+        if (item['descripcion'] == 'Temperatura de ambiente optima.' &&
+            item['tipo_medida']['tipo'] == 'TEMPERATURA') {
+          setState(() {
+            optimalMin = double.tryParse(item['valor_minimo']) ?? 10.0;
+            optimalMax = double.tryParse(item['valor_maximo']) ?? 35.0;
+          });
+        }
+      }
     }
   }
+
+
+  Widget getFaceImage(double value) {
+    double lowerSeriousLimit = optimalMin - 5;
+    double upperSeriousLimit = optimalMax + 5;
+
+    if (value <= lowerSeriousLimit || value >= upperSeriousLimit) {
+      return Image.asset('assets/cara_enfadada.png', width: 32, height: 32);
+    } else if ((value > lowerSeriousLimit && value < optimalMin) ||
+        (value > optimalMax && value < upperSeriousLimit)) {
+      return Image.asset('assets/cara_seria.png', width: 32, height: 32);
+    } else {
+      return Image.asset('assets/cara_sonriente.png', width: 32, height: 32);
+    }
+  }
+
 
   Future<void> pickTime() async {
     TimeOfDay? pickedTime = await showTimePicker(
@@ -83,6 +108,52 @@ class TemperatureGraphState extends State<TemperatureGraph> {
       });
     }
   }
+
+  Future<void> _showDayPicker(BuildContext context) async {
+    int selectedDay = daysBack;
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        return Container(
+          height: 250,
+          color: Colors.white,
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              const Text("Selecciona los días", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Expanded(
+                child: ListWheelScrollView.useDelegate(
+                  itemExtent: 40,
+                  perspective: 0.005,
+                  physics: const FixedExtentScrollPhysics(),
+                  controller: FixedExtentScrollController(initialItem: selectedDay - 1),
+                  onSelectedItemChanged: (index) {
+                    selectedDay = index + 1;
+                  },
+                  childDelegate: ListWheelChildBuilderDelegate(
+                    builder: (context, index) {
+                      return Center(child: Text("${index + 1} días", style: const TextStyle(fontSize: 16)));
+                    },
+                    childCount: 30,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    daysBack = selectedDay;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text("Aceptar"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,33 +186,11 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Seleccionar Hora: "),
-                        TextButton(
-                          onPressed: pickTime,
-                          child: Text(
-                            DateFormat('HH:mm').format(selectedTime),
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
                         const Text("Días atrás: "),
-                        SizedBox(
-                          width: 60,
-                          child: TextField(
-                            controller: daysController,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            decoration: const InputDecoration(border: OutlineInputBorder()),
-                            onChanged: (value) {
-                              setState(() {
-                                daysBack = int.tryParse(value) ?? 1;
-                              });
-                            },
-                          ),
+                        TextButton(
+                          onPressed: () => _showDayPicker(context),
+                          child: Text("$daysBack días",
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
@@ -171,11 +220,11 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                     maximum: 40,
                     interval: 5,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: 10, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
-                      PlotBand(start: 10, end: 15, color: const Color(0xFFFFF59D).withOpacity(0.3)),
-                      PlotBand(start: 15, end: 25, color: const Color(0xFFB9F6CA).withOpacity(0.3)),
-                      PlotBand(start: 25, end: 30, color: const Color(0xFFFFF59D).withOpacity(0.3)),
-                      PlotBand(start: 30, end: 40, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
+                      PlotBand(start: 0, end: optimalMin - 5, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: optimalMin - 5, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3),),
+                      PlotBand(start: optimalMax, end: optimalMax + 5, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: optimalMax + 5, end: 40, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
                     ],
                   ),
                   series: <ChartSeries>[
