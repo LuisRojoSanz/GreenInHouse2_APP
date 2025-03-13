@@ -220,11 +220,11 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                     maximum: 40,
                     interval: 5,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: optimalMin - 5, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
-                      PlotBand(start: optimalMin - 5, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: 0, end: optimalMin - 4, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: optimalMin - 4, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
                       PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3),),
-                      PlotBand(start: optimalMax, end: optimalMax + 5, color: const Color(0xFFFFF59D).withOpacity(0.3),),
-                      PlotBand(start: optimalMax + 5, end: 40, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: optimalMax, end: optimalMax + 4, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: optimalMax + 4, end: 40, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
                     ],
                   ),
                   series: <ChartSeries>[

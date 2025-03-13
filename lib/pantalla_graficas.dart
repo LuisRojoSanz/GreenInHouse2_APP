@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'grafica_temperatura.dart';
 import 'botones_inicio.dart';
 import 'grafica_humedad.dart';
-import 'grafica_luz.dart'; // Importar la nueva gráfica de luz
+import 'grafica_luz.dart';
+import 'grafica_humedad_ambiente.dart';
 
 class GraficasScreen extends StatefulWidget {
   const GraficasScreen({super.key});
@@ -33,6 +34,7 @@ class GraficasScreenState extends State<GraficasScreen> {
         child: Column(
           children: const [
             HumidityGraph(), // Gráfica de humedad
+            HumidityGraphAM(),// Gráfica de humedad ambiente
             LightGraph(), // Gráfica de luz agregada aquí
             TemperatureGraph(), // Agregamos la gráfica de temperatura
           ],

@@ -217,11 +217,11 @@ class HumidityGraphState extends State<HumidityGraphAM> {
                     maximum: 100,
                     interval: 10,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: optimalMin - 15, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
-                      PlotBand(start: optimalMin - 15, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: 0, end: optimalMin - 10, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: optimalMin - 10, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
                       PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3),),
-                      PlotBand(start: optimalMax, end: optimalMax + 15, color: const Color(0xFFFFF59D).withOpacity(0.3),),
-                      PlotBand(start: optimalMax + 15, end: 100, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: optimalMax, end: optimalMax + 10, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: optimalMax + 10, end: 100, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
                     ],
                   ),
                   series: <ChartSeries>[

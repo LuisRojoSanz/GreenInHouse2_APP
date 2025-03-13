@@ -221,11 +221,11 @@ class LightGraphState extends State<LightGraph> {
                     maximum: 120,
                     interval: 10,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: optimalMin - 15, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
-                      PlotBand(start: optimalMin - 15, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: 0, end: optimalMin - 12, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: optimalMin - 12, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
                       PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3),),
-                      PlotBand(start: optimalMax, end: optimalMax + 15, color: const Color(0xFFFFF59D).withOpacity(0.3),),
-                      PlotBand(start: optimalMax + 15, end: 120, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: optimalMax, end: optimalMax + 12, color: const Color(0xFFFFF59D).withOpacity(0.3),),
+                      PlotBand(start: optimalMax + 12, end: 120, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
                     ],
                   ),
                   series: <ChartSeries>[
