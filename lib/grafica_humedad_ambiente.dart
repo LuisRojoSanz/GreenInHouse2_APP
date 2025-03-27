@@ -40,13 +40,15 @@ class HumidityGraphState extends State<HumidityGraphAM> {
 
     if (data != null && data['HUMEDAD'] != null && data['HUMEDAD']['AMBIENTE'] != null) {
       setState(() {
-        List<dynamic> fechas = data['HUMEDAD']['AMBIENTE']['lista_fechas_cortas'];
-        List<dynamic> valores = data['HUMEDAD']['AMBIENTE']['lista_valores'];
+        List<dynamic> fechas = data['HUMEDAD']['AMBIENTE']['lista_fechas_largas'];
+        List<dynamic> valores = data['HUMEDAD']['AMBIENTE']['lista_valores_medios'];
 
         humidityData = List.generate(fechas.length, (index) {
+          double rawValue = valores[index].toDouble();
+          double clampedValue = rawValue.clamp(0.0, 100.0);
           return HumidityData(
             dateTime: DateTime.parse(fechas[index]),
-            value: valores[index].toDouble(),
+            value: clampedValue,
           );
         });
 

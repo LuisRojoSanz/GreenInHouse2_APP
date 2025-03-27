@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'grafica_temperatura.dart';
 import 'botones_inicio.dart';
 import 'grafica_humedad.dart';
@@ -15,9 +16,31 @@ class GraficasScreen extends StatefulWidget {
 class GraficasScreenState extends State<GraficasScreen> {
   int _currentIndex = 0;
 
+  bool mostrarGraficaTemperatura = true;
+  bool mostrarGraficaHumedad = true;
+  bool mostrarGraficaLuz = true;
+  bool mostrarGraficaHumedadAmbiente = true;
+
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    cargarPreferencias();
+  }
+
+  Future<void> cargarPreferencias() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      mostrarGraficaTemperatura = prefs.getBool('mostrarGraficaTemperatura') ?? true;
+      mostrarGraficaHumedad = prefs.getBool('mostrarGraficaHumedad') ?? true;
+      mostrarGraficaLuz = prefs.getBool('mostrarGraficaLuz') ?? true;
+      // Agrega también una opción para humedad ambiente si la quieres controlar por separado
+      mostrarGraficaHumedadAmbiente = prefs.getBool('mostrarGraficaHumedadAmbiente') ?? true;
     });
   }
 
@@ -32,11 +55,11 @@ class GraficasScreenState extends State<GraficasScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: const [
-            HumidityGraph(), // Gráfica de humedad
-            HumidityGraphAM(),// Gráfica de humedad ambiente
-            LightGraph(), // Gráfica de luz agregada aquí
-            TemperatureGraph(), // Agregamos la gráfica de temperatura
+          children: [
+            if (mostrarGraficaHumedad) const HumidityGraph(),
+            if (mostrarGraficaHumedadAmbiente) const HumidityGraphAM(),
+            if (mostrarGraficaLuz) const LightGraph(),
+            if (mostrarGraficaTemperatura) const TemperatureGraph(),
           ],
         ),
       ),

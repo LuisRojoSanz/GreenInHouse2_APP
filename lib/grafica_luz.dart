@@ -41,13 +41,15 @@ class LightGraphState extends State<LightGraph> {
 
     if (data != null && data['AMBIENTE'] != null && data['AMBIENTE']['LUMINOSIDAD'] != null) {
       setState(() {
-        List<dynamic> fechas = data['AMBIENTE']['LUMINOSIDAD']['lista_fechas_cortas'];
-        List<dynamic> valores = data['AMBIENTE']['LUMINOSIDAD']['lista_valores'];
+        List<dynamic> fechas = data['AMBIENTE']['LUMINOSIDAD']['lista_fechas_largas'];
+        List<dynamic> valores = data['AMBIENTE']['LUMINOSIDAD']['lista_valores_medios'];
 
         lightData = List.generate(fechas.length, (index) {
+          double rawValue = valores[index].toDouble();
+          double clampedValue = rawValue.clamp(0.0, 120.0);
           return LightData(
             dateTime: DateTime.parse(fechas[index]),
-            value: valores[index].toDouble(),
+            value: clampedValue,
           );
         });
 

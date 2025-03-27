@@ -40,13 +40,15 @@ class TemperatureGraphState extends State<TemperatureGraph> {
 
     if (data != null && data['AMBIENTE'] != null && data['AMBIENTE']['TEMPERATURA'] != null) {
       setState(() {
-        List<dynamic> fechas = data['AMBIENTE']['TEMPERATURA']['lista_fechas_cortas'];
-        List<dynamic> valores = data['AMBIENTE']['TEMPERATURA']['lista_valores'];
+        List<dynamic> fechas = data['AMBIENTE']['TEMPERATURA']['lista_fechas_largas'];
+        List<dynamic> valores = data['AMBIENTE']['TEMPERATURA']['lista_valores_medios'];
 
         temperatureData = List.generate(fechas.length, (index) {
+          double rawValue = valores[index].toDouble();
+          double clampedValue = rawValue.clamp(0.0, 40.0);
           return TemperatureData(
             dateTime: DateTime.parse(fechas[index]),
-            value: valores[index].toDouble(),
+            value: clampedValue,
           );
         });
 
