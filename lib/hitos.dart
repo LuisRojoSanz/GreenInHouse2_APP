@@ -30,17 +30,34 @@ class _HitosState extends State<Hitos> {
 
   int _currentIndex = 1;
 
+  bool mostrarHitoHumedadSuelo = true;
+  bool mostrarHitoHumedadAmbiente = true;
+  bool mostrarHitoLuz = true;
+  bool mostrarHitoTemperatura = true;
+  bool mostrarHitoCambioTierra = true;
+
   @override
   void initState() {
     super.initState();
+    cargarPreferenciasHitos();
     fetchHitos();
     verificarCambioTierra();
   }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     fetchHitos();
+  }
+
+  Future<void> cargarPreferenciasHitos() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      mostrarHitoHumedadSuelo = prefs.getBool('mostrarHitoHumedadSuelo') ?? true;
+      mostrarHitoHumedadAmbiente = prefs.getBool('mostrarHitoHumedadAmbiente') ?? true;
+      mostrarHitoLuz = prefs.getBool('mostrarHitoLuz') ?? true;
+      mostrarHitoTemperatura = prefs.getBool('mostrarHitoTemperatura') ?? true;
+      mostrarHitoCambioTierra = prefs.getBool('mostrarHitoCambioTierra') ?? true;
+    });
   }
 
   Future<void> fetchHitos() async {
@@ -58,13 +75,13 @@ class _HitosState extends State<Hitos> {
 
     if (datosSensores != null && datosRangos != null) {
       setState(() {
-        double humedadSuelo = datosSensores['MACETA']['HUMEDAD']['lista_valores']
+        double humedadSuelo = datosSensores['MACETA']['HUMEDAD']['lista_valores_medios']
             .last.toDouble();
-        double humedadAmbiente = datosSensores['AMBIENTE']['HUMEDAD']['lista_valores']
+        double humedadAmbiente = datosSensores['AMBIENTE']['HUMEDAD']['lista_valores_medios']
             .last.toDouble();
-        double luz = datosSensores['AMBIENTE']['LUMINOSIDAD']['lista_valores']
+        double luz = datosSensores['AMBIENTE']['LUMINOSIDAD']['lista_valores_medios']
             .last.toDouble();
-        double temperatura = datosSensores['AMBIENTE']['TEMPERATURA']['lista_valores']
+        double temperatura = datosSensores['AMBIENTE']['TEMPERATURA']['lista_valores_medios']
             .last.toDouble();
 
         double minHumedadSuelo = 40.0,
@@ -167,7 +184,8 @@ class _HitosState extends State<Hitos> {
       DateTime ahora = DateTime.now();
       Duration diferencia = ahora.difference(ultimaFecha);
 
-      if (diferencia.inDays >= 90) {
+      int frecuencia = prefs.getInt('frecuenciaCambioTierra') ?? 90;
+      if (diferencia.inDays >= frecuencia) {
         setState(() {
           cambioTierraCumplida = false;
           mensajeCambioTierra =
@@ -223,13 +241,14 @@ class _HitosState extends State<Hitos> {
                 title: const Text("Hitos Diarios", style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.bold)),
                 children: [
-                  buildHitoCard(mensajeHumedadSuelo, humedadSueloCumplida,
-                      Icons.water_drop),
-                  buildHitoCard(mensajeHumedadAmbiente, humedadAmbienteCumplida,
-                      Icons.water_drop),
-                  buildHitoCard(mensajeLuz, luzCumplida, Icons.wb_sunny),
-                  buildHitoCard(mensajeTemperatura, temperaturaCumplida,
-                      Icons.thermostat),
+                  if (mostrarHitoHumedadSuelo)
+                    buildHitoCard(mensajeHumedadSuelo, humedadSueloCumplida, Icons.water_drop),
+                  if (mostrarHitoHumedadAmbiente)
+                    buildHitoCard(mensajeHumedadAmbiente, humedadAmbienteCumplida, Icons.water_drop),
+                  if (mostrarHitoLuz)
+                    buildHitoCard(mensajeLuz, luzCumplida, Icons.wb_sunny),
+                  if (mostrarHitoTemperatura)
+                    buildHitoCard(mensajeTemperatura, temperaturaCumplida, Icons.thermostat),
                 ],
               ),
 
@@ -237,9 +256,13 @@ class _HitosState extends State<Hitos> {
                 title: const Text("Hitos Mensuales", style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.bold)),
                 children: [
-                  buildHitoCardTierra(
-                      mensajeCambioTierra, cambioTierraCumplida, Icons.grass,
-                      isCambioTierra: true),
+                  if (mostrarHitoCambioTierra)
+                    buildHitoCardTierra(
+                      mensajeCambioTierra,
+                      cambioTierraCumplida,
+                      Icons.grass,
+                      isCambioTierra: true,
+                    ),
                 ],
               ),
             ],
@@ -298,40 +321,110 @@ class _HitosState extends State<Hitos> {
 
   Widget buildHitoCardTierra(String mensaje, bool? cumplido, IconData icono,
       {bool isCambioTierra = false}) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      color: cumplido == true ? Colors.green[100] : Colors.red[100],
-      child: ListTile(
-        leading: Icon(icono, size: 40,
-            color: cumplido == true ? Colors.green : Colors.red),
-        title: Text(mensaje,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        Color cardColor = Colors.black12;
+        Color iconColor = Colors.black;
+        String estadoTexto = "Cargando...";
+        IconData estadoIcono = Icons.hourglass_empty;
 
-        // Solo permite el clic si el hito no está cumplido
-        onTap: (cumplido == true) ? null : () {
-          if (isCambioTierra) {
-            showDialog(
-              context: context,
-              builder: (context) =>
-                  AlertDialog(
-                    title: const Text("Confirmar cambio de tierra"),
-                    content: const Text(
-                        "¿Has cambiado la tierra de la planta?"),
-                    actions: [
-                      TextButton(onPressed: () => Navigator.pop(context),
-                          child: const Text("Cancelar")),
-                      TextButton(onPressed: () {
-                        confirmarCambioTierra();
-                        Navigator.pop(context);
-                      }, child: const Text("Sí, la cambié")),
-                    ],
-                  ),
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.data != null) {
+          String? fechaStr = snapshot.data!.getString('fechaCambioTierra');
+          if (fechaStr != null) {
+            DateTime fechaCambio = DateTime.parse(fechaStr);
+            int frecuencia = snapshot.data!.getInt('frecuenciaCambioTierra') ?? 90;
+            DateTime proximoCambio = fechaCambio.add(Duration(days: frecuencia));
+            int diasRestantes = proximoCambio.difference(DateTime.now()).inDays;
+
+            if (diasRestantes > 30) {
+              cardColor = Colors.green[100]!;
+              iconColor = Colors.green;
+              estadoTexto = "Completado";
+              estadoIcono = Icons.check_circle;
+            } else if (diasRestantes > 0 && diasRestantes <= 30) {
+              cardColor = Colors.yellow[100]!;
+              iconColor = Colors.orange;
+              estadoTexto = "Pronto a cambiar";
+              estadoIcono = Icons.warning_amber;
+            } else {
+              cardColor = Colors.red[100]!;
+              iconColor = Colors.red;
+              estadoTexto = "Pendiente";
+              estadoIcono = Icons.warning;
+            }
+
+            return Card(
+              elevation: 4,
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              color: cardColor,
+              child: ListTile(
+                leading: Icon(icono, size: 40, color: iconColor),
+                title: Text(
+                  mensaje,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(estadoTexto,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: iconColor)),
+                    Text(
+                      "Próximo cambio: ${proximoCambio.day.toString().padLeft(2, '0')}/${proximoCambio.month.toString().padLeft(2, '0')}/${proximoCambio.year}",
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+                onTap: (estadoTexto == "Completado") ? null : () {
+                  if (isCambioTierra) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("Confirmar cambio de tierra"),
+                        content: const Text(
+                            "¿Has cambiado la tierra de la planta?"),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("Cancelar")),
+                          TextButton(
+                              onPressed: () {
+                                confirmarCambioTierra();
+                                Navigator.pop(context);
+                              },
+                              child: const Text("Sí, la cambié")),
+                        ],
+                      ),
+                    );
+                  }
+                },
+                trailing: Icon(estadoIcono, color: iconColor, size: 30),
+              ),
             );
           }
-        },
-      ),
+        }
+
+        // Si aún no se ha cargado nada
+        return Card(
+          elevation: 4,
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          color: cardColor,
+          child: ListTile(
+            leading: Icon(icono, size: 40, color: iconColor),
+            title: Text(mensaje,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            subtitle: Text(estadoTexto,
+                style: TextStyle(fontWeight: FontWeight.bold, color: iconColor)),
+            trailing: Icon(estadoIcono, color: iconColor, size: 30),
+          ),
+        );
+      },
     );
   }
 }
