@@ -9,9 +9,9 @@ import 'pantalla_comprobacion_sensores.dart';
 import 'pantalla_eliminarplanta.dart';
 
 class PantallaInicio extends StatefulWidget {
-  final void Function(Locale locale)? onLocaleChange; // Ahora es opcional
+  final void Function(Locale locale)? onLocaleChange;
 
-  const PantallaInicio({super.key, this.onLocaleChange}); // onLocaleChange es opcional
+  const PantallaInicio({super.key, this.onLocaleChange});
 
   @override
   PantallaInicioState createState() => PantallaInicioState();
@@ -155,7 +155,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                         LinearProgressIndicator(
                           value: 0.75,
                           backgroundColor: Colors.grey.shade300,
-                          color: Colors.green,
+                          color: Colors.blue,
                           minHeight: 8,
                         ),
                         const SizedBox(height: 10),

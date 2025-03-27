@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/hitos.dart';
 import 'pantalla_graficas.dart';
 import 'pantalla_inicio.dart';
 import 'generated/l10n.dart';
+import 'pantalla_ajustes.dart';
 
 class BottomNavigationCustom extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
-  final ValueChanged<Locale>? onLocaleChange; // Totalmente opcional
+  final ValueChanged<Locale>? onLocaleChange;
 
   const BottomNavigationCustom({
     super.key,
     required this.currentIndex,
     required this.onTap,
-    this.onLocaleChange, // Este parámetro es opcional
+    this.onLocaleChange,
   });
 
   @override
@@ -46,10 +48,20 @@ class BottomNavigationCustom extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => const GraficasScreen()),
           );
-        } else if (index == 2) { // Home
+        } else if (index == 1) { // Hitos
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Hitos()),
+          );
+        } else if (index == 2) { // Inicio
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const PantallaInicio()),
+          );
+        } else if (index == 3) { // Ajustes
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Ajustes()),
           );
         } else {
           onTap(index);
@@ -57,7 +69,7 @@ class BottomNavigationCustom extends StatelessWidget {
 
         // Solo llama a onLocaleChange si no es null
         if (onLocaleChange != null) {
-          onLocaleChange!(Locale('es')); // Ejemplo: Cambiar al español
+          onLocaleChange!(Locale('es'));
         }
       },
     );
