@@ -91,10 +91,38 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: eliminarPlanta,
+              onPressed: () {
+                if (plantaSeleccionada == null) {
+                  _showMessage('Por favor, selecciona una planta para eliminar');
+                  return;
+                }
+
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Confirmar eliminación'),
+                    content: Text('¿Estás seguro de que quieres eliminar la planta "$plantaSeleccionada"?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          eliminarPlanta();
+                        },
+                        child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
+                      ),
+                    ],
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text('Eliminar Planta', style: TextStyle(color: Colors.white)),
             ),
+
+
           ],
         ),
       ),
