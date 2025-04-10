@@ -36,20 +36,23 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
   }
 
   Future<void> modificarPlanta() async {
-    if (plantaSeleccionada == null || _nombrePlantaController.text.isEmpty || _tipoPlantaController.text.isEmpty) {
-      _showMessage('Por favor, completa todos los campos');
+    if (plantaSeleccionada == null || _tipoPlantaController.text.isEmpty) {
+      _showMessage('Por favor, selecciona una planta y escribe el nuevo tipo');
       return;
     }
 
     final body = {
-      "nombre_planta": _nombrePlantaController.text,
+      "nombre_planta": plantaSeleccionada,
       "tipo_planta": _tipoPlantaController.text,
     };
 
-    final response = await apiService.put('Plantas/One?np=${Uri.encodeComponent(plantaSeleccionada!)}', body);
+    final response = await apiService.put(
+      'Plantas/One?np=${Uri.encodeComponent(plantaSeleccionada!)}',
+      body,
+    );
 
     if (response != null) {
-      _showMessage('Planta modificada correctamente');
+      _showMessage('Tipo de planta modificado correctamente');
       setState(() {
         plantaSeleccionada = null;
         _nombrePlantaController.clear();
@@ -95,12 +98,18 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
                   child: Text(planta),
                 );
               }).toList(),
-              onChanged: (value) => setState(() => plantaSeleccionada = value),
+              onChanged: (value) {
+                setState(() {
+                  plantaSeleccionada = value;
+                  _nombrePlantaController.text = value!;
+                });
+              },
             ),
             const SizedBox(height: 20),
             TextField(
               controller: _nombrePlantaController,
-              decoration: const InputDecoration(labelText: 'Nuevo Nombre de la Planta'),
+              decoration: const InputDecoration(labelText: 'Nombre de la Planta'),
+              readOnly: true,
             ),
             TextField(
               controller: _tipoPlantaController,
