@@ -86,6 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _showMessage(localization.plantaCreatedMessage);
       _nombrePlantaController.clear();
       setState(() => tipoSeleccionado = null);
+    }else{
+      _showMessage("Planta ya existente");
     }
   }
 
