@@ -36,6 +36,8 @@ dependencies:
     sdk: flutter
   intl_utils: ^2.4.0
   syncfusion_flutter_charts: ^20.4.44
+  image_picker: ^1.0.4
+  path_provider: ^2.1.5
   shared_preferences: ^2.2.2
 
 
@@ -61,7 +63,6 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/plant_image.png
     - assets/flags/uk.png
     - assets/flags/spain.png
     - assets/cara_sonriente.png

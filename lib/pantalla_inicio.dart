@@ -7,6 +7,7 @@ import 'botones_inicio.dart';
 import 'consejos_plantas.dart';
 import 'pantalla_comprobacion_sensores.dart';
 import 'pantalla_eliminarplanta.dart';
+import 'imagen_principal.dart';
 
 class PantallaInicio extends StatefulWidget {
   final void Function(Locale locale)? onLocaleChange;
@@ -44,7 +45,7 @@ class PantallaInicioState extends State<PantallaInicio> {
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.green.shade100, Colors.green.shade300],
+                  colors: [Color(0xFFC8E6C9), Color(0xFF81C784)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -78,8 +79,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                   const SizedBox(height: 20),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
-                    child: Image.asset(
-                      'assets/plant_image.png',
+                    child: ImagenPrincipal(
                       width: 200,
                       height: 250,
                       fit: BoxFit.cover,
@@ -221,7 +221,7 @@ class PantallaInicioState extends State<PantallaInicio> {
               },
             ),
             ListTile(
-              title: Text(S.of(context).menu_modify_plant), // Mantiene Modificar Planta
+              title: Text(S.of(context).menu_modify_plant),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -231,7 +231,7 @@ class PantallaInicioState extends State<PantallaInicio> {
               },
             ),
             ListTile(
-              title: Text(S.of(context).menu_delete_plant), // Mantiene Eliminar Planta
+              title: Text(S.of(context).menu_delete_plant),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -260,7 +260,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PantallaCambioIdioma(
-                      onLocaleChange: widget.onLocaleChange ?? (locale) {}, // Manejo seguro
+                      onLocaleChange: widget.onLocaleChange ?? (locale) {},
                     ),
                   ),
                 );
