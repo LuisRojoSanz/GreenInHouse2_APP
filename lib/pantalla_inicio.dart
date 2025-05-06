@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/pantalla_cambio_idioma.dart';
 import 'package:greeninhouse2/pantalla_modificarplanta.dart';
+import 'porcentaje_estado_planta.dart';
 import 'generated/l10n.dart';
 import 'pantalla_creacionplantas.dart';
 import 'botones_inicio.dart';
@@ -147,22 +148,10 @@ class PantallaInicioState extends State<PantallaInicio> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          S.of(context).plantStatus,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(height: 16),
-                        LinearProgressIndicator(
-                          value: 0.75,
-                          backgroundColor: Colors.grey.shade300,
-                          color: Colors.blue,
-                          minHeight: 8,
-                        ),
+                        //Llamda a la clase que muestra por pantalla la barra del estado de la planta
+                        const PorcentajeEstadoPlanta(),
+
                         const SizedBox(height: 10),
-                        Text(
-                          S.of(context).plantHealth,
-                          style: const TextStyle(fontSize: 16),
-                        ),
                       ],
                     ),
                   ),
