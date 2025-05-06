@@ -35,6 +35,7 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
 
   Future<void> _seleccionarImagen() async {
     final picker = ImagePicker();
+
     final opcion = await showModalBottomSheet<String>(
       context: context,
       builder: (context) => Column(
@@ -50,22 +51,47 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
             title: const Text("Elegir de galería"),
             onTap: () => Navigator.pop(context, 'gallery'),
           ),
-          ListTile(
-            leading: const Icon(Icons.delete),
-            title: const Text("Quitar foto"),
-            onTap: () => Navigator.pop(context, 'remove'),
-          ),
+          if (_imagen != null) // solo mostrar si hay una imagen
+            ListTile(
+              leading: const Icon(Icons.delete),
+              title: const Text("Quitar foto"),
+              onTap: () => Navigator.pop(context, 'remove'),
+            ),
         ],
       ),
     );
 
     if (opcion == null) return;
+
     if (opcion == 'remove') {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('imagen_path');
-      setState(() {
-        _imagen = null;
-      });
+      if (!mounted) return;
+
+      final confirmacion = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Confirmar eliminación"),
+          content: const Text("¿Estás seguro de que quieres quitar la foto?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text("Sí, eliminar"),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmacion == true && mounted) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('imagen_path');
+        setState(() {
+          _imagen = null;
+        });
+      }
+
       return;
     }
 
@@ -83,6 +109,7 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
