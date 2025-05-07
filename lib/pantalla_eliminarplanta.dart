@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EliminarPlantaScreen extends StatefulWidget {
   const EliminarPlantaScreen({super.key});
@@ -42,6 +43,14 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
     final response = await apiService.delete(endpoint);
 
     if (response != null) {
+      // Se borra el nombre guardado
+      final prefs = await SharedPreferences.getInstance();
+      final plantaGuardada = prefs.getString('nombrePlantaActiva');
+
+      if (plantaGuardada == plantaSeleccionada) {
+        await prefs.remove('nombrePlantaActiva');
+      }
+
       _showMessage('Planta eliminada correctamente');
       setState(() {
         plantasActivas.remove(plantaSeleccionada);
@@ -69,60 +78,58 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Selecciona una planta activa para eliminar:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Plantas Activas'),
-              value: plantaSeleccionada,
-              items: plantasActivas.map((planta) {
-                return DropdownMenuItem(
-                  value: planta,
-                  child: Text(planta),
-                );
-              }).toList(),
-              onChanged: (value) => setState(() => plantaSeleccionada = value),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (plantaSeleccionada == null) {
-                  _showMessage('Por favor, selecciona una planta para eliminar');
-                  return;
-                }
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Selecciona una planta activa para eliminar:',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: 'Plantas Activas'),
+                value: plantaSeleccionada,
+                items: plantasActivas.map((planta) {
+                  return DropdownMenuItem(
+                    value: planta,
+                    child: Text(planta),
+                  );
+                }).toList(),
+                onChanged: (value) => setState(() => plantaSeleccionada = value),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (plantaSeleccionada == null) {
+                    _showMessage('Por favor, selecciona una planta para eliminar');
+                    return;
+                  }
 
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Confirmar eliminación'),
-                    content: Text('¿Estás seguro de que quieres eliminar la planta "$plantaSeleccionada"?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancelar'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          eliminarPlanta();
-                        },
-                        child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('Eliminar Planta', style: TextStyle(color: Colors.white)),
-            ),
-
-
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Confirmar eliminación'),
+                      content: Text('¿Estás seguro de que quieres eliminar la planta "$plantaSeleccionada"?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancelar'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            eliminarPlanta();
+                          },
+                          child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text('Eliminar Planta', style: TextStyle(color: Colors.white)),
+              ),
           ],
         ),
       ),

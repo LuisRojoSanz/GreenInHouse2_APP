@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'generated/l10n.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -83,10 +85,14 @@ class _MyHomePageState extends State<MyHomePage> {
     final response = await apiService.post('Plantas/One', body);
 
     if (response != null) {
+      // Se guarda el nombre de la planta en SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('nombrePlantaActiva', _nombrePlantaController.text);
+
       _showMessage(localization.plantaCreatedMessage);
       _nombrePlantaController.clear();
       setState(() => tipoSeleccionado = null);
-    }else{
+    } else {
       _showMessage("Planta ya existente");
     }
   }
