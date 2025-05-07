@@ -7,16 +7,18 @@ class HumidityGraphAM extends StatefulWidget {
   const HumidityGraphAM({super.key});
 
   @override
-  HumidityGraphState createState() => HumidityGraphState();
+  HumidityGraphAMState createState() => HumidityGraphAMState();
 }
 
-class HumidityGraphState extends State<HumidityGraphAM> {
+class HumidityGraphAMState extends State<HumidityGraphAM> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   List<HumidityData> humidityData = [];
   String plantName = "Mi tomatera";
   int daysBack = 1;
   DateTime selectedTime = DateTime.now();
   bool showGraph = false;
+  bool isLoading = false;
+
   final TextEditingController daysController = TextEditingController(text: "1");
 
   double optimalMin = 15.0;
@@ -30,6 +32,10 @@ class HumidityGraphState extends State<HumidityGraphAM> {
   }
 
   Future<void> fetchSensorData() async {
+    setState(() {
+      isLoading = true;
+    });
+
     String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
 
     String endpoint =
@@ -39,10 +45,10 @@ class HumidityGraphState extends State<HumidityGraphAM> {
     if (!mounted) return;
 
     if (data != null && data['HUMEDAD'] != null && data['HUMEDAD']['AMBIENTE'] != null) {
-      setState(() {
-        List<dynamic> fechas = data['HUMEDAD']['AMBIENTE']['lista_fechas_largas'];
-        List<dynamic> valores = data['HUMEDAD']['AMBIENTE']['lista_valores_medios'];
+      List<dynamic> fechas = data['HUMEDAD']['AMBIENTE']['lista_fechas_largas'];
+      List<dynamic> valores = data['HUMEDAD']['AMBIENTE']['lista_valores_medios'];
 
+      setState(() {
         humidityData = List.generate(fechas.length, (index) {
           double rawValue = valores[index].toDouble();
           double clampedValue = rawValue.clamp(0.0, 100.0);
@@ -55,6 +61,10 @@ class HumidityGraphState extends State<HumidityGraphAM> {
         humidityData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
       });
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> fetchOptimalRanges() async {
@@ -86,25 +96,6 @@ class HumidityGraphState extends State<HumidityGraphAM> {
       return Image.asset('assets/cara_seria.png', width: 32, height: 32);
     } else {
       return Image.asset('assets/cara_sonriente.png', width: 32, height: 32);
-    }
-  }
-
-  Future<void> pickTime() async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(selectedTime),
-    );
-
-    if (pickedTime != null) {
-      setState(() {
-        selectedTime = DateTime(
-          selectedTime.year,
-          selectedTime.month,
-          selectedTime.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-      });
     }
   }
 
@@ -153,7 +144,6 @@ class HumidityGraphState extends State<HumidityGraphAM> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -195,7 +185,7 @@ class HumidityGraphState extends State<HumidityGraphAM> {
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: fetchSensorData,
+                      onPressed: isLoading ? null : fetchSensorData,
                       child: const Text("Actualizar Gráfica"),
                     ),
                   ],
@@ -203,8 +193,10 @@ class HumidityGraphState extends State<HumidityGraphAM> {
               ),
               SizedBox(
                 height: 300,
-                child: humidityData.isEmpty
+                child: isLoading
                     ? const Center(child: CircularProgressIndicator())
+                    : humidityData.isEmpty
+                    ? const Center(child: Text("No hay datos disponibles"))
                     : SfCartesianChart(
                   primaryXAxis: DateTimeAxis(
                     title: AxisTitle(text: 'Fecha y Hora'),
@@ -219,11 +211,11 @@ class HumidityGraphState extends State<HumidityGraphAM> {
                     maximum: 100,
                     interval: 10,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: optimalMin - 10, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
-                      PlotBand(start: optimalMin - 10, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
-                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3),),
-                      PlotBand(start: optimalMax, end: optimalMax + 10, color: const Color(0xFFFFF59D).withOpacity(0.3),),
-                      PlotBand(start: optimalMax + 10, end: 100, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: 0, end: optimalMin - 10, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
+                      PlotBand(start: optimalMin - 10, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3)),
+                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3)),
+                      PlotBand(start: optimalMax, end: optimalMax + 10, color: const Color(0xFFFFF59D).withOpacity(0.3)),
+                      PlotBand(start: optimalMax + 10, end: 100, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
                     ],
                   ),
                   series: <ChartSeries>[

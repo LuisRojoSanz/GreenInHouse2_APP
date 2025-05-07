@@ -17,6 +17,8 @@ class TemperatureGraphState extends State<TemperatureGraph> {
   int daysBack = 1;
   DateTime selectedTime = DateTime.now();
   bool showGraph = false;
+  bool isLoading = false;
+
   final TextEditingController daysController = TextEditingController(text: "1");
 
   double optimalMin = 10.0;
@@ -30,6 +32,10 @@ class TemperatureGraphState extends State<TemperatureGraph> {
   }
 
   Future<void> fetchSensorData() async {
+    setState(() {
+      isLoading = true;
+    });
+
     String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
 
     String endpoint =
@@ -39,10 +45,10 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     if (!mounted) return;
 
     if (data != null && data['AMBIENTE'] != null && data['AMBIENTE']['TEMPERATURA'] != null) {
-      setState(() {
-        List<dynamic> fechas = data['AMBIENTE']['TEMPERATURA']['lista_fechas_largas'];
-        List<dynamic> valores = data['AMBIENTE']['TEMPERATURA']['lista_valores_medios'];
+      List<dynamic> fechas = data['AMBIENTE']['TEMPERATURA']['lista_fechas_largas'];
+      List<dynamic> valores = data['AMBIENTE']['TEMPERATURA']['lista_valores_medios'];
 
+      setState(() {
         temperatureData = List.generate(fechas.length, (index) {
           double rawValue = valores[index].toDouble();
           double clampedValue = rawValue.clamp(0.0, 40.0);
@@ -55,8 +61,11 @@ class TemperatureGraphState extends State<TemperatureGraph> {
         temperatureData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
       });
     }
-  }
 
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   Future<void> fetchOptimalRanges() async {
     String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
@@ -76,7 +85,6 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     }
   }
 
-
   Widget getFaceImage(double value) {
     double lowerSeriousLimit = optimalMin - 5;
     double upperSeriousLimit = optimalMax + 5;
@@ -88,26 +96,6 @@ class TemperatureGraphState extends State<TemperatureGraph> {
       return Image.asset('assets/cara_seria.png', width: 32, height: 32);
     } else {
       return Image.asset('assets/cara_sonriente.png', width: 32, height: 32);
-    }
-  }
-
-
-  Future<void> pickTime() async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(selectedTime),
-    );
-
-    if (pickedTime != null) {
-      setState(() {
-        selectedTime = DateTime(
-          selectedTime.year,
-          selectedTime.month,
-          selectedTime.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-      });
     }
   }
 
@@ -156,7 +144,6 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -198,7 +185,7 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: fetchSensorData,
+                      onPressed: isLoading ? null : fetchSensorData,
                       child: const Text("Actualizar Gráfica"),
                     ),
                   ],
@@ -206,8 +193,10 @@ class TemperatureGraphState extends State<TemperatureGraph> {
               ),
               SizedBox(
                 height: 300,
-                child: temperatureData.isEmpty
+                child: isLoading
                     ? const Center(child: CircularProgressIndicator())
+                    : temperatureData.isEmpty
+                    ? const Center(child: Text("No hay datos disponibles"))
                     : SfCartesianChart(
                   primaryXAxis: DateTimeAxis(
                     title: AxisTitle(text: 'Fecha y Hora'),
@@ -222,11 +211,11 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                     maximum: 40,
                     interval: 5,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: optimalMin - 4, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
-                      PlotBand(start: optimalMin - 4, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3),),
-                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3),),
-                      PlotBand(start: optimalMax, end: optimalMax + 4, color: const Color(0xFFFFF59D).withOpacity(0.3),),
-                      PlotBand(start: optimalMax + 4, end: 40, color: const Color(0xFFFCBBBB).withOpacity(0.3),),
+                      PlotBand(start: 0, end: optimalMin - 4, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
+                      PlotBand(start: optimalMin - 4, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3)),
+                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3)),
+                      PlotBand(start: optimalMax, end: optimalMax + 4, color: const Color(0xFFFFF59D).withOpacity(0.3)),
+                      PlotBand(start: optimalMax + 4, end: 40, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
                     ],
                   ),
                   series: <ChartSeries>[
