@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'botones_inicio.dart';
 import 'api_service.dart';
+import 'hitos_mensuales.dart';
+import 'hitos_diarios.dart';
 
 class Hitos extends StatefulWidget {
   const Hitos({super.key});
@@ -28,6 +30,9 @@ class _HitosState extends State<Hitos> {
   bool? cambioTierraCumplida;
   String mensajeCambioTierra = "Cargando...";
 
+  bool? fertilizanteCumplido;
+  String mensajeFertilizante = "Cargando...";
+
   int _currentIndex = 1;
 
   bool mostrarHitoHumedadSuelo = true;
@@ -35,13 +40,25 @@ class _HitosState extends State<Hitos> {
   bool mostrarHitoLuz = true;
   bool mostrarHitoTemperatura = true;
   bool mostrarHitoCambioTierra = true;
+  bool mostrarHitoFertilizante = true;
 
   @override
   void initState() {
     super.initState();
     cargarPreferenciasHitos();
     fetchHitos();
-    verificarCambioTierra();
+    verificarCambioTierra((cumplido, mensaje) {
+      setState(() {
+        cambioTierraCumplida = cumplido;
+        mensajeCambioTierra = mensaje;
+      });
+    });
+    verificarFertilizante((cumplido, mensaje) {
+      setState(() {
+        fertilizanteCumplido = cumplido;
+        mensajeFertilizante = mensaje;
+      });
+    });
   }
   @override
   void didChangeDependencies() {
@@ -57,6 +74,7 @@ class _HitosState extends State<Hitos> {
       mostrarHitoLuz = prefs.getBool('mostrarHitoLuz') ?? true;
       mostrarHitoTemperatura = prefs.getBool('mostrarHitoTemperatura') ?? true;
       mostrarHitoCambioTierra = prefs.getBool('mostrarHitoCambioTierra') ?? true;
+      mostrarHitoFertilizante = prefs.getBool('mostrarHitoFertilizante') ?? true;
     });
   }
 
@@ -174,49 +192,6 @@ class _HitosState extends State<Hitos> {
     }
   }
 
-  Future<void> verificarCambioTierra() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? fechaGuardada = prefs.getString('fechaCambioTierra');
-
-    if (fechaGuardada != null) {
-      print("Fecha guardada en SharedPreferences: $fechaGuardada");
-      DateTime ultimaFecha = DateTime.parse(fechaGuardada);
-      DateTime ahora = DateTime.now();
-      Duration diferencia = ahora.difference(ultimaFecha);
-
-      int frecuencia = prefs.getInt('frecuenciaCambioTierra') ?? 90;
-      if (diferencia.inDays >= frecuencia) {
-        setState(() {
-          cambioTierraCumplida = false;
-          mensajeCambioTierra =
-          "Cambia la tierra de la planta, ya han pasado 3 meses.";
-        });
-      } else {
-        setState(() {
-          cambioTierraCumplida = true;
-          mensajeCambioTierra = "Cambio de tierra reciente, todo en orden.";
-        });
-      }
-    } else {
-      print("No hay fecha guardada en SharedPreferences.");
-      setState(() {
-        cambioTierraCumplida = false;
-        mensajeCambioTierra = "Cambia la tierra de la planta.";
-      });
-    }
-  }
-
-  Future<void> confirmarCambioTierra() async {
-    final prefs = await SharedPreferences.getInstance();
-    DateTime ahora = DateTime.now();
-    await prefs.setString('fechaCambioTierra', ahora.toIso8601String());
-
-    setState(() {
-      cambioTierraCumplida = true;
-      mensajeCambioTierra = "Cambio de tierra reciente, todo en orden.";
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -258,10 +233,29 @@ class _HitosState extends State<Hitos> {
                 children: [
                   if (mostrarHitoCambioTierra)
                     buildHitoCardTierra(
-                      mensajeCambioTierra,
-                      cambioTierraCumplida,
-                      Icons.grass,
+                      mensaje: mensajeCambioTierra,
+                      cumplido: cambioTierraCumplida,
+                      icono: Icons.grass,
                       isCambioTierra: true,
+                      onEstadoCambioTierraActualizado: (cumplido, mensaje) {
+                        setState(() {
+                          cambioTierraCumplida = cumplido;
+                          mensajeCambioTierra = mensaje;
+                        });
+                      },
+                    ),
+                  if (mostrarHitoFertilizante)
+                    buildHitoCardFertilizante(
+                      mensaje: mensajeFertilizante,
+                      cumplido: fertilizanteCumplido,
+                      icono: Icons.local_florist,
+                      isFertilizante: true,
+                      onEstadoFertilizanteActualizado: (cumplido, mensaje) {
+                        setState(() {
+                          fertilizanteCumplido = cumplido;
+                          mensajeFertilizante = mensaje;
+                        });
+                      },
                     ),
                 ],
               ),
@@ -277,154 +271,6 @@ class _HitosState extends State<Hitos> {
           });
         },
       ),
-    );
-  }
-
-
-  Widget buildHitoCard(String mensaje, bool? cumplido, IconData icono) {
-    Color cardColor;
-    Color iconColor;
-    String estadoTexto;
-    IconData estadoIcono;
-
-    if (cumplido == null) {
-      cardColor = Colors.black12;
-      iconColor = Colors.black;
-      estadoTexto = "Cargando...";
-      estadoIcono = Icons.hourglass_empty;
-    } else if (cumplido) {
-      cardColor = Colors.green[100]!;
-      iconColor = Colors.green;
-      estadoTexto = "Completado";
-      estadoIcono = Icons.check_circle;
-    } else {
-      cardColor = Colors.red[100]!;
-      iconColor = Colors.red;
-      estadoTexto = "Pendiente";
-      estadoIcono = Icons.warning;
-    }
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      color: cardColor,
-      child: ListTile(
-        leading: Icon(icono, size: 40, color: iconColor),
-        title: Text(mensaje,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        subtitle: Text(
-            estadoTexto, style: TextStyle(fontWeight: FontWeight.bold)),
-        trailing: Icon(estadoIcono, color: iconColor, size: 30),
-      ),
-    );
-  }
-
-  Widget buildHitoCardTierra(String mensaje, bool? cumplido, IconData icono,
-      {bool isCambioTierra = false}) {
-    return FutureBuilder<SharedPreferences>(
-      future: SharedPreferences.getInstance(),
-      builder: (context, snapshot) {
-        Color cardColor = Colors.black12;
-        Color iconColor = Colors.black;
-        String estadoTexto = "Cargando...";
-        IconData estadoIcono = Icons.hourglass_empty;
-
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.data != null) {
-          String? fechaStr = snapshot.data!.getString('fechaCambioTierra');
-          if (fechaStr != null) {
-            DateTime fechaCambio = DateTime.parse(fechaStr);
-            int frecuencia = snapshot.data!.getInt('frecuenciaCambioTierra') ?? 90;
-            DateTime proximoCambio = fechaCambio.add(Duration(days: frecuencia));
-            int diasRestantes = proximoCambio.difference(DateTime.now()).inDays;
-
-            if (diasRestantes > 30) {
-              cardColor = Colors.green[100]!;
-              iconColor = Colors.green;
-              estadoTexto = "Completado";
-              estadoIcono = Icons.check_circle;
-            } else if (diasRestantes > 0 && diasRestantes <= 30) {
-              cardColor = Colors.yellow[100]!;
-              iconColor = Colors.orange;
-              estadoTexto = "Pronto a cambiar";
-              estadoIcono = Icons.warning_amber;
-            } else {
-              cardColor = Colors.red[100]!;
-              iconColor = Colors.red;
-              estadoTexto = "Pendiente";
-              estadoIcono = Icons.warning;
-            }
-
-            return Card(
-              elevation: 4,
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              color: cardColor,
-              child: ListTile(
-                leading: Icon(icono, size: 40, color: iconColor),
-                title: Text(
-                  mensaje,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(estadoTexto,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: iconColor)),
-                    Text(
-                      "Próximo cambio: ${proximoCambio.day.toString().padLeft(2, '0')}/${proximoCambio.month.toString().padLeft(2, '0')}/${proximoCambio.year}",
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-                onTap: (estadoTexto == "Completado") ? null : () {
-                  if (isCambioTierra) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text("Confirmar cambio de tierra"),
-                        content: const Text(
-                            "¿Has cambiado la tierra de la planta?"),
-                        actions: [
-                          TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text("Cancelar")),
-                          TextButton(
-                              onPressed: () {
-                                confirmarCambioTierra();
-                                Navigator.pop(context);
-                              },
-                              child: const Text("Sí, la cambié")),
-                        ],
-                      ),
-                    );
-                  }
-                },
-                trailing: Icon(estadoIcono, color: iconColor, size: 30),
-              ),
-            );
-          }
-        }
-
-        // Si aún no se ha cargado nada
-        return Card(
-          elevation: 4,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          color: cardColor,
-          child: ListTile(
-            leading: Icon(icono, size: 40, color: iconColor),
-            title: Text(mensaje,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            subtitle: Text(estadoTexto,
-                style: TextStyle(fontWeight: FontWeight.bold, color: iconColor)),
-            trailing: Icon(estadoIcono, color: iconColor, size: 30),
-          ),
-        );
-      },
     );
   }
 }

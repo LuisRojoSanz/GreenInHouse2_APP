@@ -11,6 +11,8 @@ class Ajustes extends StatefulWidget {
 
 class _AjustesState extends State<Ajustes> {
   int frecuenciaCambioTierra = 90;
+  int frecuenciaFertilizante = 90;
+
   bool mostrarGraficaHumedad = true;
   bool mostrarGraficaHumedadAmbiente = true;
   bool mostrarGraficaLuz = true;
@@ -21,6 +23,7 @@ class _AjustesState extends State<Ajustes> {
   bool mostrarHitoLuz = true;
   bool mostrarHitoTemperatura = true;
   bool mostrarHitoCambioTierra = true;
+  bool mostrarHitoFertilizante = true;
 
   int _currentIndex = 3;
 
@@ -40,6 +43,7 @@ class _AjustesState extends State<Ajustes> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       frecuenciaCambioTierra = prefs.getInt('frecuenciaCambioTierra') ?? 90;
+      frecuenciaFertilizante = prefs.getInt('frecuenciaFertilizante') ?? 90;
 
       mostrarGraficaHumedad = prefs.getBool('mostrarGraficaHumedad') ?? true;
       mostrarGraficaHumedadAmbiente = prefs.getBool('mostrarGraficaHumedadAmbiente') ?? true;
@@ -51,6 +55,7 @@ class _AjustesState extends State<Ajustes> {
       mostrarHitoLuz = prefs.getBool('mostrarHitoLuz') ?? true;
       mostrarHitoTemperatura = prefs.getBool('mostrarHitoTemperatura') ?? true;
       mostrarHitoCambioTierra = prefs.getBool('mostrarHitoCambioTierra') ?? true;
+      mostrarHitoFertilizante = prefs.getBool('mostrarHitoFertilizante') ?? true;
     });
   }
 
@@ -58,6 +63,7 @@ class _AjustesState extends State<Ajustes> {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setInt('frecuenciaCambioTierra', frecuenciaCambioTierra);
+    await prefs.setInt('frecuenciaFertilizante', frecuenciaFertilizante);
 
     await prefs.setBool('mostrarGraficaHumedad', mostrarGraficaHumedad);
     await prefs.setBool('mostrarGraficaHumedadAmbiente', mostrarGraficaHumedadAmbiente);
@@ -69,6 +75,7 @@ class _AjustesState extends State<Ajustes> {
     await prefs.setBool('mostrarHitoLuz', mostrarHitoLuz);
     await prefs.setBool('mostrarHitoTemperatura', mostrarHitoTemperatura);
     await prefs.setBool('mostrarHitoCambioTierra', mostrarHitoCambioTierra);
+    await prefs.setBool('mostrarHitoFertilizante', mostrarHitoFertilizante);
   }
 
   @override
@@ -164,19 +171,42 @@ class _AjustesState extends State<Ajustes> {
               guardarPreferencias();
             },
           ),
-          const Divider(height: 30),
+          SwitchListTile(
+            title: const Text("Fertilizante"),
+            value: mostrarHitoFertilizante,
+            onChanged: (value) {
+              setState(() => mostrarHitoFertilizante = value);
+              guardarPreferencias();
+            },
+          ),
 
-          const Text("⏳ Frecuencia del cambio de tierra (días)",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const Divider(height: 30),
+          const Text("⏳ Frecuencia del cambio de tierra (días)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           Slider(
             value: frecuenciaCambioTierra.toDouble(),
-            min: 30,
+            min: 60,
             max: 180,
-            divisions: 10,
+            divisions: 12,
             label: "$frecuenciaCambioTierra días",
             onChanged: (value) {
               setState(() {
                 frecuenciaCambioTierra = value.toInt();
+              });
+              guardarPreferencias();
+            },
+          ),
+
+          const SizedBox(height: 20),
+          const Text("⏳ Frecuencia del fertilizante (días)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Slider(
+            value: frecuenciaFertilizante.toDouble(),
+            min: 60,
+            max: 180,
+            divisions: 12,
+            label: "$frecuenciaFertilizante días",
+            onChanged: (value) {
+              setState(() {
+                frecuenciaFertilizante = value.toInt();
               });
               guardarPreferencias();
             },
