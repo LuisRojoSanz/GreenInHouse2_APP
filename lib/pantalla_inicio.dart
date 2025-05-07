@@ -23,7 +23,7 @@ class PantallaInicio extends StatefulWidget {
 }
 
 class PantallaInicioState extends State<PantallaInicio> {
-  final int plantLifeDays = 10;
+  int diasConVida = 0;
   int _currentIndex = 2;
   bool hayPlantaActiva = false;
   bool cargandoEstadoPlanta = true;
@@ -40,6 +40,18 @@ class PantallaInicioState extends State<PantallaInicio> {
   void initState() {
     super.initState();
     _verificarPlantaActiva();
+    _cargarDiasConVida();
+  }
+
+  Future<void> _cargarDiasConVida() async {
+    final fecha = await PlantaService.obtenerFechaPlantacion();
+    if (fecha != null) {
+      final ahora = DateTime.now();
+      final diferencia = ahora.difference(fecha);
+      setState(() {
+        diasConVida = diferencia.inDays;
+      });
+    }
   }
 
   Future<void> _verificarPlantaActiva() async {
@@ -147,7 +159,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          '${S.of(context).daysWithLife}: $plantLifeDays',
+                          '${S.of(context).daysWithLife}: $diasConVida',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,

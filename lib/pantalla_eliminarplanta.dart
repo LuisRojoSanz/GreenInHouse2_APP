@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/pantalla_inicio.dart';
 import 'api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,13 +50,19 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
 
       if (plantaGuardada == plantaSeleccionada) {
         await prefs.remove('nombrePlantaActiva');
+        await prefs.remove('fechaPlantacion');
       }
-
       _showMessage('Planta eliminada correctamente');
       setState(() {
         plantasActivas.remove(plantaSeleccionada);
         plantaSeleccionada = null;
       });
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const PantallaInicio()),
+        );
+      }
     } else {
       _showMessage('Error al eliminar la planta');
     }

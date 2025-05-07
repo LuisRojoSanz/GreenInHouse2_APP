@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/pantalla_inicio.dart';
 import 'api_service.dart';
 import 'generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> createTipoPlanta() async {
-    final localization = S.of(context); // Guarda la localización antes de 'await'
+    final localization = S.of(context);
 
     if (_tipoPlantaController.text.isEmpty || _descripcionPlantaController.text.isEmpty) {
       _showMessage(localization.completeFieldsMessage);
@@ -88,11 +89,20 @@ class _MyHomePageState extends State<MyHomePage> {
       // Se guarda el nombre de la planta en SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('nombrePlantaActiva', _nombrePlantaController.text);
+      await prefs.setString('fechaPlantacion', DateTime.now().toIso8601String());
+
+      if (!mounted) return;
 
       _showMessage(localization.plantaCreatedMessage);
       _nombrePlantaController.clear();
       setState(() => tipoSeleccionado = null);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const PantallaInicio()),
+      );
     } else {
+      if (!mounted) return;
       _showMessage("Planta ya existente");
     }
   }
