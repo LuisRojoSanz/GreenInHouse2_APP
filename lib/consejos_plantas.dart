@@ -45,28 +45,63 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
       errorMessage = '';
     });
 
-    final data = await apiService.get('Consejos/Plantas/All/FromPlant?np=$plantName');
-    if (data != null) {
-      setState(() {
-        consejos = List<Map<String, dynamic>>.from(data.map((item) => {
-          'descripcion': item['descripcion'] ?? 'Descripción no disponible',
-          'tipo_medida': item['tipo_medida']['nombre'] ?? 'Tipo de medida no disponible',
-          'unidad_medida': item['unidad_medida']['nombre'] ?? '',
-          'valor_maximo': item['valor_maximo'] ?? 'No especificado',
-          'valor_minimo': item['valor_minimo'] ?? 'No especificado',
-          'zona_consejo': item['zona_consejo']['nombre'] ?? 'Zona no especificada',
-          'horas_minimas': item['horas_minimas'] ?? 'No especificadas',
-          'horas_maximas': item['horas_maximas'] ?? 'No especificadas',
-        }));
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        errorMessage = S.of(context).errorMessage;
-        isLoading = false;
-      });
+    try {
+      final data = await apiService.get('Consejos/Plantas/All/FromPlant?np=$plantName');
+
+      if (data != null) {
+        setState(() {
+          consejos = List<Map<String, dynamic>>.from(data.map((item) => {
+            'descripcion': item['descripcion'] ?? 'Descripción no disponible',
+            'tipo_medida': item['tipo_medida']['nombre'] ?? 'Tipo de medida no disponible',
+            'unidad_medida': item['unidad_medida']['nombre'] ?? '',
+            'valor_maximo': item['valor_maximo'] ?? 'No especificado',
+            'valor_minimo': item['valor_minimo'] ?? 'No especificado',
+            'zona_consejo': item['zona_consejo']['nombre'] ?? 'Zona no especificada',
+            'horas_minimas': item['horas_minimas'] ?? 'No especificadas',
+            'horas_maximas': item['horas_maximas'] ?? 'No especificadas',
+          }));
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Sin datos del servidor');
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: const [
+              Icon(Icons.wifi_off, color: Colors.redAccent),
+              SizedBox(width: 10),
+              Text("Sin conexión"),
+            ],
+          ),
+          content: const Text(
+            "No se pudo contactar con el servidor.\n"
+                "Por favor, revisa tu conexión a la red.",
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                "Aceptar",
+                style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      if (mounted) {
+        Navigator.of(context).pop(); // Salir de la pantalla de consejos
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
