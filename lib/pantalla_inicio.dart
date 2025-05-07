@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/api_service.dart';
 import 'package:greeninhouse2/pantalla_cambio_idioma.dart';
 import 'package:greeninhouse2/pantalla_modificarplanta.dart';
 import 'porcentaje_estado_planta.dart';
@@ -22,11 +23,37 @@ class PantallaInicio extends StatefulWidget {
 class PantallaInicioState extends State<PantallaInicio> {
   final int plantLifeDays = 10;
   int _currentIndex = 2;
+  bool hayPlantaActiva = false;
+  bool cargandoEstadoPlanta = true;
+
 
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _verificarPlantaActiva();
+  }
+
+  Future<void> _verificarPlantaActiva() async {
+    try {
+      final apiService = ApiService('http://192.168.1.240:5000/api/v1');
+      final resultado = await apiService.get('Plantas/All/Active');
+
+      setState(() {
+        hayPlantaActiva = resultado != null && resultado is List && resultado.isNotEmpty;
+        cargandoEstadoPlanta = false;
+      });
+    } catch (e) {
+      setState(() {
+        hayPlantaActiva = false;
+        cargandoEstadoPlanta = false;
+      });
+    }
   }
 
   @override
@@ -157,15 +184,6 @@ class PantallaInicioState extends State<PantallaInicio> {
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    child: Text(
-                      S.of(context).viewDetails,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -200,8 +218,16 @@ class PantallaInicioState extends State<PantallaInicio> {
               ),
             ),
             ListTile(
-              title: Text(S.of(context).menu_create_plant),
-              onTap: () {
+              title: Text(
+                S.of(context).menu_create_plant,
+                style: TextStyle(
+                  color: hayPlantaActiva ? Colors.grey : Colors.black,
+                ),
+              ),
+              enabled: !hayPlantaActiva,
+              onTap: hayPlantaActiva
+                  ? null
+                  : () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -209,6 +235,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                 );
               },
             ),
+
             ListTile(
               title: Text(S.of(context).menu_modify_plant),
               onTap: () {
