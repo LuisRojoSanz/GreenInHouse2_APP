@@ -13,7 +13,7 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   List<Map<String, dynamic>> sensores = [];
   bool isLoading = true;
-  String errorMessage = '';
+  String errorMessage = 'No recoge datos';
   final String planta = 'Mi tomatera';
 
   @override
@@ -30,6 +30,7 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
 
     try {
       final sensoresData = await apiService.get('Sensores/All');
+
       if (sensoresData != null) {
         final now = DateTime.now();
         final thirtyMinutesAgo = now.subtract(const Duration(minutes: 30));
@@ -66,16 +67,72 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
           isLoading = false;
         });
       } else {
-        setState(() {
-          errorMessage = 'No se pudieron obtener los sensores.';
-          isLoading = false;
-        });
+        if (!mounted) return;
+
+        await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Row(
+              children: const [
+                Icon(Icons.wifi_off, color: Colors.redAccent),
+                SizedBox(width: 10),
+                Text("Sin conexión"),
+              ],
+            ),
+            content: const Text(
+              "No se pudo contactar con el servidor.\n"
+                  "Por favor, revisa tu conexión a la red.",
+              style: TextStyle(fontSize: 16),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  "Aceptar",
+                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       }
     } catch (e) {
-      setState(() {
-        errorMessage = 'Error al obtener los sensores: $e';
-        isLoading = false;
-      });
+      if (!mounted) return;
+
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: const [
+              Icon(Icons.error_outline, color: Colors.redAccent),
+              SizedBox(width: 10),
+              Text("Error inesperado"),
+            ],
+          ),
+          content: Text(
+            "Ocurrió un error al obtener los sensores:\n$e",
+            style: const TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                "Aceptar",
+                style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      );
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
