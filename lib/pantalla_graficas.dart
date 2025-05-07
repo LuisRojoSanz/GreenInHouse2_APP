@@ -39,7 +39,6 @@ class GraficasScreenState extends State<GraficasScreen> {
       mostrarGraficaTemperatura = prefs.getBool('mostrarGraficaTemperatura') ?? true;
       mostrarGraficaHumedad = prefs.getBool('mostrarGraficaHumedad') ?? true;
       mostrarGraficaLuz = prefs.getBool('mostrarGraficaLuz') ?? true;
-      // Agrega también una opción para humedad ambiente si la quieres controlar por separado
       mostrarGraficaHumedadAmbiente = prefs.getBool('mostrarGraficaHumedadAmbiente') ?? true;
     });
   }

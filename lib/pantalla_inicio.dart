@@ -10,6 +10,8 @@ import 'consejos_plantas.dart';
 import 'pantalla_comprobacion_sensores.dart';
 import 'pantalla_eliminarplanta.dart';
 import 'imagen_principal.dart';
+import 'planta_service.dart';
+
 
 class PantallaInicio extends StatefulWidget {
   final void Function(Locale locale)? onLocaleChange;
@@ -25,6 +27,7 @@ class PantallaInicioState extends State<PantallaInicio> {
   int _currentIndex = 2;
   bool hayPlantaActiva = false;
   bool cargandoEstadoPlanta = true;
+  String plantName = '';
 
 
   void _onTabTapped(int index) {
@@ -44,8 +47,11 @@ class PantallaInicioState extends State<PantallaInicio> {
       final apiService = ApiService('http://192.168.1.240:5000/api/v1');
       final resultado = await apiService.get('Plantas/All/Active');
 
+      final nombre = await PlantaService.obtenerNombrePlantaActiva();
+
       setState(() {
         hayPlantaActiva = resultado != null && resultado is List && resultado.isNotEmpty;
+        plantName = nombre ?? '';
         cargandoEstadoPlanta = false;
       });
     } catch (e) {
@@ -89,7 +95,7 @@ class PantallaInicioState extends State<PantallaInicio> {
               child: Column(
                 children: [
                   Text(
-                    S.of(context).welcomeMessage,
+                    plantName,
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/planta_service.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import 'api_service.dart';
@@ -13,7 +14,7 @@ class LightGraph extends StatefulWidget {
 class LightGraphState extends State<LightGraph> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   List<LightData> lightData = [];
-  String plantName = "Mi tomatera";
+  String plantName = '';
   int daysBack = 1;
   DateTime selectedTime = DateTime.now();
   bool showGraph = false;
@@ -27,8 +28,24 @@ class LightGraphState extends State<LightGraph> {
   @override
   void initState() {
     super.initState();
-    fetchSensorData();
-    fetchOptimalRanges();
+    cargarNombre();
+  }
+
+  Future<void> cargarNombre() async {
+    final nombre = await PlantaService.obtenerNombrePlantaActiva();
+    setState(() {
+      plantName = nombre ?? '';
+      isLoading = true;
+    });
+
+    if (plantName.isNotEmpty) {
+      await fetchSensorData();
+      await fetchOptimalRanges();
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> fetchSensorData() async {

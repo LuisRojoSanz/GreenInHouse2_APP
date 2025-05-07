@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'package:intl/intl.dart';
+import 'planta_service.dart';
 
 class SensoresActivosScreen extends StatefulWidget {
   const SensoresActivosScreen({super.key});
@@ -14,11 +15,22 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
   List<Map<String, dynamic>> sensores = [];
   bool isLoading = true;
   String errorMessage = 'No recoge datos';
-  final String planta = 'Mi tomatera';
+  String plantName = '';
 
   @override
   void initState() {
     super.initState();
+    cargarNombre();
+  }
+
+  Future<void> cargarNombre() async {
+    final nombre = await PlantaService.obtenerNombrePlantaActiva();
+    if (!mounted) return;
+
+    setState(() {
+      plantName = nombre ?? '';
+    });
+
     fetchSensores();
   }
 
@@ -37,7 +49,7 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
         final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(thirtyMinutesAgo);
 
         final registrosData = await apiService.get(
-          'RegistrosSensores/All/FromPlant/BetweenDates?np=$planta&fi=$formattedDate',
+          'RegistrosSensores/All/FromPlant/BetweenDates?np=$plantName&fi=$formattedDate',
         );
 
         setState(() {

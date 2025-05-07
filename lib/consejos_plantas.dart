@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/planta_service.dart';
 import 'generated/l10n.dart';
 import 'api_service.dart';
 
@@ -14,11 +15,28 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
   List<Map<String, dynamic>> consejos = [];
   bool isLoading = true;
   String errorMessage = '';
+  String plantName = '';
 
   @override
   void initState() {
     super.initState();
-    fetchConsejos();
+    cargarNombre();
+  }
+
+  Future<void> cargarNombre() async {
+    final nombre = await PlantaService.obtenerNombrePlantaActiva();
+    setState(() {
+      plantName = nombre ?? '';
+    });
+
+    if (plantName.isNotEmpty) {
+      fetchConsejos();
+    } else {
+      setState(() {
+        errorMessage = 'No hay una planta activa configurada.';
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> fetchConsejos() async {
@@ -27,7 +45,7 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
       errorMessage = '';
     });
 
-    final data = await apiService.get('Consejos/Plantas/All/FromPlant?np=Mi%20tomatera');
+    final data = await apiService.get('Consejos/Plantas/All/FromPlant?np=$plantName');
     if (data != null) {
       setState(() {
         consejos = List<Map<String, dynamic>>.from(data.map((item) => {
@@ -60,71 +78,68 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
       ),
       body: isLoading
           ? Center(
-        child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(),
       )
           : errorMessage.isNotEmpty
           ? Center(
-        child: Text(
-          errorMessage,
-          style: const TextStyle(color: Colors.red, fontSize: 16),
-        ),
-      )
-          : ListView.builder(
-        itemCount: consejos.length,
-        itemBuilder: (context, index) {
-          final consejo = consejos[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: 8, horizontal: 16),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.green.shade100,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(2, 4),
-                  ),
-                ],
+              child: Text(
+                errorMessage,
+                style: const TextStyle(color: Colors.red, fontSize: 16),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+            )
+          : ListView.builder(
+            itemCount: consejos.length,
+            itemBuilder: (context, index) {
+              final consejo = consejos[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.green.shade100,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 6,
+                        offset: Offset(2, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.info_outline,
-                            color: Colors.green.shade700),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            consejo['descripcion'],
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                        Row(
+                          children: [
+                            Icon(Icons.info_outline, color: Colors.green.shade700),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                              consejo['descripcion'],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      const Divider(thickness: 1),
+                      Row(
+                        children: [
+                          Icon(Icons.place, color: Colors.green.shade700),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              S.of(context).zoneLabel(consejo['zona_consejo']),
+                              style: const TextStyle(fontSize: 16, color: Colors.black54),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const Divider(thickness: 1),
-                    Row(
-                      children: [
-                        Icon(Icons.place, color: Colors.green.shade700),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            S.of(context).zoneLabel(
-                                consejo['zona_consejo']),
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black54),
-                          ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                     const SizedBox(height: 8),
                     Row(
                       children: [

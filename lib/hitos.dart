@@ -4,6 +4,8 @@ import 'botones_inicio.dart';
 import 'api_service.dart';
 import 'hitos_mensuales.dart';
 import 'hitos_diarios.dart';
+import 'planta_service.dart';
+
 
 class Hitos extends StatefulWidget {
   const Hitos({super.key});
@@ -35,6 +37,8 @@ class _HitosState extends State<Hitos> {
 
   int _currentIndex = 1;
 
+  String plantName = '';
+
   bool mostrarHitoHumedadSuelo = true;
   bool mostrarHitoHumedadAmbiente = true;
   bool mostrarHitoLuz = true;
@@ -46,20 +50,34 @@ class _HitosState extends State<Hitos> {
   void initState() {
     super.initState();
     cargarPreferenciasHitos();
-    fetchHitos();
-    verificarCambioTierra((cumplido, mensaje) {
-      setState(() {
-        cambioTierraCumplida = cumplido;
-        mensajeCambioTierra = mensaje;
-      });
-    });
-    verificarFertilizante((cumplido, mensaje) {
-      setState(() {
-        fertilizanteCumplido = cumplido;
-        mensajeFertilizante = mensaje;
-      });
-    });
+    cargarNombreYDatos();
   }
+
+  Future<void> cargarNombreYDatos() async {
+    final nombre = await PlantaService.obtenerNombrePlantaActiva();
+    if (!mounted) return;
+
+    setState(() {
+      plantName = nombre ?? '';
+    });
+
+    if (plantName.isNotEmpty) {
+      await fetchHitos();
+      verificarCambioTierra((cumplido, mensaje) {
+        setState(() {
+          cambioTierraCumplida = cumplido;
+          mensajeCambioTierra = mensaje;
+        });
+      });
+      verificarFertilizante((cumplido, mensaje) {
+        setState(() {
+          fertilizanteCumplido = cumplido;
+          mensajeFertilizante = mensaje;
+        });
+      });
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -79,7 +97,6 @@ class _HitosState extends State<Hitos> {
   }
 
   Future<void> fetchHitos() async {
-    String plantName = "Mi tomatera";
 
     String endpointSensores =
         'RegistrosSensores/Avg/FromPlant/AgroupByIntervals/ToGraph?np=$plantName&d=1&ff=${DateTime

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
+import 'planta_service.dart';
+
 
 class PorcentajeEstadoPlanta extends StatefulWidget {
   const PorcentajeEstadoPlanta({super.key});
@@ -11,15 +13,25 @@ class PorcentajeEstadoPlanta extends StatefulWidget {
 class _PorcentajeEstadoPlantaState extends State<PorcentajeEstadoPlanta> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   double progreso = 0.0;
+  String plantName = '';
+
 
   @override
   void initState() {
     super.initState();
+    cargarNombreYCalcularProgreso();
+  }
+
+  Future<void> cargarNombreYCalcularProgreso() async {
+    final nombre = await PlantaService.obtenerNombrePlantaActiva();
+    if (!mounted) return;
+    setState(() {
+      plantName = nombre ?? '';
+    });
     calcularProgreso();
   }
 
   Future<void> calcularProgreso() async {
-    String plantName = "Mi tomatera";
     String endpointSensores =
         'RegistrosSensores/Avg/FromPlant/AgroupByIntervals/ToGraph?np=$plantName&d=1&ff=${DateTime
         .now()}';
