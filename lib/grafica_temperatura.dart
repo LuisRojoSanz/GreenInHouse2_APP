@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'package:greeninhouse2/planta_service.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
@@ -53,51 +54,70 @@ class TemperatureGraphState extends State<TemperatureGraph> {
       isLoading = true;
     });
 
-    String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
+    try {
+      String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
 
-    String endpoint =
-        'RegistrosSensores/Avg/FromPlant/AgroupByIntervals/ToGraph?np=$plantName&d=$daysBack&ff=$endDateStr';
+      String endpoint =
+          'RegistrosSensores/Avg/FromPlant/AgroupByIntervals/ToGraph?np=$plantName&d=$daysBack&ff=$endDateStr';
 
-    final data = await apiService.get(endpoint);
-    if (!mounted) return;
+      final data = await apiService.get(endpoint);
+      if (!mounted) return;
 
-    if (data != null && data['AMBIENTE'] != null && data['AMBIENTE']['TEMPERATURA'] != null) {
-      List<dynamic> fechas = data['AMBIENTE']['TEMPERATURA']['lista_fechas_largas'];
-      List<dynamic> valores = data['AMBIENTE']['TEMPERATURA']['lista_valores_medios'];
+      if (data != null && data['AMBIENTE'] != null && data['AMBIENTE']['TEMPERATURA'] != null) {
+        List<dynamic> fechas = data['AMBIENTE']['TEMPERATURA']['lista_fechas_largas'];
+        List<dynamic> valores = data['AMBIENTE']['TEMPERATURA']['lista_valores_medios'];
 
-      setState(() {
-        temperatureData = List.generate(fechas.length, (index) {
-          double rawValue = valores[index].toDouble();
-          double clampedValue = rawValue.clamp(0.0, 40.0);
-          return TemperatureData(
-            dateTime: DateTime.parse(fechas[index]),
-            value: clampedValue,
-          );
+        setState(() {
+          temperatureData = List.generate(fechas.length, (index) {
+            double rawValue = valores[index].toDouble();
+            double clampedValue = rawValue.clamp(0.0, 40.0);
+            return TemperatureData(
+              dateTime: DateTime.parse(fechas[index]),
+              value: clampedValue,
+            );
+          });
+
+          temperatureData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
         });
-
-        temperatureData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-      });
+      } else {
+        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
+      }
+    } catch (e) {
+      if (mounted) {
+        await mostrarDialogoErrorConexion(context);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
-  Future<void> fetchOptimalRanges() async {
-    String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
-    final data = await apiService.get(endpoint);
-    if (!mounted) return;
 
-    if (data != null && data is List) {
-      for (var item in data) {
-        if (item['descripcion'] == 'Temperatura de ambiente optima.' &&
-            item['tipo_medida']['tipo'] == 'TEMPERATURA') {
-          setState(() {
-            optimalMin = double.tryParse(item['valor_minimo']) ?? 10.0;
-            optimalMax = double.tryParse(item['valor_maximo']) ?? 35.0;
-          });
+  Future<void> fetchOptimalRanges() async {
+    try {
+      String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
+      final data = await apiService.get(endpoint);
+      if (!mounted) return;
+
+      if (data != null && data is List) {
+        for (var item in data) {
+          if (item['descripcion'] == 'Temperatura de ambiente optima.' &&
+              item['tipo_medida']['tipo'] == 'TEMPERATURA') {
+            setState(() {
+              optimalMin = double.tryParse(item['valor_minimo']) ?? 10.0;
+              optimalMax = double.tryParse(item['valor_maximo']) ?? 35.0;
+            });
+          }
         }
+      } else {
+        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
+      }
+    } catch (e) {
+      if (mounted) {
+        await mostrarDialogoErrorConexion(context);
       }
     }
   }
@@ -169,7 +189,7 @@ class TemperatureGraphState extends State<TemperatureGraph> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("SENSOR TEMPERATURA"),
+              const Text("TEMPERATURA"),
               getFaceImage(temperatureData.isNotEmpty ? temperatureData.last.value : 0),
             ],
           ),

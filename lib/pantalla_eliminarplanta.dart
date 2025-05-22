@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'package:greeninhouse2/pantalla_inicio.dart';
 import 'api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,59 +21,90 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
   @override
   void initState() {
     super.initState();
-    fetchPlantasActivas();
+    _verificarConexionInicial();
   }
 
-  Future<void> fetchPlantasActivas() async {
+  Future<void> _verificarConexionInicial() async {
     setState(() => isLoading = true);
-    final data = await apiService.get('Plantas/All/Active');
-    if (data != null) {
-      setState(() {
-        plantasActivas = List<String>.from(data.map((item) => item['nombre_planta']));
-      });
+
+    try {
+      final data = await apiService.get('Plantas/All/Active');
+
+      if (!mounted) return;
+
+      if (data != null) {
+        setState(() {
+          plantasActivas = List<String>.from(data.map((item) => item['nombre_planta']));
+          isLoading = false;
+        });
+      } else {
+        await mostrarDialogoErrorConexion(context);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      await mostrarDialogoErrorConexion(context);
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
-    setState(() => isLoading = false);
   }
 
   Future<void> eliminarPlanta() async {
     if (plantaSeleccionada == null) {
-      _showMessage('Por favor, selecciona una planta para eliminar');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Por favor, selecciona una planta para eliminar')),
+        );
+      }
       return;
     }
 
-    final endpoint = 'Plantas/One?np=${Uri.encodeComponent(plantaSeleccionada!)}';
-    final response = await apiService.delete(endpoint);
+    try {
+      final endpoint = 'Plantas/One?np=${Uri.encodeComponent(plantaSeleccionada!)}';
+      final response = await apiService.delete(endpoint);
 
-    if (response != null) {
-      // Se borra el nombre guardado
-      final prefs = await SharedPreferences.getInstance();
-      final plantaGuardada = prefs.getString('nombrePlantaActiva');
+      if (response != null) {
+        final prefs = await SharedPreferences.getInstance();
+        final plantaGuardada = prefs.getString('nombrePlantaActiva');
 
-      if (plantaGuardada == plantaSeleccionada) {
-        await prefs.remove('nombrePlantaActiva');
-        await prefs.remove('fechaPlantacion');
+        if (plantaGuardada == plantaSeleccionada) {
+          await prefs.remove('nombrePlantaActiva');
+          await prefs.remove('fechaPlantacion');
+          await prefs.remove('fechaCambioTierra');
+          await prefs.remove('fechaFertilizante');
+          await prefs.remove('imagen_path');
+          await prefs.remove('imagen_planta');
+          await prefs.remove('frecuenciaCambioTierra');
+          await prefs.remove('frecuenciaFertilizante');
+        }
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Planta eliminada correctamente')),
+          );
+          setState(() {
+            plantasActivas.remove(plantaSeleccionada);
+            plantaSeleccionada = null;
+          });
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const PantallaInicio()),
+          );
+        }
+      } else {
+        if (mounted) {
+          await mostrarDialogoErrorConexion(context);
+        }
       }
-      _showMessage('Planta eliminada correctamente');
-      setState(() {
-        plantasActivas.remove(plantaSeleccionada);
-        plantaSeleccionada = null;
-      });
+    } catch (e) {
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const PantallaInicio()),
-        );
+        await mostrarDialogoErrorConexion(context);
       }
-    } else {
-      _showMessage('Error al eliminar la planta');
     }
   }
 
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +141,13 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (plantaSeleccionada == null) {
-                    _showMessage('Por favor, selecciona una planta para eliminar');
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Por favor, selecciona una planta para eliminar'),
+                        ),
+                      );
+                    }
                     return;
                   }
 

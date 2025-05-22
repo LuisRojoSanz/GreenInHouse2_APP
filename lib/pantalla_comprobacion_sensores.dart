@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'api_service.dart';
 import 'package:intl/intl.dart';
 import 'planta_service.dart';
@@ -79,72 +80,11 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
           isLoading = false;
         });
       } else {
-        if (!mounted) return;
-
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            title: Row(
-              children: const [
-                Icon(Icons.wifi_off, color: Colors.redAccent),
-                SizedBox(width: 10),
-                Text("Sin conexión"),
-              ],
-            ),
-            content: const Text(
-              "No se pudo contactar con el servidor.\n"
-                  "Por favor, revisa tu conexión a la red.",
-              style: TextStyle(fontSize: 16),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text(
-                  "Aceptar",
-                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        );
-
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
+        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
       }
     } catch (e) {
       if (!mounted) return;
-
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            children: const [
-              Icon(Icons.error_outline, color: Colors.redAccent),
-              SizedBox(width: 10),
-              Text("Error inesperado"),
-            ],
-          ),
-          content: Text(
-            "Ocurrió un error al obtener los sensores:\n$e",
-            style: const TextStyle(fontSize: 16),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                "Aceptar",
-                style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      );
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
+      await mostrarDialogoErrorConexion(context);
     }
   }
 

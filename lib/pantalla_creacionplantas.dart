@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'package:greeninhouse2/pantalla_inicio.dart';
 import 'api_service.dart';
 import 'generated/l10n.dart';
@@ -29,25 +30,67 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _verificarConexionInicial();
     fetchTiposPlantas();
   }
 
+  Future<void> _verificarConexionInicial() async {
+    try {
+      final data = await apiService.get('TiposPlantas/All');
+
+      if (!mounted) return;
+
+      if (data != null) {
+        setState(() {
+          tiposPlantas = List<String>.from(data.map((item) => item['tipo_planta']));
+          isLoading = false;
+        });
+      } else {
+        // Si no devuelve datos, se considera un error de conexión o de respuesta
+        await mostrarDialogoErrorConexion(context);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      await mostrarDialogoErrorConexion(context);
+
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
+  }
+
+
   Future<void> fetchTiposPlantas() async {
     setState(() => isLoading = true);
-    final data = await apiService.get('TiposPlantas/All');
-    if (data != null) {
-      setState(() {
-        tiposPlantas = List<String>.from(data.map((item) => item['tipo_planta']));
-      });
+
+    try {
+      final data = await apiService.get('TiposPlantas/All');
+      if (data != null && mounted) {
+        setState(() {
+          tiposPlantas = List<String>.from(data.map((item) => item['tipo_planta']));
+        });
+      } else if (mounted) {
+        await mostrarDialogoErrorConexion(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        await mostrarDialogoErrorConexion(context);
+      }
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
-    setState(() => isLoading = false);
   }
 
   Future<void> createTipoPlanta() async {
     final localization = S.of(context);
 
     if (_tipoPlantaController.text.isEmpty || _descripcionPlantaController.text.isEmpty) {
-      _showMessage(localization.completeFieldsMessage);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localization.completeFieldsMessage)),
+        );
+      }
       return;
     }
 
@@ -56,22 +99,32 @@ class _MyHomePageState extends State<MyHomePage> {
       "tipo_planta": _tipoPlantaController.text,
     };
 
-    final response = await apiService.post('TiposPlantas/One', body);
-
-    if (response != null) {
-      _showMessage(localization.tipoPlantaCreatedMessage);
-      setState(() {
-        tiposPlantas.add(_tipoPlantaController.text);
-        tipoSeleccionado = _tipoPlantaController.text;
-        creandoTipo = false;
-        _tipoPlantaController.clear();
-        _descripcionPlantaController.clear();
-      });
+    try {
+      final response = await apiService.post('TiposPlantas/One', body);
+      if (response != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localization.tipoPlantaCreatedMessage)),
+        );
+        setState(() {
+          tiposPlantas.add(_tipoPlantaController.text);
+          tipoSeleccionado = _tipoPlantaController.text;
+          creandoTipo = false;
+          _tipoPlantaController.clear();
+          _descripcionPlantaController.clear();
+        });
+      } else if (mounted) {
+        await mostrarDialogoErrorConexion(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        await mostrarDialogoErrorConexion(context);
+      }
     }
   }
 
+
   Future<void> createPlanta() async {
-    final localization = S.of(context); // Guarda la localización antes de 'await'
+    final localization = S.of(context);
 
     if (_nombrePlantaController.text.isEmpty || tipoSeleccionado == null) {
       _showMessage(localization.completeFieldsMessage);
@@ -83,27 +136,33 @@ class _MyHomePageState extends State<MyHomePage> {
       "tipo_planta": tipoSeleccionado,
     };
 
-    final response = await apiService.post('Plantas/One', body);
+    try {
+      final response = await apiService.post('Plantas/One', body);
 
-    if (response != null) {
-      // Se guarda el nombre de la planta en SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('nombrePlantaActiva', _nombrePlantaController.text);
-      await prefs.setString('fechaPlantacion', DateTime.now().toIso8601String());
+      if (response != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('nombrePlantaActiva', _nombrePlantaController.text);
+        await prefs.setString('fechaPlantacion', DateTime.now().toIso8601String());
 
-      if (!mounted) return;
+        if (!mounted) return;
 
-      _showMessage(localization.plantaCreatedMessage);
-      _nombrePlantaController.clear();
-      setState(() => tipoSeleccionado = null);
+        _showMessage(localization.plantaCreatedMessage);
+        _nombrePlantaController.clear();
+        setState(() => tipoSeleccionado = null);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const PantallaInicio()),
-      );
-    } else {
-      if (!mounted) return;
-      _showMessage("Planta ya existente");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const PantallaInicio()),
+        );
+      } else {
+        if (mounted) {
+          await mostrarDialogoErrorConexion(context);
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        await mostrarDialogoErrorConexion(context);
+      }
     }
   }
 

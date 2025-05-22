@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'package:greeninhouse2/planta_service.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
@@ -53,50 +54,70 @@ class LightGraphState extends State<LightGraph> {
       isLoading = true;
     });
 
-    String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
-    String endpoint =
-        'RegistrosSensores/Avg/FromPlant/AgroupByIntervals/ToGraph?np=$plantName&d=$daysBack&ff=$endDateStr';
+    try {
+      String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
+      String endpoint =
+          'RegistrosSensores/Avg/FromPlant/AgroupByIntervals/ToGraph?np=$plantName&d=$daysBack&ff=$endDateStr';
 
-    final data = await apiService.get(endpoint);
-    if (!mounted) return;
+      final data = await apiService.get(endpoint);
+      if (!mounted) return;
 
-    if (data != null && data['AMBIENTE'] != null && data['AMBIENTE']['LUMINOSIDAD'] != null) {
-      List<dynamic> fechas = data['AMBIENTE']['LUMINOSIDAD']['lista_fechas_largas'];
-      List<dynamic> valores = data['AMBIENTE']['LUMINOSIDAD']['lista_valores_medios'];
+      if (data != null &&
+          data['AMBIENTE'] != null &&
+          data['AMBIENTE']['LUMINOSIDAD'] != null) {
+        List<dynamic> fechas = data['AMBIENTE']['LUMINOSIDAD']['lista_fechas_largas'];
+        List<dynamic> valores = data['AMBIENTE']['LUMINOSIDAD']['lista_valores_medios'];
 
-      setState(() {
-        lightData = List.generate(fechas.length, (index) {
-          double rawValue = valores[index].toDouble();
-          double clampedValue = rawValue.clamp(0.0, 120.0);
-          return LightData(
-            dateTime: DateTime.parse(fechas[index]),
-            value: clampedValue,
-          );
+        setState(() {
+          lightData = List.generate(fechas.length, (index) {
+            double rawValue = valores[index].toDouble();
+            double clampedValue = rawValue.clamp(0.0, 120.0);
+            return LightData(
+              dateTime: DateTime.parse(fechas[index]),
+              value: clampedValue,
+            );
+          });
+
+          lightData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
         });
-
-        lightData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-      });
+      } else {
+        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
+      }
+    } catch (e) {
+      if (mounted) {
+        await mostrarDialogoErrorConexion(context);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   Future<void> fetchOptimalRanges() async {
-    String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
-    final data = await apiService.get(endpoint);
-    if (!mounted) return;
+    try {
+      String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
+      final data = await apiService.get(endpoint);
+      if (!mounted) return;
 
-    if (data != null && data is List) {
-      for (var item in data) {
-        if (item['descripcion'] == 'Luminosidad de ambiente optima.' &&
-            item['tipo_medida']['tipo'] == 'LUMINOSIDAD') {
-          setState(() {
-            optimalMin = double.tryParse(item['valor_minimo']) ?? 15.0;
-            optimalMax = double.tryParse(item['valor_maximo']) ?? 30.0;
-          });
+      if (data != null && data is List) {
+        for (var item in data) {
+          if (item['descripcion'] == 'Luminosidad de ambiente optima.' &&
+              item['tipo_medida']['tipo'] == 'LUMINOSIDAD') {
+            setState(() {
+              optimalMin = double.tryParse(item['valor_minimo']) ?? 15.0;
+              optimalMax = double.tryParse(item['valor_maximo']) ?? 30.0;
+            });
+          }
         }
+      } else {
+        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
+      }
+    } catch (e) {
+      if (mounted) {
+        await mostrarDialogoErrorConexion(context);
       }
     }
   }
@@ -168,7 +189,7 @@ class LightGraphState extends State<LightGraph> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("SENSOR LUZ"),
+              const Text("LUMINOSIDAD"),
               getFaceImage(lightData.isNotEmpty ? lightData.last.value : 0),
             ],
           ),

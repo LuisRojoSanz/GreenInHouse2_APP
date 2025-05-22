@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 Widget buildHitoCard(String mensaje, bool? cumplido, IconData icono) {
   Color cardColor;
   Color iconColor;

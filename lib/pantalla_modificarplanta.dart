@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'api_service.dart';
 
 class ModificarPlantaScreen extends StatefulWidget {
@@ -12,61 +13,85 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
 
   final TextEditingController _nombrePlantaController = TextEditingController();
-  final TextEditingController _tipoPlantaController = TextEditingController();
 
   List<String> plantasActivas = [];
+  List<String> tiposPlantaDisponibles = [];
   String? plantaSeleccionada;
+  String? tipoSeleccionado;
+  String? tipoPlantaActual;
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    fetchPlantasActivas();
+    _verificarConexionInicial();
   }
 
-  Future<void> fetchPlantasActivas() async {
+  Future<void> _verificarConexionInicial() async {
     setState(() => isLoading = true);
-    final data = await apiService.get('Plantas/All/Active');
-    if (data != null) {
-      setState(() {
-        plantasActivas = List<String>.from(data.map((item) => item['nombre_planta']));
-      });
+
+    try {
+      final plantasData = await apiService.get('Plantas/All/Active');
+      final tiposData = await apiService.get('TiposPlantas/All');
+
+      if (!mounted) return;
+
+      if (plantasData != null && tiposData != null) {
+        setState(() {
+          plantasActivas = List<String>.from(plantasData.map((item) => item['nombre_planta']));
+          tiposPlantaDisponibles = List<String>.from(tiposData.map((item) => item['tipo_planta']));
+          isLoading = false;
+        });
+      } else {
+        if (mounted) {
+          await mostrarDialogoErrorConexion(context);
+        }
+      }
+    } catch (e) {
+      if (!mounted) return;
+      await mostrarDialogoErrorConexion(context);
     }
-    setState(() => isLoading = false);
   }
 
   Future<void> modificarPlanta() async {
-    if (plantaSeleccionada == null || _tipoPlantaController.text.isEmpty) {
-      _showMessage('Por favor, selecciona una planta y escribe el nuevo tipo');
+    if (plantaSeleccionada == null || tipoSeleccionado == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Por favor, selecciona una planta y un nuevo tipo')),
+        );
+      }
       return;
     }
 
     final body = {
       "nombre_planta": plantaSeleccionada,
-      "tipo_planta": _tipoPlantaController.text,
+      "tipo_planta": tipoSeleccionado,
     };
 
-    final response = await apiService.put(
-      'Plantas/One?np=${Uri.encodeComponent(plantaSeleccionada!)}',
-      body,
-    );
+    try {
+      final response = await apiService.put(
+        'Plantas/One?np=${Uri.encodeComponent(plantaSeleccionada!)}',
+        body,
+      );
 
-    if (response != null) {
-      _showMessage('Tipo de planta modificado correctamente');
-      setState(() {
-        plantaSeleccionada = null;
-        _nombrePlantaController.clear();
-        _tipoPlantaController.clear();
-      });
-    } else {
-      _showMessage('Error al modificar la planta');
+      if (response != null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Tipo de planta modificado correctamente')),
+          );
+        }
+        setState(() {
+          plantaSeleccionada = null;
+          tipoSeleccionado = null;
+          tipoPlantaActual = null;
+          _nombrePlantaController.clear();
+        });
+      } else {
+        if (mounted) await mostrarDialogoErrorConexion(context);
+      }
+    } catch (e) {
+      if (mounted) await mostrarDialogoErrorConexion(context);
     }
-  }
-
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
   }
 
   @override
@@ -98,11 +123,20 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
                   child: Text(planta),
                 );
               }).toList(),
-              onChanged: (value) {
+              onChanged: (value) async {
                 setState(() {
                   plantaSeleccionada = value;
                   _nombrePlantaController.text = value!;
+                  tipoSeleccionado = null;
+                  tipoPlantaActual = null;
                 });
+
+                final response = await apiService.get('Plantas/One?np=${Uri.encodeComponent(value!)}');
+                if (response != null && mounted) {
+                  setState(() {
+                    tipoPlantaActual = response['tipo_planta'];
+                  });
+                }
               },
             ),
             const SizedBox(height: 20),
@@ -111,9 +145,22 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
               decoration: const InputDecoration(labelText: 'Nombre de la Planta'),
               readOnly: true,
             ),
-            TextField(
-              controller: _tipoPlantaController,
+            const SizedBox(height: 20),
+            DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Nuevo Tipo de Planta'),
+              value: tipoSeleccionado,
+              items: tiposPlantaDisponibles
+                  .where((tipo) => tipo != tipoPlantaActual)
+                  .map((tipo) => DropdownMenuItem(
+                value: tipo,
+                child: Text(tipo),
+              ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  tipoSeleccionado = value;
+                });
+              },
             ),
             const SizedBox(height: 20),
             ElevatedButton(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'package:greeninhouse2/planta_service.dart';
 import 'generated/l10n.dart';
 import 'api_service.dart';
@@ -25,21 +26,16 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
 
   Future<void> cargarNombre() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
+    if (!mounted) return;
+
     setState(() {
       plantName = nombre ?? '';
     });
 
-    if (plantName.isNotEmpty) {
-      fetchConsejos();
-    } else {
-      setState(() {
-        errorMessage = 'No hay una planta activa configurada.';
-        isLoading = false;
-      });
-    }
+    fetchSensores();
   }
 
-  Future<void> fetchConsejos() async {
+  Future<void> fetchSensores() async {
     setState(() {
       isLoading = true;
       errorMessage = '';
@@ -63,42 +59,11 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
           isLoading = false;
         });
       } else {
-        throw Exception('Sin datos del servidor');
+        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
       }
     } catch (e) {
       if (!mounted) return;
-
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            children: const [
-              Icon(Icons.wifi_off, color: Colors.redAccent),
-              SizedBox(width: 10),
-              Text("Sin conexión"),
-            ],
-          ),
-          content: const Text(
-            "No se pudo contactar con el servidor.\n"
-                "Por favor, revisa tu conexión a la red.",
-            style: TextStyle(fontSize: 16),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                "Aceptar",
-                style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      );
-
-      if (mounted) {
-        Navigator.of(context).pop(); // Salir de la pantalla de consejos
-      }
+      await mostrarDialogoErrorConexion(context);
     }
   }
 

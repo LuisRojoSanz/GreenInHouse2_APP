@@ -5,6 +5,8 @@ import 'botones_inicio.dart';
 import 'grafica_humedad.dart';
 import 'grafica_luz.dart';
 import 'grafica_humedad_ambiente.dart';
+import 'api_service.dart';
+import 'dialogos_excepciones.dart';
 
 class GraficasScreen extends StatefulWidget {
   const GraficasScreen({super.key});
@@ -21,6 +23,8 @@ class GraficasScreenState extends State<GraficasScreen> {
   bool mostrarGraficaLuz = true;
   bool mostrarGraficaHumedadAmbiente = true;
 
+  final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
+
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -30,7 +34,25 @@ class GraficasScreenState extends State<GraficasScreen> {
   @override
   void initState() {
     super.initState();
+    _verificarConexionInicial();
     cargarPreferencias();
+  }
+
+  Future<void> _verificarConexionInicial() async {
+    try {
+      final response = await apiService.get('Plantas/All/Active');
+
+      if (!mounted) return;
+
+      if (response != null) {
+        await cargarPreferencias();
+      } else {
+        await mostrarDialogoErrorConexion(context);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      await mostrarDialogoErrorConexion(context);
+    }
   }
 
   Future<void> cargarPreferencias() async {
