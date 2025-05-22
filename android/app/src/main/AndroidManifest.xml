@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="greeninhouse2"
+        android:label="GreenInHouse2.0"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
