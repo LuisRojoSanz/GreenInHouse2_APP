@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/botones_inicio.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Ajustes extends StatefulWidget {
@@ -88,16 +89,16 @@ class _AjustesState extends State<Ajustes> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Ajustes"),
+        title: Text(S.of(context).settingsTitle),
         backgroundColor: Colors.green,
         centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text("📊 Mostrar gráficas", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(S.of(context).showCharts, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SwitchListTile(
-            title: const Text("Gráfica de Humedad"),
+            title: Text(S.of(context).chartSoilMoisture),
             value: mostrarGraficaHumedad,
             onChanged: (value) {
               setState(() => mostrarGraficaHumedad = value);
@@ -105,7 +106,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: const Text("Gráfica de Humedad Ambiente"),
+            title: Text(S.of(context).chartAmbientHumidity),
             value: mostrarGraficaHumedadAmbiente,
             onChanged: (value) {
               setState(() => mostrarGraficaHumedadAmbiente = value);
@@ -113,7 +114,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: const Text("Gráfica de Luz"),
+            title: Text(S.of(context).chartLight),
             value: mostrarGraficaLuz,
             onChanged: (value) {
               setState(() => mostrarGraficaLuz = value);
@@ -121,7 +122,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: const Text("Gráfica de Temperatura"),
+            title: Text(S.of(context).chartTemperature),
             value: mostrarGraficaTemperatura,
             onChanged: (value) {
               setState(() => mostrarGraficaTemperatura = value);
@@ -130,9 +131,9 @@ class _AjustesState extends State<Ajustes> {
           ),
           const Divider(height: 30),
 
-          const Text("✨ Mostrar Hitos", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(S.of(context).showMilestones, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SwitchListTile(
-            title: const Text("Humedad del Suelo"),
+            title: Text(S.of(context).milestoneSoilMoisture),
             value: mostrarHitoHumedadSuelo,
             onChanged: (value) {
               setState(() => mostrarHitoHumedadSuelo = value);
@@ -140,7 +141,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: const Text("Humedad Ambiente"),
+            title: Text(S.of(context).milestoneAmbientHumidity),
             value: mostrarHitoHumedadAmbiente,
             onChanged: (value) {
               setState(() => mostrarHitoHumedadAmbiente = value);
@@ -148,7 +149,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: const Text("Luz"),
+            title: Text(S.of(context).milestoneLight),
             value: mostrarHitoLuz,
             onChanged: (value) {
               setState(() => mostrarHitoLuz = value);
@@ -156,7 +157,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: const Text("Temperatura"),
+            title: Text(S.of(context).milestoneTemperature),
             value: mostrarHitoTemperatura,
             onChanged: (value) {
               setState(() => mostrarHitoTemperatura = value);
@@ -164,7 +165,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: const Text("Cambio de Tierra"),
+            title: Text(S.of(context).milestoneSoilChange),
             value: mostrarHitoCambioTierra,
             onChanged: (value) {
               setState(() => mostrarHitoCambioTierra = value);
@@ -172,7 +173,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: const Text("Fertilizante"),
+            title: Text(S.of(context).milestoneFertilizer),
             value: mostrarHitoFertilizante,
             onChanged: (value) {
               setState(() => mostrarHitoFertilizante = value);
@@ -181,13 +182,13 @@ class _AjustesState extends State<Ajustes> {
           ),
 
           const Divider(height: 30),
-          const Text("⏳ Frecuencia del cambio de tierra (días)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(S.of(context).soilChangeFrequency, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           Slider(
             value: frecuenciaCambioTierra.toDouble(),
             min: 60,
             max: 180,
             divisions: 12,
-            label: "$frecuenciaCambioTierra días",
+            label: S.of(context).daysCount(frecuenciaCambioTierra),
             onChanged: (value) {
               setState(() {
                 frecuenciaCambioTierra = value.toInt();
@@ -197,13 +198,13 @@ class _AjustesState extends State<Ajustes> {
           ),
 
           const SizedBox(height: 20),
-          const Text("⏳ Frecuencia del fertilizante (días)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(S.of(context).fertilizerFrequency, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           Slider(
             value: frecuenciaFertilizante.toDouble(),
             min: 60,
             max: 180,
             divisions: 12,
-            label: "$frecuenciaFertilizante días",
+            label: S.of(context).daysCount(frecuenciaFertilizante),
             onChanged: (value) {
               setState(() {
                 frecuenciaFertilizante = value.toInt();

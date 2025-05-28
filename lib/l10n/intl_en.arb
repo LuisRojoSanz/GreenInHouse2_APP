@@ -4,8 +4,219 @@
   "PantallaMain": "1.0",
   "MainTitle": "GreenInHouse_2",
 
-  "@@PantallaCreacionPlantas": "1.0",
+
+  "@@Botones_inicio.dart": "1.0",
+  "graphs": "Graphs",
+  "milestones": "Milestones",
+  "home": "Home",
+  "settings": "Settings",
+
+
+  "@@consejos_plantas.dart": "1.0",
+  "screenTitlePlantTips": "Plant care tips",
+  "plantTipDescription": "Tip: {text}",
+  "zoneLabel": "Zone: {zone}",
+  "measurementTypeLabel": "Measurement Type: {type}",
+  "rangeLabel": "Range: {min} - {max}",
+  "hoursLabel": "Min Hours: {min}, Max Hours: {max}",
+
+
+  "@@dialogos_excepciones.dart": "1.0",
+  "noConnectionTitle": "No connection",
+  "noConnectionMessage": "Could not connect to the server.\nPlease check your network and ensure the smart pot is powered on and connected to Wi-Fi.",
+  "noConnectionAccept": "OK",
+
+
+  "@@gráficas": "1.0",
+  "selectDays": "Select days",
+  "accept": "Accept",
+  "daysBack": "Days back:",
+  "updateGraph": "Update Graph",
+  "noData": "No data available",
+  "dateTimeAxis": "Date and Time",
+  "percentageAxis": "Percentage (%)",
+  "daysCount": "{count} days",
+  "lux": "Lux",
+  "degrees": "Temperature (ºC)",
+
+  "humiditySensor": "HUMIDITY",
+  "ambienthumiditySensor": "AMBIENT HUMIDITY",
+  "luminositySensor": "LUMINOSITY",
+  "temperatureSensor": "TEMPERATURE",
+
+
+
+
+  "@@hitos": "1.0",
+  "loadingMessage": "Loading...",
+  "completed": "Completed",
+  "pending": "Pending",
+  "cancel": "Cancel",
+
+  "soilMoistureLow": "Water the plant, it needs more moisture.",
+  "soilMoistureHigh": "Don't water it more, the soil is too wet.",
+  "soilMoistureOptimal": "Soil moisture is in the optimal range.",
+
+  "airHumidityLow": "Increase air humidity, place a humidifier nearby.",
+  "airHumidityHigh": "Reduce humidity, ventilate the area.",
+  "airHumidityOptimal": "Air humidity is in the optimal range.",
+
+  "lightLow": "The plant needs more light, move it to a brighter spot.",
+  "lightHigh": "The plant is getting too much light, place it in the shade.",
+  "lightOptimal": "Light levels are in the optimal range.",
+
+  "temperatureLow": "It's too cold, move the plant to a warmer place.",
+  "temperatureHigh": "It's too hot, keep the plant away from direct sunlight.",
+  "temperatureOptimal": "Temperature is in the optimal range.",
+
+  "milestonesTitle": "Milestones",
+  "milestonesProgress": "Milestone Progress",
+  "dailyMilestones": "Daily Milestones",
+  "monthlyMilestones": "Monthly Milestones",
+
+
+  "soonToChange": "Soon to change",
+  "soonToAdd": "Soon to add",
+
+  "recentSoilChange": "Recent soil change, all good.",
+  "soilChangeInLessThanMonth": "Less than a month left for the next soil change",
+  "soilChangeOverdue": "Change the plant's soil, the scheduled time has passed.",
+  "nextChange": "Next change",
+
+  "confirmSoilChangeTitle": "Confirm soil change",
+  "confirmSoilChangeQuestion": "Have you changed the plant's soil?",
+  "yesChanged": "Yes, I changed it",
+
+  "fertilizerRecentlyAdded": "Fertilizer recently added.",
+  "fertilizerInLessThanMonth": "Less than a month to add fertilizer again",
+  "fertilizerOverdue": "Add fertilizer, the scheduled time has passed",
+  "nextApplication": "Next application",
+
+  "confirmFertilizerTitle": "Confirm fertilizer",
+  "confirmFertilizerQuestion": "Have you added fertilizer to the plant?",
+  "yesAdded": "Yes, I did",
+
+  "newPlantFertilizerMessage": "New plant created, fertilizer is needed",
+  "newPlantSoilMessage": "Newly created plant, mark if soil change is done",
+
+
+  "@@imagen_principal.dart": "1.0",
+  "photoNeedsPlant": "You must create a plant before adding a photo",
+  "takePhoto": "Take photo",
+  "chooseFromGallery": "Choose from gallery",
+  "removePhoto": "Remove photo",
+  "confirmPhotoRemoval": "Confirm removal",
+  "areYouSureRemovePhoto": "Are you sure you want to remove the photo?",
+  "yesRemove": "Yes, remove",
+  "tapToAddPhoto": "Tap to add photo",
+
+
+  "@@pantalla_ajustes.dart": "1.0",
+  "settingsTitle": "Settings",
+  "showCharts": "📊 Show charts",
+  "chartSoilMoisture": "Soil Moisture Chart",
+  "chartAmbientHumidity": "Ambient Humidity Chart",
+  "chartLight": "Light Chart",
+  "chartTemperature": "Temperature Chart",
+
+  "showMilestones": "✨ Show Milestones",
+  "milestoneSoilMoisture": "Soil Moisture",
+  "milestoneAmbientHumidity": "Ambient Humidity",
+  "milestoneLight": "Light",
+  "milestoneTemperature": "Temperature",
+  "milestoneSoilChange": "Soil Change",
+  "milestoneFertilizer": "Fertilizer",
+
+  "soilChangeFrequency": "⏳ Soil change frequency (days)",
+  "fertilizerFrequency": "⏳ Fertilizer frequency (days)",
+
+
+  "@@pantalla_cambio_idioma.dart": "1.0",
+  "change_language": "Language",
+  "spanish": "Spanish",
+  "english": "English",
+
+
+  "@@pantalla_comprobacion_sensores.dart": "1.0",
+  "activeSensors": "Active Sensors",
+  "errorFetchingData": "No data retrieved",
+  "withOutData": "No data",
+  "unknownName": "Unknown name",
+  "unknownModel": "Unknown model",
+  "unknownType": "Unknown type",
+  "unknownZone": "Unspecified zone",
+  "noReading": "No reading",
+  "noUnit": "No unit",
+  "model": "Model",
+  "type": "Type",
+  "zone": "Zone",
+  "lastReading": "Last reading",
+
+
+  "@@pantalla_creacionplantas": "1.0",
+  "completeFieldsMessage": "Please complete all fields",
+  "tipoPlantaCreatedMessage": "Plant type created successfully",
+  "step1Title": "Step 1: Select or Create Plant Type",
+  "tipoPlantaLabel": "Plant Type",
+  "createNewTipoPlanta": "Create a new plant type",
+  "nombreTipoPlantaLabel": "Plant Type Name",
+  "descripcionPlantaLabel": "Plant Type Description",
+  "guardarTipoPlantaButton": "Save Plant Type",
+  "step2Title": "Step 2: Create Plant",
+  "nombrePlantaLabel": "Plant Name",
+  "crearPlantaButton": "Create Plant",
+
+
+  "@@pantalla_eliminarplanta": "1.0",
+  "deletePlantTitle": "Delete Plant",
+  "selectActivePlantToDelete": "Select an active plant to delete:",
+  "activePlantsLabel": "Active Plants",
+  "deletePlantButton": "Delete Plant",
+  "selectPlantToDelete": "Please select a plant to delete",
+  "confirmDeleteTitle": "Confirm Deletion",
+  "confirmDeleteMessage": "Are you sure you want to delete the plant \"{plantName}\"?",
+  "delete": "Delete",
+  "plantDeletedMessage": "Plant deleted successfully",
+
+
+  "@@pantalla_inicio": "1.0",
+  "noActivePlantTitle": "No active plant",
+  "noActivePlantMessage": "No active plant detected.\n\nPlease create one before continuing.",
+  "understood": "Understood",
+  "daysWithLife": "Days with life",
+  "plantName": "Indoor Plant",
+  "viewPlantTips": "View Plant Tips",
+  "drawer_header": "List of Options",
+  "menu_create_plant": "Create Plant",
   "title": "Plant Creation",
+  "menu_modify_plant": "Modify Plant",
+  "menu_delete_plant": "Delete Plant",
+  "menu_sensor_check": "Sensor Check",
+
+
+  "@@pantalla_modificarplanta.dart": "1.0",
+  "modifyPlantTitle": "Modify Plant",
+  "selectPlantToModify": "Select an active plant to modify:",
+  "plantNameLabel": "Plant Name",
+  "newPlantTypeLabel": "New Plant Type",
+  "modifyPlantButton": "Modify Plant",
+  "selectPlantAndTypeMessage": "Please select a plant and a new type",
+  "plantTypeModifiedMessage": "Plant type successfully modified",
+
+
+  "@@pordentaje_estado_planta.dart": "1.0",
+  "loadingState": "Loading state...",
+  "veryBadState": "Very poor condition",
+  "badState": "Poor condition",
+  "regularState": "Fair condition",
+  "goodState": "Good condition",
+  "veryGoodState": "Very good condition",
+  "unknownState": "Unknown",
+  "healthStatus": "Health status: {percent}%",
+
+
+
+
   "nameLabel": "Plant Name",
   "typeLabel": "Plant Type",
   "plantDateLabel": "Planting Date",
@@ -22,57 +233,34 @@
   "humidityMinGreaterThanMax": "Min humidity cannot be greater than max",
   "lightMinGreaterThanMax": "Min light hours cannot be greater than max",
   "plant_info": "Type: {type}\nPlanting Date: {date}\nMax Temp: {maxTemp}°C\nMin Temp: {minTemp}°C\nMax Humidity: {maxHumidity}%\nMin Humidity: {minHumidity}%\nLight: {minLight}-{maxLight}h\nWater: {water}ml/day",
-  "delete": "Delete",
 
 
-  "step1Title": "Step 1: Select or Create Plant Type",
-  "step2Title": "Step 2: Create Plant",
-  "tipoPlantaLabel": "Plant Type",
-  "createNewTipoPlanta": "Create a new plant type",
-  "nombreTipoPlantaLabel": "Plant Type Name",
-  "descripcionPlantaLabel": "Plant Type Description",
-  "guardarTipoPlantaButton": "Save Plant Type",
-  "nombrePlantaLabel": "Plant Name",
-  "crearPlantaButton": "Create Plant",
-  "completeFieldsMessage": "Please complete all fields",
-  "tipoPlantaCreatedMessage": "Plant type created successfully",
+
+
   "plantaCreatedMessage": "Plant created successfully",
 
 
 
 
   "@@PantallaInicio": "1.0",
-  "daysWithLife": "Days with life",
+
   "welcomeMessage": "TOMATO",
-  "plantName": "Indoor Plant",
+
   "plantStatus": "In good condition",
   "plantHealth": "Health Status: 75%",
   "viewDetails": "View Details",
-  "graphs": "Graphs",
-  "milestones": "Milestones",
-  "home": "Home",
-  "settings": "Settings",
-  "menu_create_plant": "Create Plant",
-  "menu_modify_plant": "Modify Plant",
-  "change_language": "Language",
-  "menu_delete_plant": "Delete Plant",
-  "menu_sensor_check": "Sensor Check",
-  "drawer_header": "List of Options",
-  "viewPlantTips": "View Plant Tips",
 
-  "@@PantallaIdiomas": "1.0",
-  "spanish": "Spanish",
-  "english": "English",
+
+
+
+
+
+
 
   "appTitleplants": "Plant Tips",
   "screenTitleplants": "Plant Tips",
-  "loadingMessage": "Loading...",
   "errorMessage": "Could not fetch plant tips",
-  "zoneLabel": "Zone: {zone}",
-  "measurementTypeLabel": "Measurement Type: {type}",
   "unitLabel": "Unit: {unit}",
-  "rangeLabel": "Range: {min} - {max}",
-  "hoursLabel": "Min Hours: {min}, Max Hours: {max}",
   "@appTitle": {
     "description": "The title of the app."
   },

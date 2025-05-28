@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 
 class ImagenPrincipal extends StatefulWidget {
   final double? width;
@@ -16,24 +17,51 @@ class ImagenPrincipal extends StatefulWidget {
 
 class _ImagenPrincipalState extends State<ImagenPrincipal> {
   File? _imagen;
+  bool _hayPlantaActiva = false;
+  bool _mostrandoSnackBar = false;
 
   @override
   void initState() {
     super.initState();
-    _cargarImagen();
+    _verificarPlantaActiva();
   }
 
-  Future<void> _cargarImagen() async {
+  Future<void> _verificarPlantaActiva() async {
     final prefs = await SharedPreferences.getInstance();
     final path = prefs.getString('imagen_path');
-    if (path != null && mounted) {
-      setState(() {
-        _imagen = File(path);
-      });
-    }
+    final nombrePlanta = prefs.getString('nombrePlantaActiva');
+
+    setState(() {
+      _imagen = path != null ? File(path) : null;
+      _hayPlantaActiva = nombrePlanta != null && nombrePlanta.isNotEmpty;
+    });
   }
 
   Future<void> _seleccionarImagen() async {
+    if (!_hayPlantaActiva) {
+      if (!_mostrandoSnackBar && mounted) {
+        _mostrandoSnackBar = true;
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+          SnackBar(
+            content: Text(S.of(context).photoNeedsPlant),
+            backgroundColor: Colors.lightGreen,
+            duration: const Duration(seconds: 2),
+          ),
+        )
+            .closed
+            .then((_) {
+          if (mounted) {
+            setState(() {
+              _mostrandoSnackBar = false;
+            });
+          }
+        });
+      }
+      return;
+    }
+
     final picker = ImagePicker();
 
     final opcion = await showModalBottomSheet<String>(
@@ -43,18 +71,18 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
         children: [
           ListTile(
             leading: const Icon(Icons.camera_alt),
-            title: const Text("Tomar foto"),
+            title: Text(S.of(context).takePhoto),
             onTap: () => Navigator.pop(context, 'camera'),
           ),
           ListTile(
             leading: const Icon(Icons.photo_library),
-            title: const Text("Elegir de galería"),
+            title: Text(S.of(context).chooseFromGallery),
             onTap: () => Navigator.pop(context, 'gallery'),
           ),
-          if (_imagen != null) // solo mostrar si hay una imagen
+          if (_imagen != null)
             ListTile(
               leading: const Icon(Icons.delete),
-              title: const Text("Quitar foto"),
+              title: Text(S.of(context).removePhoto),
               onTap: () => Navigator.pop(context, 'remove'),
             ),
         ],
@@ -64,21 +92,19 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
     if (opcion == null) return;
 
     if (opcion == 'remove') {
-      if (!mounted) return;
-
       final confirmacion = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Confirmar eliminación"),
-          content: const Text("¿Estás seguro de que quieres quitar la foto?"),
+          title: Text(S.of(context).confirmPhotoRemoval),
+          content: Text(S.of(context).areYouSureRemovePhoto),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text("Cancelar"),
+              child: Text(S.of(context).cancel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text("Sí, eliminar"),
+              child: Text(S.of(context).yesRemove),
             ),
           ],
         ),
@@ -87,18 +113,13 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
       if (confirmacion == true && mounted) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('imagen_path');
-        setState(() {
-          _imagen = null;
-        });
+        setState(() => _imagen = null);
       }
 
       return;
     }
 
-    final fuente = opcion == 'camera'
-        ? ImageSource.camera
-        : ImageSource.gallery;
-
+    final fuente = opcion == 'camera' ? ImageSource.camera : ImageSource.gallery;
     final imagenSeleccionada = await picker.pickImage(source: fuente);
 
     if (imagenSeleccionada != null && mounted) {
@@ -109,7 +130,6 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -126,20 +146,21 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
             width: widget.width ?? 200,
             height: widget.height ?? 250,
             color: Colors.grey.shade300,
-            child: const Center(
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.add_a_photo, size: 40, color: Colors.black45),
                   SizedBox(height: 10),
                   Text(
-                    "Pulsa para añadir foto",
+                    S.of(context).tapToAddPhoto,
                     style: TextStyle(color: Colors.black45),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 }
+

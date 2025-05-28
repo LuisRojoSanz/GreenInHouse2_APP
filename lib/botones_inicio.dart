@@ -43,31 +43,34 @@ class BottomNavigationCustom extends StatelessWidget {
       selectedItemColor: Colors.teal,
       unselectedItemColor: Colors.grey,
       onTap: (index) {
-        if (index == 0) { // Gráficas
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const GraficasScreen()),
-          );
-        } else if (index == 1) { // Hitos
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Hitos()),
-          );
-        } else if (index == 2) { // Inicio
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const PantallaInicio()),
-          );
-        } else if (index == 3) { // Ajustes
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Ajustes()),
-          );
-        } else {
-          onTap(index);
+        Widget? destination;
+
+        switch (index) {
+          case 0:
+            destination = const GraficasScreen();
+            break;
+          case 1:
+            destination = const Hitos();
+            break;
+          case 2:
+            destination = const PantallaInicio();
+            break;
+          case 3:
+            destination = const Ajustes();
+            break;
         }
 
-        // Solo llama a onLocaleChange si no es null
+        if (destination != null && index != currentIndex) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => destination!),
+          );
+        }
+
+        // Actualiza el índice si es necesario
+        onTap(index);
+
+        // Cambiar el idioma si se ha definido un callback
         if (onLocaleChange != null) {
           onLocaleChange!(Locale('es'));
         }

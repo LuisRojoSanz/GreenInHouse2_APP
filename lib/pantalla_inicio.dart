@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:greeninhouse2/api_service.dart';
 import 'package:greeninhouse2/pantalla_cambio_idioma.dart';
 import 'package:greeninhouse2/pantalla_modificarplanta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'porcentaje_estado_planta.dart';
 import 'generated/l10n.dart';
 import 'pantalla_creacionplantas.dart';
@@ -39,9 +39,11 @@ class PantallaInicioState extends State<PantallaInicio> {
   @override
   void initState() {
     super.initState();
+    _cargarNombrePlanta();
     _verificarPlantaActiva();
     _cargarDiasConVida();
   }
+
 
   Future<void> _cargarDiasConVida() async {
     final fecha = await PlantaService.obtenerFechaPlantacion();
@@ -54,25 +56,77 @@ class PantallaInicioState extends State<PantallaInicio> {
     }
   }
 
-  Future<void> _verificarPlantaActiva() async {
-    try {
-      final apiService = ApiService('http://192.168.1.240:5000/api/v1');
-      final resultado = await apiService.get('Plantas/All/Active');
 
-      final nombre = await PlantaService.obtenerNombrePlantaActiva();
-
+  Future<void> _cargarNombrePlanta() async {
+    final nombre = await PlantaService.obtenerNombrePlantaActiva();
+    if (mounted && nombre != null && nombre.isNotEmpty) {
       setState(() {
-        hayPlantaActiva = resultado != null && resultado is List && resultado.isNotEmpty;
-        plantName = nombre ?? '';
-        cargandoEstadoPlanta = false;
-      });
-    } catch (e) {
-      setState(() {
-        hayPlantaActiva = false;
-        cargandoEstadoPlanta = false;
+        plantName = nombre;
       });
     }
   }
+
+  Future<void> _verificarPlantaActiva() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final yaMostrado = prefs.getBool('dialogoPlantaMostrado') ?? false;
+
+      if (yaMostrado) return; // Si ya se mostró, salimos
+
+      final nombre = await PlantaService.obtenerNombrePlantaActiva();
+      final hayPlanta = nombre != null && nombre.isNotEmpty;
+
+      if (!hayPlanta) {
+        if (!mounted) return;
+
+        await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Row(
+              children: [
+                const Icon(Icons.info_outline, color: Colors.orange),
+                const SizedBox(width: 10),
+                Text(S.of(context).noActivePlantTitle),
+              ],
+            ),
+            content: Text(
+              S.of(context).noActivePlantMessage,
+              style: const TextStyle(fontSize: 16),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  S.of(context).understood,
+                  style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+
+        await prefs.setBool('dialogoPlantaMostrado', true); // Marcamos como mostrado
+      }
+
+      if (mounted) {
+        setState(() {
+          hayPlantaActiva = hayPlanta;
+          plantName = nombre ?? '';
+          cargandoEstadoPlanta = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          hayPlantaActiva = false;
+          cargandoEstadoPlanta = false;
+        });
+      }
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

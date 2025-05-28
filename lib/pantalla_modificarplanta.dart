@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/dialogos_excepciones.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 import 'api_service.dart';
 
 class ModificarPlantaScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
     if (plantaSeleccionada == null || tipoSeleccionado == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Por favor, selecciona una planta y un nuevo tipo')),
+          SnackBar(content: Text(S.of(context).selectPlantAndTypeMessage)),
         );
       }
       return;
@@ -77,7 +78,7 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
       if (response != null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Tipo de planta modificado correctamente')),
+            SnackBar(content: Text(S.of(context).plantTypeModifiedMessage)),
           );
         }
         setState(() {
@@ -98,7 +99,7 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Modificar Planta'),
+        title: Text(S.of(context).modifyPlantTitle),
         backgroundColor: Colors.orange,
         centerTitle: true,
       ),
@@ -109,13 +110,13 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Selecciona una planta activa para modificar:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              S.of(context).selectPlantToModify,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Plantas Activas'),
+              decoration: InputDecoration(labelText: S.of(context).activePlantsLabel),
               value: plantaSeleccionada,
               items: plantasActivas.map((planta) {
                 return DropdownMenuItem(
@@ -142,12 +143,12 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
             const SizedBox(height: 20),
             TextField(
               controller: _nombrePlantaController,
-              decoration: const InputDecoration(labelText: 'Nombre de la Planta'),
+              decoration: InputDecoration(labelText: S.of(context).plantNameLabel),
               readOnly: true,
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Nuevo Tipo de Planta'),
+              decoration: InputDecoration(labelText: S.of(context).newPlantTypeLabel),
               value: tipoSeleccionado,
               items: tiposPlantaDisponibles
                   .where((tipo) => tipo != tipoPlantaActual)
@@ -166,7 +167,7 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
             ElevatedButton(
               onPressed: modificarPlanta,
               style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-              child: const Text('Modificar Planta', style: TextStyle(color: Colors.white)),
+              child: Text(S.of(context).modifyPlantButton, style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),

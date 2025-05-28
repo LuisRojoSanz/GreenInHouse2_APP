@@ -4,6 +4,7 @@ import 'package:greeninhouse2/planta_service.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import 'api_service.dart';
+import 'generated/l10n.dart';
 
 class HumidityGraph extends StatefulWidget {
   const HumidityGraph({super.key});
@@ -143,7 +144,7 @@ class HumidityGraphState extends State<HumidityGraph> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              const Text("Selecciona los días", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(S.of(context).selectDays, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Expanded(
                 child: ListWheelScrollView.useDelegate(
                   itemExtent: 40,
@@ -155,7 +156,12 @@ class HumidityGraphState extends State<HumidityGraph> {
                   },
                   childDelegate: ListWheelChildBuilderDelegate(
                     builder: (context, index) {
-                      return Center(child: Text("${index + 1} días", style: const TextStyle(fontSize: 16)));
+                      return Center(
+                        child: Text(
+                          S.of(context).daysCount(index + 1),
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      );
                     },
                     childCount: 30,
                   ),
@@ -168,7 +174,7 @@ class HumidityGraphState extends State<HumidityGraph> {
                   });
                   Navigator.pop(context);
                 },
-                child: const Text("Aceptar"),
+                child: Text(S.of(context).accept),
               ),
             ],
           ),
@@ -185,7 +191,7 @@ class HumidityGraphState extends State<HumidityGraph> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("HUMEDAD"),
+              Text(S.of(context).humiditySensor),
               getFaceImage(humidityData.isNotEmpty ? humidityData.last.value : 0),
             ],
           ),
@@ -208,18 +214,20 @@ class HumidityGraphState extends State<HumidityGraph> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Días atrás: "),
+                        Text(S.of(context).daysBack),
                         TextButton(
                           onPressed: () => _showDayPicker(context),
-                          child: Text("$daysBack días",
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          child: Text(
+                            S.of(context).daysCount(daysBack),
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: isLoading ? null : fetchSensorData,
-                      child: const Text("Actualizar Gráfica"),
+                      child: Text(S.of(context).updateGraph),
                     ),
                   ],
                 ),
@@ -229,17 +237,17 @@ class HumidityGraphState extends State<HumidityGraph> {
                 child: isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : humidityData.isEmpty
-                    ? const Center(child: Text("No hay datos disponibles"))
+                    ? Center(child: Text(S.of(context).noData))
                     : SfCartesianChart(
                   primaryXAxis: DateTimeAxis(
-                    title: AxisTitle(text: 'Fecha y Hora'),
+                    title: AxisTitle(text: S.of(context).dateTimeAxis),
                     dateFormat: DateFormat('EEE dd/MM HH:mm'),
                     intervalType: DateTimeIntervalType.hours,
                     labelRotation: -45,
                     labelIntersectAction: AxisLabelIntersectAction.rotate45,
                   ),
                   primaryYAxis: NumericAxis(
-                    title: AxisTitle(text: 'Porcentaje (%)'),
+                    title: AxisTitle(text: S.of(context).percentageAxis),
                     minimum: 0,
                     maximum: 100,
                     interval: 10,

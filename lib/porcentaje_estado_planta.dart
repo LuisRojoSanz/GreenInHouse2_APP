@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 import 'api_service.dart';
 import 'planta_service.dart';
 
@@ -12,8 +13,9 @@ class PorcentajeEstadoPlanta extends StatefulWidget {
 
 class _PorcentajeEstadoPlantaState extends State<PorcentajeEstadoPlanta> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
-  double progreso = 0.0;
   String plantName = '';
+  double? progreso = 1;
+
 
 
   @override
@@ -84,14 +86,17 @@ class _PorcentajeEstadoPlantaState extends State<PorcentajeEstadoPlanta> {
 
   @override
   Widget build(BuildContext context) {
-    int porcentaje = (progreso * 100).toInt();
-    String estado = switch (porcentaje) {
-      0 => "Muy mal estado de salud",
-      25 => "Mal estado de salud",
-      50 => "Regular estado de salud",
-      75 => "Buen estado de salud",
-      100 => "Muy buen estado de salud",
-      _ => "Desconocido"
+    final double valorProgreso = progreso ?? 1.0;
+    final int porcentaje = (valorProgreso * 100).toInt();
+
+    final String estado = switch (porcentaje) {
+      100 when progreso == 1.0 => S.of(context).loadingState,
+      0 => S.of(context).veryBadState,
+      25 => S.of(context).badState,
+      50 => S.of(context).regularState,
+      75 => S.of(context).goodState,
+      100 => S.of(context).veryGoodState,
+      _ => S.of(context).unknownState,
     };
 
     return Column(
@@ -103,14 +108,14 @@ class _PorcentajeEstadoPlantaState extends State<PorcentajeEstadoPlanta> {
         ),
         const SizedBox(height: 10),
         LinearProgressIndicator(
-          value: progreso,
+          value: valorProgreso,
           backgroundColor: Colors.grey.shade300,
           color: Colors.blue,
           minHeight: 8,
         ),
         const SizedBox(height: 10),
         Text(
-          "Estado de salud: $porcentaje%",
+          S.of(context).healthStatus(porcentaje),
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
@@ -118,3 +123,5 @@ class _PorcentajeEstadoPlantaState extends State<PorcentajeEstadoPlanta> {
     );
   }
 }
+
+

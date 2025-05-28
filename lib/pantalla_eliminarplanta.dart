@@ -3,6 +3,7 @@ import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'package:greeninhouse2/pantalla_inicio.dart';
 import 'api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'generated/l10n.dart';
 
 class EliminarPlantaScreen extends StatefulWidget {
   const EliminarPlantaScreen({super.key});
@@ -54,7 +55,7 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
     if (plantaSeleccionada == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Por favor, selecciona una planta para eliminar')),
+          SnackBar(content: Text(S.of(context).selectPlantToDelete)),
         );
       }
       return;
@@ -81,7 +82,7 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Planta eliminada correctamente')),
+            SnackBar(content: Text(S.of(context).plantDeletedMessage)),
           );
           setState(() {
             plantasActivas.remove(plantaSeleccionada);
@@ -110,7 +111,7 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Eliminar Planta'),
+        title: Text(S.of(context).deletePlantTitle),
         backgroundColor: Colors.red,
         centerTitle: true,
       ),
@@ -121,13 +122,13 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Selecciona una planta activa para eliminar:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  S.of(context).selectActivePlantToDelete,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Plantas Activas'),
+                decoration: InputDecoration(labelText: S.of(context).activePlantsLabel),
                 value: plantaSeleccionada,
                 items: plantasActivas.map((planta) {
                   return DropdownMenuItem(
@@ -143,9 +144,7 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
                   if (plantaSeleccionada == null) {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Por favor, selecciona una planta para eliminar'),
-                        ),
+                        SnackBar(content: Text(S.of(context).selectPlantToDelete)),
                       );
                     }
                     return;
@@ -154,26 +153,26 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Confirmar eliminación'),
-                      content: Text('¿Estás seguro de que quieres eliminar la planta "$plantaSeleccionada"?'),
+                      title: Text(S.of(context).confirmDeleteTitle),
+                      content: Text(S.of(context).confirmDeleteMessage(plantaSeleccionada!)),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancelar'),
+                          child: Text(S.of(context).cancel),
                         ),
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                             eliminarPlanta();
                           },
-                          child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
+                          child: Text(S.of(context).delete, style: const TextStyle(color: Colors.red)),
                         ),
                       ],
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text('Eliminar Planta', style: TextStyle(color: Colors.white)),
+                child: Text(S.of(context).deletePlantButton, style: const TextStyle(color: Colors.white)),
               ),
           ],
         ),

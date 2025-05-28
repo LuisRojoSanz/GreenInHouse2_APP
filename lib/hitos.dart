@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/dialogos_excepciones.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'botones_inicio.dart';
 import 'api_service.dart';
@@ -19,22 +20,22 @@ class _HitosState extends State<Hitos> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
 
   bool? humedadSueloCumplida;
-  String mensajeHumedadSuelo = "Cargando...";
+  String mensajeHumedadSuelo = "";
 
   bool? humedadAmbienteCumplida;
-  String mensajeHumedadAmbiente = "Cargando...";
+  String mensajeHumedadAmbiente = "";
 
   bool? luzCumplida;
-  String mensajeLuz = "Cargando...";
+  String mensajeLuz = "";
 
   bool? temperaturaCumplida;
-  String mensajeTemperatura = "Cargando...";
+  String mensajeTemperatura = "";
 
   bool? cambioTierraCumplida;
-  String mensajeCambioTierra = "Cargando...";
+  String mensajeCambioTierra = "";
 
   bool? fertilizanteCumplido;
-  String mensajeFertilizante = "Cargando...";
+  String mensajeFertilizante = "";
 
   int _currentIndex = 1;
 
@@ -51,6 +52,16 @@ class _HitosState extends State<Hitos> {
   void initState() {
     super.initState();
     _verificarConexionInicial();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        mensajeHumedadSuelo = S.of(context).loadingMessage;
+        mensajeHumedadAmbiente = S.of(context).loadingMessage;
+        mensajeLuz = S.of(context).loadingMessage;
+        mensajeTemperatura = S.of(context).loadingMessage;
+        mensajeCambioTierra = S.of(context).loadingMessage;
+        mensajeFertilizante = S.of(context).loadingMessage;
+      });
+    });
   }
 
   Future<void> _verificarConexionInicial() async {
@@ -146,49 +157,49 @@ class _HitosState extends State<Hitos> {
           // HUMEDAD SUELO
           if (humedadSuelo < minHumedadSuelo) {
             humedadSueloCumplida = false;
-            mensajeHumedadSuelo = "Riega la planta, necesita más agua.";
+            mensajeHumedadSuelo = S.of(context).soilMoistureLow;
           } else if (humedadSuelo > maxHumedadSuelo) {
             humedadSueloCumplida = false;
-            mensajeHumedadSuelo = "No riegues más, el suelo está demasiado húmedo.";
+            mensajeHumedadSuelo = S.of(context).soilMoistureHigh;
           } else {
             humedadSueloCumplida = true;
-            mensajeHumedadSuelo = "Humedad del suelo en rango óptimo.";
+            mensajeHumedadSuelo = S.of(context).soilMoistureOptimal;
           }
 
           // HUMEDAD AMBIENTE
           if (humedadAmbiente < minHumedadAmbiente) {
             humedadAmbienteCumplida = false;
-            mensajeHumedadAmbiente = "Aumenta la humedad del aire, pon un humidificador cerca.";
+            mensajeHumedadAmbiente = S.of(context).airHumidityLow;
           } else if (humedadAmbiente > maxHumedadAmbiente) {
             humedadAmbienteCumplida = false;
-            mensajeHumedadAmbiente = "Reduce la humedad, ventila el espacio.";
+            mensajeHumedadAmbiente = S.of(context).airHumidityHigh;
           } else {
             humedadAmbienteCumplida = true;
-            mensajeHumedadAmbiente = "Humedad del ambiente en rango óptimo.";
+            mensajeHumedadAmbiente = S.of(context).airHumidityOptimal;
           }
 
           // LUMINOSIDAD
           if (luz < minLuz) {
             luzCumplida = false;
-            mensajeLuz = "La planta necesita más luz, colócala en un lugar más iluminado.";
+            mensajeLuz = S.of(context).lightLow;
           } else if (luz > maxLuz) {
             luzCumplida = false;
-            mensajeLuz = "La planta recibe demasiada luz, ponla en sombra.";
+            mensajeLuz = S.of(context).lightHigh;
           } else {
             luzCumplida = true;
-            mensajeLuz = "Luminosidad en rango óptimo.";
+            mensajeLuz = S.of(context).lightOptimal;
           }
 
           // TEMPERATURA
           if (temperatura < minTemperatura) {
             temperaturaCumplida = false;
-            mensajeTemperatura = "Hace demasiado frío, acerca la planta a un lugar más cálido.";
+            mensajeTemperatura = S.of(context).temperatureLow;
           } else if (temperatura > maxTemperatura) {
             temperaturaCumplida = false;
-            mensajeTemperatura = "Hace demasiado calor, aleja la planta del sol.";
+            mensajeTemperatura = S.of(context).temperatureHigh;
           } else {
             temperaturaCumplida = true;
-            mensajeTemperatura = "Temperatura en rango óptimo.";
+            mensajeTemperatura = S.of(context).temperatureOptimal;
           }
         });
       } else {
@@ -205,7 +216,7 @@ class _HitosState extends State<Hitos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hitos'),
+        title: Text(S.of(context).milestonesTitle),
         backgroundColor: Colors.green,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -215,30 +226,34 @@ class _HitosState extends State<Hitos> {
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
-              const Text(
-                "Progreso de Hitos",
+              Text(
+                S.of(context).milestonesProgress,
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
 
               ExpansionTile(
-                title: const Text("Hitos Diarios", style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.bold)),
+                title: Text(
+                  S.of(context).dailyMilestones,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 children: [
                   if (mostrarHitoHumedadSuelo)
-                    buildHitoCard(mensajeHumedadSuelo, humedadSueloCumplida, Icons.water_drop),
+                    buildHitoCard(context, mensajeHumedadSuelo, humedadSueloCumplida, Icons.water_drop),
                   if (mostrarHitoHumedadAmbiente)
-                    buildHitoCard(mensajeHumedadAmbiente, humedadAmbienteCumplida, Icons.water_drop),
+                    buildHitoCard(context, mensajeHumedadAmbiente, humedadAmbienteCumplida, Icons.water_drop),
                   if (mostrarHitoLuz)
-                    buildHitoCard(mensajeLuz, luzCumplida, Icons.wb_sunny),
+                    buildHitoCard(context, mensajeLuz, luzCumplida, Icons.wb_sunny),
                   if (mostrarHitoTemperatura)
-                    buildHitoCard(mensajeTemperatura, temperaturaCumplida, Icons.thermostat),
+                    buildHitoCard(context, mensajeTemperatura, temperaturaCumplida, Icons.thermostat),
                 ],
               ),
 
               ExpansionTile(
-                title: const Text("Hitos Mensuales", style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.bold)),
+                title: Text(
+                  S.of(context).monthlyMilestones,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 children: [
                   if (mostrarHitoCambioTierra)
                     buildHitoCardTierra(

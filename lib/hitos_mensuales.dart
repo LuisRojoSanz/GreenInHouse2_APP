@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> confirmarCambioTierra(Function setStateCallback) async {
@@ -6,7 +7,7 @@ Future<void> confirmarCambioTierra(Function setStateCallback) async {
   DateTime ahora = DateTime.now();
   await prefs.setString('fechaCambioTierra', ahora.toIso8601String());
 
-  setStateCallback(true, "Cambio de tierra reciente, todo en orden.");
+  setStateCallback(true);
 }
 
 Future<void> confirmarFertilizante(Function setStateCallback) async {
@@ -14,62 +15,23 @@ Future<void> confirmarFertilizante(Function setStateCallback) async {
   DateTime ahora = DateTime.now();
   await prefs.setString('fechaFertilizante', ahora.toIso8601String());
 
-  setStateCallback(true, "Fertilizante añadido recientemente, todo en orden.");
-}
-
-Future<void> verificarCambioTierra(Function setStateCallback) async {
-  final prefs = await SharedPreferences.getInstance();
-  String? fechaGuardada = prefs.getString('fechaCambioTierra');
-
-  if (fechaGuardada != null) {
-    DateTime ultimaFecha = DateTime.parse(fechaGuardada);
-    DateTime ahora = DateTime.now();
-    Duration diferencia = ahora.difference(ultimaFecha);
-
-    int frecuencia = prefs.getInt('frecuenciaCambioTierra') ?? 90;
-    if (diferencia.inDays >= frecuencia) {
-      setStateCallback(false, "Cambia la tierra de la planta, ya han pasado 3 meses.");
-    } else {
-      setStateCallback(true, "Cambio de tierra reciente, todo en orden.");
-    }
-  } else {
-    setStateCallback(false, "Cambia la tierra de la planta.");
-  }
-}
-
-Future<void> verificarFertilizante(Function setStateCallback) async {
-  final prefs = await SharedPreferences.getInstance();
-  String? fechaGuardada = prefs.getString('fechaFertilizante');
-
-  if (fechaGuardada != null) {
-    DateTime ultimaFecha = DateTime.parse(fechaGuardada);
-    DateTime ahora = DateTime.now();
-    Duration diferencia = ahora.difference(ultimaFecha);
-
-    int frecuencia = prefs.getInt('frecuenciaFertilizante') ?? 90;
-    if (diferencia.inDays >= frecuencia) {
-      setStateCallback(false, "Añade fertilizante, ya han pasado 3 meses.");
-    } else {
-      setStateCallback(true, "Fertilizante añadido recientemente.");
-    }
-  } else {
-    setStateCallback(false, "Añade fertilizante a la planta.");
-  }
+  setStateCallback(true);
 }
 
 Widget buildHitoCardTierra({
-  required String mensaje,
   required bool? cumplido,
   required IconData icono,
   bool isCambioTierra = false,
-  required Function(bool, String) onEstadoCambioTierraActualizado,
+  required Function(bool) onEstadoCambioTierraActualizado,
 }) {
   return FutureBuilder<SharedPreferences>(
     future: SharedPreferences.getInstance(),
     builder: (context, snapshot) {
       Color cardColor = Colors.black12;
       Color iconColor = Colors.black;
-      String estadoTexto = "Cargando...";
+      String estadoTexto = S.of(context).loadingMessage;
+      String mensaje = S.of(context).loadingMessage;
+      bool isCompletado = false;
       IconData estadoIcono = Icons.hourglass_empty;
 
       if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
@@ -85,17 +47,21 @@ Widget buildHitoCardTierra({
           if (diasRestantes > 30) {
             cardColor = Colors.green[100]!;
             iconColor = Colors.green;
-            estadoTexto = "Completado";
+            estadoTexto = S.of(context).completed;
+            mensaje = S.of(context).recentSoilChange;
             estadoIcono = Icons.check_circle;
+            isCompletado = true;
           } else if (diasRestantes > 0 && diasRestantes <= 30) {
             cardColor = Colors.yellow[100]!;
             iconColor = Colors.orange;
-            estadoTexto = "Pronto a cambiar";
+            estadoTexto = S.of(context).soonToChange;
+            mensaje = S.of(context).soilChangeInLessThanMonth;
             estadoIcono = Icons.warning_amber;
           } else {
             cardColor = Colors.red[100]!;
             iconColor = Colors.red;
-            estadoTexto = "Pendiente";
+            estadoTexto = S.of(context).pending;
+            mensaje = S.of(context).soilChangeOverdue;
             estadoIcono = Icons.warning;
           }
 
@@ -111,26 +77,26 @@ Widget buildHitoCardTierra({
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(estadoTexto, style: TextStyle(fontWeight: FontWeight.bold, color: iconColor)),
-                  Text("Próximo cambio: ${proximoCambio.day.toString().padLeft(2, '0')}/${proximoCambio.month.toString().padLeft(2, '0')}/${proximoCambio.year}", style: const TextStyle(fontSize: 14)),
+                  Text("${S.of(context).nextChange}: ${proximoCambio.day.toString().padLeft(2, '0')}/${proximoCambio.month.toString().padLeft(2, '0')}/${proximoCambio.year}", style: const TextStyle(fontSize: 14)),
                 ],
               ),
-              onTap: (estadoTexto == "Completado") ? null : () {
+              onTap: (isCompletado) ? null : () {
                 if (isCambioTierra) {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text("Confirmar cambio de tierra"),
-                      content: const Text("¿Has cambiado la tierra de la planta?"),
+                      title: Text(S.of(context).confirmSoilChangeTitle),
+                      content: Text(S.of(context).confirmSoilChangeQuestion),
                       actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancelar")),
+                        TextButton(onPressed: () => Navigator.pop(context), child: Text(S.of(context).cancel),),
                         TextButton(
                           onPressed: () {
-                            confirmarCambioTierra((bool cumplido, String msg) {
-                              onEstadoCambioTierraActualizado(cumplido, msg);
+                            confirmarCambioTierra((bool cumplido) {
+                              onEstadoCambioTierraActualizado(cumplido);
                             });
                             Navigator.pop(context);
                           },
-                          child: const Text("Sí, la cambié"),
+                          child: Text(S.of(context).yesChanged),
                         ),
                       ],
                     ),
@@ -144,7 +110,8 @@ Widget buildHitoCardTierra({
           // Primer uso: no hay fecha registrada aún
           cardColor = Colors.red[100]!;
           iconColor = Colors.red;
-          estadoTexto = "Pendiente";
+          estadoTexto = S.of(context).pending;
+          mensaje = S.of(context).newPlantSoilMessage;
           estadoIcono = Icons.warning;
 
           return Card(
@@ -161,18 +128,18 @@ Widget buildHitoCardTierra({
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text("Confirmar cambio de tierra"),
-                      content: const Text("¿Has cambiado la tierra de la planta por primera vez?"),
+                        title: Text(S.of(context).confirmSoilChangeTitle),
+                        content: Text(S.of(context).confirmSoilChangeQuestion),
                       actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancelar")),
+                        TextButton(onPressed: () => Navigator.pop(context), child: Text(S.of(context).cancel),),
                         TextButton(
                           onPressed: () {
-                            confirmarCambioTierra((bool cumplido, String msg) {
-                              onEstadoCambioTierraActualizado(cumplido, msg);
+                            confirmarCambioTierra((bool cumplido) {
+                              onEstadoCambioTierraActualizado(cumplido);
                             });
                             Navigator.pop(context);
                           },
-                          child: const Text("Sí, la cambié"),
+                          child: Text(S.of(context).yesChanged),
                         ),
                       ],
                     ),
@@ -201,18 +168,19 @@ Widget buildHitoCardTierra({
 }
 
 Widget buildHitoCardFertilizante({
-  required String mensaje,
   required bool? cumplido,
   required IconData icono,
   bool isFertilizante = false,
-  required Function(bool, String) onEstadoFertilizanteActualizado,
+  required Function(bool) onEstadoFertilizanteActualizado,
 }) {
   return FutureBuilder<SharedPreferences>(
     future: SharedPreferences.getInstance(),
     builder: (context, snapshot) {
       Color cardColor = Colors.black12;
       Color iconColor = Colors.black;
-      String estadoTexto = "Cargando...";
+      String estadoTexto = S.of(context).loadingMessage;
+      String mensaje = S.of(context).loadingMessage;
+      bool isCompletado = false;
       IconData estadoIcono = Icons.hourglass_empty;
 
       if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
@@ -228,17 +196,21 @@ Widget buildHitoCardFertilizante({
           if (diasRestantes > 30) {
             cardColor = Colors.green[100]!;
             iconColor = Colors.green;
-            estadoTexto = "Completado";
+            estadoTexto = S.of(context).completed;
+            mensaje = S.of(context).fertilizerRecentlyAdded;
             estadoIcono = Icons.check_circle;
+            isCompletado = true;
           } else if (diasRestantes > 0 && diasRestantes <= 30) {
             cardColor = Colors.yellow[100]!;
             iconColor = Colors.orange;
-            estadoTexto = "Pronto a añadir";
+            estadoTexto = S.of(context).soonToAdd;
+            mensaje = S.of(context).fertilizerInLessThanMonth;
             estadoIcono = Icons.warning_amber;
           } else {
             cardColor = Colors.red[100]!;
             iconColor = Colors.red;
-            estadoTexto = "Pendiente";
+            estadoTexto = S.of(context).pending;
+            mensaje = S.of(context).fertilizerOverdue;
             estadoIcono = Icons.warning;
           }
 
@@ -254,26 +226,26 @@ Widget buildHitoCardFertilizante({
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(estadoTexto, style: TextStyle(fontWeight: FontWeight.bold, color: iconColor)),
-                  Text("Próxima aplicación: ${proximoCambio.day.toString().padLeft(2, '0')}/${proximoCambio.month.toString().padLeft(2, '0')}/${proximoCambio.year}", style: const TextStyle(fontSize: 14)),
+                  Text("${S.of(context).nextChange}: ${proximoCambio.day.toString().padLeft(2, '0')}/${proximoCambio.month.toString().padLeft(2, '0')}/${proximoCambio.year}", style: const TextStyle(fontSize: 14)),
                 ],
               ),
-              onTap: (estadoTexto == "Completado") ? null : () {
+              onTap: (isCompletado) ? null : () {
                 if (isFertilizante) {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text("Confirmar fertilizante"),
-                      content: const Text("¿Has añadido fertilizante a la planta?"),
+                      title: Text(S.of(context).confirmSoilChangeTitle),
+                      content: Text(S.of(context).confirmSoilChangeQuestion),
                       actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancelar")),
+                        TextButton(onPressed: () => Navigator.pop(context), child: Text(S.of(context).cancel),),
                         TextButton(
                           onPressed: () {
-                            confirmarFertilizante((bool cumplido, String msg) {
-                              onEstadoFertilizanteActualizado(cumplido, msg);
+                            confirmarFertilizante((bool cumplido) {
+                              onEstadoFertilizanteActualizado(cumplido);
                             });
                             Navigator.pop(context);
                           },
-                          child: const Text("Sí, lo he hecho"),
+                          child: Text(S.of(context).yesChanged),
                         ),
                       ],
                     ),
@@ -286,7 +258,8 @@ Widget buildHitoCardFertilizante({
         }else {
           cardColor = Colors.red[100]!;
           iconColor = Colors.red;
-          estadoTexto = "Pendiente";
+          estadoTexto = S.of(context).pending;
+          mensaje = S.of(context).newPlantFertilizerMessage;
           estadoIcono = Icons.warning;
 
           return Card(
@@ -303,18 +276,18 @@ Widget buildHitoCardFertilizante({
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text("Confirmar fertilizante"),
-                      content: const Text("¿Has añadido fertilizante a la planta por primera vez?"),
+                      title: Text(S.of(context).confirmFertilizerTitle),
+                      content: Text(S.of(context).confirmFertilizerQuestion),
                       actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancelar")),
+                        TextButton(onPressed: () => Navigator.pop(context), child: Text(S.of(context).cancel),),
                         TextButton(
                           onPressed: () {
-                            confirmarFertilizante((bool cumplido, String msg) {
-                              onEstadoFertilizanteActualizado(cumplido, msg);
+                            confirmarFertilizante((bool cumplido) {
+                              onEstadoFertilizanteActualizado(cumplido);
                             });
                             Navigator.pop(context);
                           },
-                          child: const Text("Sí, lo he hecho"),
+                          child: Text(S.of(context).yesAdded),
                         ),
                       ],
                     ),

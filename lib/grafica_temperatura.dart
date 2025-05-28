@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/dialogos_excepciones.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 import 'package:greeninhouse2/planta_service.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
@@ -147,7 +148,7 @@ class TemperatureGraphState extends State<TemperatureGraph> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              const Text("Selecciona los días", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(S.of(context).selectDays, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Expanded(
                 child: ListWheelScrollView.useDelegate(
                   itemExtent: 40,
@@ -159,7 +160,12 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                   },
                   childDelegate: ListWheelChildBuilderDelegate(
                     builder: (context, index) {
-                      return Center(child: Text("${index + 1} días", style: const TextStyle(fontSize: 16)));
+                      return Center(
+                        child: Text(
+                          S.of(context).daysCount(index + 1),
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      );
                     },
                     childCount: 30,
                   ),
@@ -172,7 +178,7 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                   });
                   Navigator.pop(context);
                 },
-                child: const Text("Aceptar"),
+                child: Text(S.of(context).accept),
               ),
             ],
           ),
@@ -189,7 +195,7 @@ class TemperatureGraphState extends State<TemperatureGraph> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("TEMPERATURA"),
+              Text(S.of(context).temperatureSensor),
               getFaceImage(temperatureData.isNotEmpty ? temperatureData.last.value : 0),
             ],
           ),
@@ -212,18 +218,20 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Días atrás: "),
+                        Text(S.of(context).daysBack),
                         TextButton(
                           onPressed: () => _showDayPicker(context),
-                          child: Text("$daysBack días",
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          child: Text(
+                            S.of(context).daysCount(daysBack),
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: isLoading ? null : fetchSensorData,
-                      child: const Text("Actualizar Gráfica"),
+                      child: Text(S.of(context).updateGraph),
                     ),
                   ],
                 ),
@@ -233,17 +241,17 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                 child: isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : temperatureData.isEmpty
-                    ? const Center(child: Text("No hay datos disponibles"))
+                    ? Center(child: Text(S.of(context).noData))
                     : SfCartesianChart(
                   primaryXAxis: DateTimeAxis(
-                    title: AxisTitle(text: 'Fecha y Hora'),
+                    title: AxisTitle(text: S.of(context).dateTimeAxis),
                     dateFormat: DateFormat('EEE dd/MM HH:mm'),
                     intervalType: DateTimeIntervalType.hours,
                     labelRotation: -45,
                     labelIntersectAction: AxisLabelIntersectAction.rotate45,
                   ),
                   primaryYAxis: NumericAxis(
-                    title: AxisTitle(text: 'Temperatura (ºC)'),
+                    title: AxisTitle(text: S.of(context).degrees),
                     minimum: 0,
                     maximum: 40,
                     interval: 5,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 
 
-Widget buildHitoCard(String mensaje, bool? cumplido, IconData icono) {
+Widget buildHitoCard(BuildContext context, String mensaje, bool? cumplido, IconData icono) {
   Color cardColor;
   Color iconColor;
   String estadoTexto;
@@ -10,17 +11,17 @@ Widget buildHitoCard(String mensaje, bool? cumplido, IconData icono) {
   if (cumplido == null) {
     cardColor = Colors.black12;
     iconColor = Colors.black;
-    estadoTexto = "Cargando...";
+    estadoTexto = S.of(context).loadingMessage;
     estadoIcono = Icons.hourglass_empty;
   } else if (cumplido) {
     cardColor = Colors.green[100]!;
     iconColor = Colors.green;
-    estadoTexto = "Completado";
+    estadoTexto = S.of(context).completed;
     estadoIcono = Icons.check_circle;
   } else {
     cardColor = Colors.red[100]!;
     iconColor = Colors.red;
-    estadoTexto = "Pendiente";
+    estadoTexto = S.of(context).pending;
     estadoIcono = Icons.warning;
   }
   return Card(

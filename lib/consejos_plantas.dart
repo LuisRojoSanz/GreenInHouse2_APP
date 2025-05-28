@@ -117,11 +117,11 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
-                              consejo['descripcion'],
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                                S.of(context).plantTipDescription(consejo['descripcion']),
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
                                 ),
                               ),
                             ),

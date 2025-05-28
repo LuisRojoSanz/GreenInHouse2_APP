@@ -83,12 +83,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> createTipoPlanta() async {
-    final localization = S.of(context);
 
     if (_tipoPlantaController.text.isEmpty || _descripcionPlantaController.text.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(localization.completeFieldsMessage)),
+          SnackBar(content: Text(S.of(context).completeFieldsMessage)),
         );
       }
       return;
@@ -103,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final response = await apiService.post('TiposPlantas/One', body);
       if (response != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(localization.tipoPlantaCreatedMessage)),
+          SnackBar(content: Text(S.of(context).tipoPlantaCreatedMessage)),
         );
         setState(() {
           tiposPlantas.add(_tipoPlantaController.text);
@@ -124,10 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   Future<void> createPlanta() async {
-    final localization = S.of(context);
 
     if (_nombrePlantaController.text.isEmpty || tipoSeleccionado == null) {
-      _showMessage(localization.completeFieldsMessage);
+      _showMessage(S.of(context).completeFieldsMessage);
       return;
     }
 
@@ -146,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
         if (!mounted) return;
 
-        _showMessage(localization.plantaCreatedMessage);
+        _showMessage(S.of(context).plantaCreatedMessage);
         _nombrePlantaController.clear();
         setState(() => tipoSeleccionado = null);
 

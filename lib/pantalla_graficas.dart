@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greeninhouse2/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'grafica_temperatura.dart';
 import 'botones_inicio.dart';
@@ -69,7 +70,7 @@ class GraficasScreenState extends State<GraficasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gráficos'),
+        title: Text(S.of(context).graphs),
         backgroundColor: Colors.green,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
