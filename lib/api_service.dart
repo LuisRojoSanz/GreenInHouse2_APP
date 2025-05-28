@@ -14,7 +14,7 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/$endpoint'), // Combina la base con el endpoint
         headers: {'Content-Type': 'application/json'}, // Encabezados opcionales
-      ).timeout(const Duration(seconds: 5)); // Timeout de 5 segundos
+      ).timeout(const Duration(seconds: 20)); // Timeout de 20 segundos
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body); // Decodifica la respuesta en JSON
@@ -44,7 +44,7 @@ class ApiService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       )
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 20));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return jsonDecode(response.body);
@@ -70,7 +70,7 @@ class ApiService {
     try {
       final response = await http
           .get(Uri.parse(baseUrl))
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 20));
       return response.statusCode == 200;
     } on TimeoutException {
       print('⏰ Timeout al verificar conexión con $baseUrl');
@@ -92,7 +92,7 @@ class ApiService {
         Uri.parse('$baseUrl/$endpoint'),
         headers: {'Content-Type': 'application/json'},
       )
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 20));
 
       if (response.statusCode == 200 || response.statusCode == 204) {
         return response.body.isNotEmpty ? jsonDecode(response.body) : null;
@@ -122,7 +122,7 @@ class ApiService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       )
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 20));
 
       if (response.statusCode == 200 || response.statusCode == 204) {
         return response.body.isNotEmpty ? jsonDecode(response.body) : null;
