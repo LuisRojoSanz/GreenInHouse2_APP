@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m1(count) => "${count} días";
 
-  static String m2(percent) => "Estado de salud: ${percent}%";
+  static String m2(percent) => "Estado de cuidado: ${percent}%";
 
   static String m3(min, max) => "Horas mínimas: ${min}, Horas máximas: ${max}";
 
@@ -91,16 +91,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "badState": MessageLookupByLibrary.simpleMessage("Mal estado de cuidado"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
     "change_language": MessageLookupByLibrary.simpleMessage("Idioma"),
-    "chartAmbientHumidity": MessageLookupByLibrary.simpleMessage(
-      "Gráfica de Humedad Ambiente",
-    ),
-    "chartLight": MessageLookupByLibrary.simpleMessage("Gráfica de Luz"),
-    "chartSoilMoisture": MessageLookupByLibrary.simpleMessage(
-      "Gráfica de Humedad",
-    ),
-    "chartTemperature": MessageLookupByLibrary.simpleMessage(
-      "Gráfica de Temperatura",
-    ),
     "chooseFromGallery": MessageLookupByLibrary.simpleMessage(
       "Elegir de galería",
     ),
@@ -175,6 +165,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Fertilizante añadido recientemente.",
     ),
     "goodState": MessageLookupByLibrary.simpleMessage("Buen estado de cuidado"),
+    "graphAmbientHumidity": MessageLookupByLibrary.simpleMessage(
+      "Gráfico de Humedad Ambiente",
+    ),
+    "graphLight": MessageLookupByLibrary.simpleMessage("Gráfico de Luz"),
+    "graphSoilMoisture": MessageLookupByLibrary.simpleMessage(
+      "Gráfico de Humedad",
+    ),
+    "graphTemperature": MessageLookupByLibrary.simpleMessage(
+      "Gráfico de Temperatura",
+    ),
     "graphs": MessageLookupByLibrary.simpleMessage("Gráficos"),
     "guardarTipoPlantaButton": MessageLookupByLibrary.simpleMessage(
       "Guardar Tipo de Planta",
@@ -361,7 +361,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "settings": MessageLookupByLibrary.simpleMessage("Ajustes"),
     "settingsTitle": MessageLookupByLibrary.simpleMessage("Ajustes"),
-    "showCharts": MessageLookupByLibrary.simpleMessage("📊 Mostrar gráficas"),
+    "showGraphs": MessageLookupByLibrary.simpleMessage("📊 Mostrar gráficos"),
     "showMilestones": MessageLookupByLibrary.simpleMessage("✨ Mostrar Hitos"),
     "soilChangeFrequency": MessageLookupByLibrary.simpleMessage(
       "⏳ Frecuencia del cambio de tierra (días)",
@@ -420,7 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownState": MessageLookupByLibrary.simpleMessage("Desconocido"),
     "unknownType": MessageLookupByLibrary.simpleMessage("Tipo desconocido"),
     "unknownZone": MessageLookupByLibrary.simpleMessage("Zona no especificada"),
-    "updateGraph": MessageLookupByLibrary.simpleMessage("Actualizar Gráfica"),
+    "updateGraph": MessageLookupByLibrary.simpleMessage("Actualizar Gráfico"),
     "veryBadState": MessageLookupByLibrary.simpleMessage(
       "Muy mal estado de cuidado",
     ),

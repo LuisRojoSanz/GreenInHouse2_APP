@@ -96,9 +96,9 @@ class _AjustesState extends State<Ajustes> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(S.of(context).showCharts, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(S.of(context).showGraphs, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SwitchListTile(
-            title: Text(S.of(context).chartSoilMoisture),
+            title: Text(S.of(context).graphSoilMoisture),
             value: mostrarGraficaHumedad,
             onChanged: (value) {
               setState(() => mostrarGraficaHumedad = value);
@@ -106,7 +106,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: Text(S.of(context).chartAmbientHumidity),
+            title: Text(S.of(context).graphAmbientHumidity),
             value: mostrarGraficaHumedadAmbiente,
             onChanged: (value) {
               setState(() => mostrarGraficaHumedadAmbiente = value);
@@ -114,7 +114,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: Text(S.of(context).chartLight),
+            title: Text(S.of(context).graphLight),
             value: mostrarGraficaLuz,
             onChanged: (value) {
               setState(() => mostrarGraficaLuz = value);
@@ -122,7 +122,7 @@ class _AjustesState extends State<Ajustes> {
             },
           ),
           SwitchListTile(
-            title: Text(S.of(context).chartTemperature),
+            title: Text(S.of(context).graphTemperature),
             value: mostrarGraficaTemperatura,
             onChanged: (value) {
               setState(() => mostrarGraficaTemperatura = value);

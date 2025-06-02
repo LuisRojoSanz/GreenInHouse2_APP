@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m1(count) => "${count} days";
 
-  static String m2(percent) => "Health status: ${percent}%";
+  static String m2(percent) => "State of care: ${percent}%";
 
   static String m3(min, max) => "Min Hours: ${min}, Max Hours: ${max}";
 
@@ -87,16 +87,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "badState": MessageLookupByLibrary.simpleMessage("Poor condition"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "change_language": MessageLookupByLibrary.simpleMessage("Language"),
-    "chartAmbientHumidity": MessageLookupByLibrary.simpleMessage(
-      "Ambient Humidity Chart",
-    ),
-    "chartLight": MessageLookupByLibrary.simpleMessage("Light Chart"),
-    "chartSoilMoisture": MessageLookupByLibrary.simpleMessage(
-      "Soil Moisture Chart",
-    ),
-    "chartTemperature": MessageLookupByLibrary.simpleMessage(
-      "Temperature Chart",
-    ),
     "chooseFromGallery": MessageLookupByLibrary.simpleMessage(
       "Choose from gallery",
     ),
@@ -169,6 +159,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Fertilizer recently added.",
     ),
     "goodState": MessageLookupByLibrary.simpleMessage("Good condition"),
+    "graphAmbientHumidity": MessageLookupByLibrary.simpleMessage(
+      "Ambient Humidity Graph",
+    ),
+    "graphLight": MessageLookupByLibrary.simpleMessage("Light Graph"),
+    "graphSoilMoisture": MessageLookupByLibrary.simpleMessage(
+      "Soil Moisture Graph",
+    ),
+    "graphTemperature": MessageLookupByLibrary.simpleMessage(
+      "Temperature Graph",
+    ),
     "graphs": MessageLookupByLibrary.simpleMessage("Graphs"),
     "guardarTipoPlantaButton": MessageLookupByLibrary.simpleMessage(
       "Save Plant Type",
@@ -329,7 +329,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "settingsTitle": MessageLookupByLibrary.simpleMessage("Settings"),
-    "showCharts": MessageLookupByLibrary.simpleMessage("📊 Show charts"),
+    "showGraphs": MessageLookupByLibrary.simpleMessage("📊 Show graphs"),
     "showMilestones": MessageLookupByLibrary.simpleMessage("✨ Show Milestones"),
     "soilChangeFrequency": MessageLookupByLibrary.simpleMessage(
       "⏳ Soil change frequency (days)",

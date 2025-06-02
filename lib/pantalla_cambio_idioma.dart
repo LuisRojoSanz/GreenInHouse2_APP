@@ -1,50 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:greeninhouse2/locale_provider.dart';
 import 'generated/l10n.dart';
 
-class PantallaCambioIdioma extends StatefulWidget {
-  final void Function(Locale locale) onLocaleChange;
-
-  const PantallaCambioIdioma({super.key, required this.onLocaleChange});
-
-  @override
-  PantallaCambioIdiomaState createState() => PantallaCambioIdiomaState();
-}
-
-class PantallaCambioIdiomaState extends State<PantallaCambioIdioma> {
-  Locale? _selectedLocale;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _selectedLocale ??= Localizations.localeOf(context);
-  }
+class PantallaCambioIdioma extends StatelessWidget {
+  const PantallaCambioIdioma({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<LocaleProvider>(context);
+    final currentLocale = provider.locale;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).change_language),
-        centerTitle: true,
         backgroundColor: Colors.green,
+        centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildLanguageTile(
-              locale: const Locale('en', ''),
+            _buildTile(
+              context,
+              locale: const Locale('en'),
               language: S.of(context).english,
               flag: 'assets/flags/uk.png',
-              flagWidth: 30,
-              flagHeight: 30,
+              isSelected: currentLocale.languageCode == 'en',
             ),
-            _buildLanguageTile(
-              locale: const Locale('es', ''),
+            _buildTile(
+              context,
+              locale: const Locale('es'),
               language: S.of(context).spanish,
               flag: 'assets/flags/spain.png',
-              flagWidth: 30,
-              flagHeight: 30,
+              isSelected: currentLocale.languageCode == 'es',
             ),
           ],
         ),
@@ -52,39 +41,21 @@ class PantallaCambioIdiomaState extends State<PantallaCambioIdioma> {
     );
   }
 
-  Widget _buildLanguageTile({
+  Widget _buildTile(BuildContext context, {
     required Locale locale,
     required String language,
     required String flag,
-    required double flagWidth,
-    required double flagHeight,
+    required bool isSelected,
   }) {
+    final provider = Provider.of<LocaleProvider>(context, listen: false);
+
     return ListTile(
-      leading: SizedBox(
-        width: flagWidth,
-        height: flagHeight,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(flagWidth / 2),
-          child: Image.asset(
-            flag,
-            fit: BoxFit.contain, // Ajusta la imagen dentro del contenedor
-          ),
-        ),
-      ),
+      leading: Image.asset(flag, width: 30, height: 30),
       title: Text(language),
-      trailing: _selectedLocale == locale
-          ? const Icon(Icons.check, color: Colors.green)
-          : null,
-      onTap: () async {
-        setState(() {
-          _selectedLocale = locale;
-        });
-
-        // Guardar el idioma elegido
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('idiomaSeleccionado', locale.languageCode);
-
-        widget.onLocaleChange(locale);
+      trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
+      onTap: () {
+        provider.setLocale(locale);
+        Navigator.pop(context); // Vuelve al inicio con idioma cambiado
       },
     );
   }

@@ -725,46 +725,46 @@ class S {
     return Intl.message('Settings', name: 'settingsTitle', desc: '', args: []);
   }
 
-  /// `📊 Show charts`
-  String get showCharts {
+  /// `📊 Show graphs`
+  String get showGraphs {
     return Intl.message(
-      '📊 Show charts',
-      name: 'showCharts',
+      '📊 Show graphs',
+      name: 'showGraphs',
       desc: '',
       args: [],
     );
   }
 
-  /// `Soil Moisture Chart`
-  String get chartSoilMoisture {
+  /// `Soil Moisture Graph`
+  String get graphSoilMoisture {
     return Intl.message(
-      'Soil Moisture Chart',
-      name: 'chartSoilMoisture',
+      'Soil Moisture Graph',
+      name: 'graphSoilMoisture',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ambient Humidity Chart`
-  String get chartAmbientHumidity {
+  /// `Ambient Humidity Graph`
+  String get graphAmbientHumidity {
     return Intl.message(
-      'Ambient Humidity Chart',
-      name: 'chartAmbientHumidity',
+      'Ambient Humidity Graph',
+      name: 'graphAmbientHumidity',
       desc: '',
       args: [],
     );
   }
 
-  /// `Light Chart`
-  String get chartLight {
-    return Intl.message('Light Chart', name: 'chartLight', desc: '', args: []);
+  /// `Light Graph`
+  String get graphLight {
+    return Intl.message('Light Graph', name: 'graphLight', desc: '', args: []);
   }
 
-  /// `Temperature Chart`
-  String get chartTemperature {
+  /// `Temperature Graph`
+  String get graphTemperature {
     return Intl.message(
-      'Temperature Chart',
-      name: 'chartTemperature',
+      'Temperature Graph',
+      name: 'graphTemperature',
       desc: '',
       args: [],
     );
@@ -1405,10 +1405,10 @@ class S {
     return Intl.message('Unknown', name: 'unknownState', desc: '', args: []);
   }
 
-  /// `Health status: {percent}%`
+  /// `State of care: {percent}%`
   String healthStatus(Object percent) {
     return Intl.message(
-      'Health status: $percent%',
+      'State of care: $percent%',
       name: 'healthStatus',
       desc: '',
       args: [percent],

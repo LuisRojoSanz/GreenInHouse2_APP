@@ -113,11 +113,11 @@
 
   "@@pantalla_ajustes.dart": "1.0",
   "settingsTitle": "Settings",
-  "showCharts": "📊 Show charts",
-  "chartSoilMoisture": "Soil Moisture Chart",
-  "chartAmbientHumidity": "Ambient Humidity Chart",
-  "chartLight": "Light Chart",
-  "chartTemperature": "Temperature Chart",
+  "showGraphs": "📊 Show graphs",
+  "graphSoilMoisture": "Soil Moisture Graph",
+  "graphAmbientHumidity": "Ambient Humidity Graph",
+  "graphLight": "Light Graph",
+  "graphTemperature": "Temperature Graph",
 
   "showMilestones": "✨ Show Milestones",
   "milestoneSoilMoisture": "Soil Moisture",
@@ -212,7 +212,7 @@
   "goodState": "Good condition",
   "veryGoodState": "Very good condition",
   "unknownState": "Unknown",
-  "healthStatus": "Health status: {percent}%",
+  "healthStatus": "State of care: {percent}%",
 
 
 

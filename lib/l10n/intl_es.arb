@@ -28,11 +28,11 @@
   "noConnectionAccept": "Aceptar",
 
 
-  "@@gráficas": "1.0",
+  "@@gráficos": "1.0",
   "selectDays": "Selecciona los días",
   "accept": "Aceptar",
   "daysBack": "Días atrás:",
-  "updateGraph": "Actualizar Gráfica",
+  "updateGraph": "Actualizar Gráfico",
   "noData": "No hay datos disponibles",
   "dateTimeAxis": "Fecha y Hora",
   "percentageAxis": "Porcentaje (%)",
@@ -112,11 +112,11 @@
 
   "@@pantalla_ajustes.dart": "1.0",
   "settingsTitle": "Ajustes",
-  "showCharts": "📊 Mostrar gráficas",
-  "chartSoilMoisture": "Gráfica de Humedad",
-  "chartAmbientHumidity": "Gráfica de Humedad Ambiente",
-  "chartLight": "Gráfica de Luz",
-  "chartTemperature": "Gráfica de Temperatura",
+  "showGraphs": "📊 Mostrar gráficos",
+  "graphSoilMoisture": "Gráfico de Humedad",
+  "graphAmbientHumidity": "Gráfico de Humedad Ambiente",
+  "graphLight": "Gráfico de Luz",
+  "graphTemperature": "Gráfico de Temperatura",
 
   "showMilestones": "✨ Mostrar Hitos",
   "milestoneSoilMoisture": "Humedad del Suelo",
@@ -211,7 +211,7 @@
   "goodState": "Buen estado de cuidado",
   "veryGoodState": "Muy buen estado de cuidado",
   "unknownState": "Desconocido",
-  "healthStatus": "Estado de salud: {percent}%",
+  "healthStatus": "Estado de cuidado: {percent}%",
 
 
 
