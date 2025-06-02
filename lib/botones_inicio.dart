@@ -23,16 +23,16 @@ class BottomNavigationCustom extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       items: [
         BottomNavigationBarItem(
+          icon: const Icon(Icons.home),
+          label: S.of(context).home,
+        ),
+        BottomNavigationBarItem(
           icon: const Icon(Icons.show_chart),
           label: S.of(context).graphs,
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.event),
           label: S.of(context).milestones,
-        ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.home),
-          label: S.of(context).home,
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.settings),
@@ -47,13 +47,13 @@ class BottomNavigationCustom extends StatelessWidget {
 
         switch (index) {
           case 0:
-            destination = const GraficasScreen();
+            destination = const PantallaInicio();
             break;
           case 1:
-            destination = const Hitos();
+            destination = const GraficasScreen();
             break;
           case 2:
-            destination = const PantallaInicio();
+            destination = const Hitos();
             break;
           case 3:
             destination = const Ajustes();
@@ -70,7 +70,7 @@ class BottomNavigationCustom extends StatelessWidget {
         // Actualiza el índice si es necesario
         onTap(index);
 
-        // Cambiar el idioma si se ha definido un callback
+        // Cambia el idioma si se ha definido un callback
         if (onLocaleChange != null) {
           onLocaleChange!(Locale('es'));
         }

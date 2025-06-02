@@ -37,7 +37,7 @@ class _HitosState extends State<Hitos> {
   bool? fertilizanteCumplido;
   String mensajeFertilizante = "";
 
-  int _currentIndex = 1;
+  int _currentIndex = 2;
 
   String plantName = '';
 

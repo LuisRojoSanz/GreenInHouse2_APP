@@ -24,7 +24,7 @@ class PantallaInicio extends StatefulWidget {
 
 class PantallaInicioState extends State<PantallaInicio> {
   int diasConVida = 0;
-  int _currentIndex = 2;
+  int _currentIndex = 0;
   bool hayPlantaActiva = false;
   bool cargandoEstadoPlanta = true;
   String plantName = '';
@@ -71,7 +71,7 @@ class PantallaInicioState extends State<PantallaInicio> {
       final prefs = await SharedPreferences.getInstance();
       final yaMostrado = prefs.getBool('dialogoPlantaMostrado') ?? false;
 
-      if (yaMostrado) return; // Si ya se mostró, salimos
+      if (yaMostrado) return;
 
       final nombre = await PlantaService.obtenerNombrePlantaActiva();
       final hayPlanta = nombre != null && nombre.isNotEmpty;
@@ -106,7 +106,7 @@ class PantallaInicioState extends State<PantallaInicio> {
           ),
         );
 
-        await prefs.setBool('dialogoPlantaMostrado', true); // Marcamos como mostrado
+        await prefs.setBool('dialogoPlantaMostrado', true);
       }
 
       if (mounted) {
@@ -347,9 +347,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PantallaCambioIdioma(
-                      onLocaleChange: widget.onLocaleChange ?? (locale) {},
-                    ),
+                    builder: (context) => const PantallaCambioIdioma(),
                   ),
                 );
               },
