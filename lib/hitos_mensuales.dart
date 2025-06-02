@@ -36,6 +36,21 @@ Widget buildHitoCardTierra({
 
       if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
         final prefs = snapshot.data!;
+        String? nombrePlanta = prefs.getString('nombrePlantaActiva');
+        if (nombrePlanta == null || nombrePlanta.isEmpty) {
+          return Card(
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            color: cardColor,
+            child: ListTile(
+              leading: Icon(icono, size: 40, color: iconColor),
+              title: Text(mensaje, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              subtitle: Text(estadoTexto, style: TextStyle(fontWeight: FontWeight.bold)),
+              trailing: Icon(estadoIcono, color: iconColor, size: 30),
+            ),
+          );
+        }
         String? fechaStr = prefs.getString('fechaCambioTierra');
         int frecuencia = prefs.getInt('frecuenciaCambioTierra') ?? 90;
 
@@ -185,6 +200,21 @@ Widget buildHitoCardFertilizante({
 
       if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
         final prefs = snapshot.data!;
+        String? nombrePlanta = prefs.getString('nombrePlantaActiva');
+        if (nombrePlanta == null || nombrePlanta.isEmpty) {
+          return Card(
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            color: cardColor,
+            child: ListTile(
+              leading: Icon(icono, size: 40, color: iconColor),
+              title: Text(mensaje, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              subtitle: Text(estadoTexto, style: TextStyle(fontWeight: FontWeight.bold)),
+              trailing: Icon(estadoIcono, color: iconColor, size: 30),
+            ),
+          );
+        }
         String? fechaStr = prefs.getString('fechaFertilizante');
         int frecuencia = prefs.getInt('frecuenciaFertilizante') ?? 90;
 
