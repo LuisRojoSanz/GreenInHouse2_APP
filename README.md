@@ -1,10 +1,10 @@
+
+# GreenInHouse 2.0
 <p>
   <img src="assets/icono_app.png" alt="GreenInHouse Logo" style="width:200px;" />
 </p>
 
-# GreenInHouse 2.0
-
-## Qué es GreenInHouse 2.0 
+## ¿Qué es?
 
 **GreenInHouse 2.0** es una aplicación móvil desarrollada con Flutter con el objetivo de facilitar el cuidado de las plantas mediante el uso de sensores que miden la humedad, temperatura y luminosidad de la planta en tiempo real.
 
