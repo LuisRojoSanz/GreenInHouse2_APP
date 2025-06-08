@@ -1,16 +1,24 @@
-# greeninhouse2
+<p>
+  <img src="assets/icono_app.png" alt="GreenInHouse Logo" style="width:200px;" />
+</p>
 
-A new Flutter project.
+# GreenInHouse 2.0
 
-## Getting Started
+## Qué es GreenInHouse 2.0 
 
-This project is a starting point for a Flutter application.
+**GreenInHouse 2.0** es una aplicación móvil desarrollada con Flutter con el objetivo de facilitar el cuidado de las plantas mediante el uso de sensores que miden la humedad, temperatura y luminosidad de la planta en tiempo real.
 
-A few resources to get you started if this is your first Flutter project:
+## Funcionalidades destacadas
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+-  Visualización de gráficas en tiempo real (temperatura, humedad, luz, etc.).
+-  Notificacion de hitos importantes (regar, cambiar tierra, fertilizar...).
+- ️ Personalización avanzada de preferencias.
+-  Cambio de idioma dinámico desde los ajustes.
+-  Funciona sin conexión y con almacenamiento local.
+-  Posibilidad de añadir una foto personalizada de tu planta.
+-  Integración con sensores físicos vía red local.
+-  Consejos para su cuidado.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Instalación
+
+Para su instalación se deberá acceder al apartado de releases y descargar la última versión del fichero APK que haya. Una vez descargada deberemos moverla al móvil para su instalación.
