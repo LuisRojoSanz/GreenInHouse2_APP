@@ -6,6 +6,9 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import 'api_service.dart';
 
+/// Widget `TemperatureGraph` que representa la pantalla que muestra un gráfico interactivo
+/// con la evolución de la temperatura de una planta, permitiendo al usuario visualizar
+/// los datos históricos y ajustar el rango de días para los cuales se muestran los datos.
 class TemperatureGraph extends StatefulWidget {
   const TemperatureGraph({super.key});
 
@@ -13,6 +16,24 @@ class TemperatureGraph extends StatefulWidget {
   TemperatureGraphState createState() => TemperatureGraphState();
 }
 
+/// Estado del widget `TemperatureGraph`, encargado de obtener los datos históricos de temperatura
+/// desde una API y gestionar la visualización del gráfico interactivo.
+///
+/// Atributos creados:
+/// - `temperatureData`: Lista de datos históricos de temperatura.
+/// - `plantName`: Nombre de la planta activa.
+/// - `daysBack`: Número de días para la visualización de datos.
+/// - `selectedTime`: Fecha y hora seleccionadas.
+/// - `daysController`: controlador de texto para el número de días atrás.
+/// - `showGraph`: Controla la visibilidad del gráfico.
+/// - `optimalMin`, `optimalMax`: valores de temperatura óptimos definidos por los consejos.
+/// - `isLoading`: Estado de la carga de los datos.
+///
+/// Además, el gráfico utiliza colores para mostrar visualmente en qué zonas
+/// se encuentran los valores.
+///
+/// Se incluye una representación visual con `SfCartesianChart` y una selección
+/// de días mediante `ListWheelScrollView`.
 class TemperatureGraphState extends State<TemperatureGraph> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   List<TemperatureData> temperatureData = [];
@@ -33,6 +54,9 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     cargarNombre();
   }
 
+  /// Obtiene el nombre de la planta activa y carga los datos del sensor y los rangos óptimos.
+  ///
+  /// @return Future<void>
   Future<void> cargarNombre() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
     setState(() {
@@ -50,12 +74,17 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     }
   }
 
+  /// Recupera los datos de temperatura ambiental desde la API y los filtra según la fecha de plantación.
+  ///
+  /// @return Future<void>
   Future<void> fetchSensorData() async {
     setState(() {
       isLoading = true;
     });
 
     try {
+      final DateTime? fechaPlantacion = await PlantaService.obtenerFechaPlantacion();
+
       String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
 
       String endpoint =
@@ -68,20 +97,23 @@ class TemperatureGraphState extends State<TemperatureGraph> {
         List<dynamic> fechas = data['AMBIENTE']['TEMPERATURA']['lista_fechas_largas'];
         List<dynamic> valores = data['AMBIENTE']['TEMPERATURA']['lista_valores_medios'];
 
-        setState(() {
-          temperatureData = List.generate(fechas.length, (index) {
-            double rawValue = valores[index].toDouble();
-            double clampedValue = rawValue.clamp(0.0, 40.0);
-            return TemperatureData(
-              dateTime: DateTime.parse(fechas[index]),
-              value: clampedValue,
-            );
-          });
+        final List<TemperatureData> filtrados = [];
 
-          temperatureData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+        for (int i = 0; i < fechas.length; i++) {
+          final date = DateTime.parse(fechas[i]);
+
+          if (fechaPlantacion == null || date.isAfter(fechaPlantacion)) {
+            double rawValue = valores[i].toDouble();
+            double clampedValue = rawValue.clamp(0.0, 40.0);
+            filtrados.add(TemperatureData(dateTime: date, value: clampedValue));
+          }
+        }
+
+        setState(() {
+          temperatureData = filtrados..sort((a, b) => a.dateTime.compareTo(b.dateTime));
         });
       } else {
-        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
+        throw Exception('Datos nulos o incompletos');
       }
     } catch (e) {
       if (mounted) {
@@ -97,6 +129,10 @@ class TemperatureGraphState extends State<TemperatureGraph> {
   }
 
 
+  /// Recupera los valores óptimos de temperatura ambiental definidos por los
+  /// consejos de la planta.
+  ///
+  /// @return Future<void>
   Future<void> fetchOptimalRanges() async {
     try {
       String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
@@ -123,6 +159,10 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     }
   }
 
+  /// Devuelve la imagen correspondiente según el valor de temperatura actual.
+  ///
+  /// @param value Valor de temperatura
+  /// @return Widget con la imagen (enfadado, serio o feliz)
   Widget getFaceImage(double value) {
     double lowerSeriousLimit = optimalMin - 5;
     double upperSeriousLimit = optimalMax + 5;
@@ -137,6 +177,10 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     }
   }
 
+  /// Muestra un selector de días para elegir cuántos días atrás ver en el gráfico.
+  ///
+  /// @param context Contexto de la aplicación
+  /// @return Future<void>
   Future<void> _showDayPicker(BuildContext context) async {
     int selectedDay = daysBack;
     showModalBottomSheet(
@@ -187,6 +231,10 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     );
   }
 
+  /// Construye el widget principal que contiene el gráfico interactivo y los controles.
+  ///
+  /// @param context Contexto de la aplicación
+  /// @return Widget
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -280,6 +328,11 @@ class TemperatureGraphState extends State<TemperatureGraph> {
   }
 }
 
+/// Representa un punto de datos con la temperatura medida y su correspondiente fecha.
+///
+/// Atributos:
+/// - `dateTime`: Fecha y hora del dato.
+/// - `value`: Valor numérico de la temperatura.
 class TemperatureData {
   final DateTime dateTime;
   final double value;

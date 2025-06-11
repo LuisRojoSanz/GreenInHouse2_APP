@@ -5,7 +5,10 @@ import 'api_service.dart';
 import 'generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
+/// Pantalla principal para crear una nueva planta y seleccionar su tipo.
+/// Permite al usuario crear una planta proporcionando su nombre y tipo,
+/// y también ofrece la opción de crear un nuevo tipo de planta si no está
+/// disponible en la lista.
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -18,6 +21,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
 
+  // Controladores de los campos de texto
   final TextEditingController _nombrePlantaController = TextEditingController();
   final TextEditingController _tipoPlantaController = TextEditingController();
   final TextEditingController _descripcionPlantaController = TextEditingController();
@@ -34,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
     fetchTiposPlantas();
   }
 
+  /// Verifica si hay una conexión inicial con el servidor y obtiene los datos.
   Future<void> _verificarConexionInicial() async {
     try {
       final data = await apiService.get('TiposPlantas/All');
@@ -60,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-
+  /// Obtiene los tipos de plantas disponibles desde el servidor.
   Future<void> fetchTiposPlantas() async {
     setState(() => isLoading = true);
 
@@ -82,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  /// Crea un nuevo tipo de planta y lo agrega a la lista.
   Future<void> createTipoPlanta() async {
 
     if (_tipoPlantaController.text.isEmpty || _descripcionPlantaController.text.isEmpty) {
@@ -121,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-
+  /// Crea una nueva planta con el nombre y tipo seleccionado.
   Future<void> createPlanta() async {
 
     if (_nombrePlantaController.text.isEmpty || tipoSeleccionado == null) {
@@ -164,6 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  /// Muestra un mensaje en la parte inferior de la pantalla.
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),

@@ -5,6 +5,15 @@ import 'api_service.dart';
 import 'package:intl/intl.dart';
 import 'planta_service.dart';
 
+/// Pantalla que muestra la lista de sensores activos de la planta, junto con
+/// detalles de su estado (activo o inactivo) y la última lectura registrada.
+///
+/// Atributos:
+/// - `apiService`: Instancia de `ApiService` para hacer las solicitudes HTTP.
+/// - `sensores`: Lista de mapas que contiene información sobre los sensores.
+/// - `isLoading`: Booleano que indica si los datos están siendo cargados.
+/// - `errorMessage`: Mensaje de error en caso de que no se puedan obtener los datos.
+/// - `plantName`: Nombre de la planta activa.
 class SensoresActivosScreen extends StatefulWidget {
   const SensoresActivosScreen({super.key});
 
@@ -25,6 +34,7 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
     cargarNombre();
   }
 
+  /// Carga el nombre de la planta activa y luego llama a `fetchSensores` para cargar los datos de los sensores.
   Future<void> cargarNombre() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
     if (!mounted) return;
@@ -36,6 +46,8 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
     fetchSensores();
   }
 
+  /// Obtiene los datos de los sensores y sus registros a través de la API.
+  /// Filtra los sensores según su actividad (activo o inactivo) y la última fecha de registro.
   Future<void> fetchSensores() async {
     setState(() {
       isLoading = true;
@@ -165,6 +177,7 @@ class SensoresActivosScreenState extends State<SensoresActivosScreen> {
     );
   }
 
+  /// Construye una fila con la información de cada sensor: icono, etiqueta y valor
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [

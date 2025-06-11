@@ -4,6 +4,9 @@ import 'package:greeninhouse2/planta_service.dart';
 import 'generated/l10n.dart';
 import 'api_service.dart';
 
+
+/// Widget que representa la pantalla donde se muestran los consejos para el
+/// cuidado de la planta activa. Esta clase solo crea el estado asociado (`ConsejosPlantasScreenState`)
 class ConsejosPlantasScreen extends StatefulWidget {
   const ConsejosPlantasScreen({super.key});
 
@@ -11,6 +14,18 @@ class ConsejosPlantasScreen extends StatefulWidget {
   ConsejosPlantasScreenState createState() => ConsejosPlantasScreenState();
 }
 
+/// Estado del widget `ConsejosPlantasScreen`, encargado de obtener los consejos
+/// de cuidado de la planta activa desde una API y mostrarlos al usuario.
+///
+/// Gestiona la carga de datos, el manejo de errores y la visualización de la lista de consejos.
+///
+/// Atributos creados:
+/// - `apiService`: Servicio para conectarse con la API REST.
+/// - `consejos`: Lista de consejos obtenidos desde la API.
+/// - `isLoading`: Booleano que indica si se están cargando los datos.
+/// - `errorMessage`: Mensaje de error a mostrar si la carga falla.
+/// - `plantName`: Nombre de la planta activa para la cual se obtendrán los consejos.
+///
 class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   List<Map<String, dynamic>> consejos = [];
@@ -18,12 +33,22 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
   String errorMessage = '';
   String plantName = '';
 
+
+  /// Método `initState`
+  ///
+  /// Se ejecuta al iniciar el estado del widget. Carga el nombre de la planta activa.
   @override
   void initState() {
     super.initState();
     cargarNombre();
   }
 
+  /// Método `cargarNombre`
+  ///
+  /// Obtiene el nombre de la planta activa desde `SharedPreferences` mediante `PlantaService`
+  /// y, una vez obtenido, llama al método `fetchSensores` para cargar los consejos.
+  ///
+  /// @return Future<void>
   Future<void> cargarNombre() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
     if (!mounted) return;
@@ -35,6 +60,14 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
     fetchSensores();
   }
 
+  /// Método `fetchSensores`
+  ///
+  /// Realiza una petición GET a la API para obtener los consejos relacionados
+  /// con la planta activa.
+  /// Los consejos incluyen datos como descripción, zona, tipo de medida,
+  /// valores máximos y mínimos y horas recomendadas.
+  ///
+  /// @return Future<void>
   Future<void> fetchSensores() async {
     setState(() {
       isLoading = true;
@@ -67,7 +100,15 @@ class ConsejosPlantasScreenState extends State<ConsejosPlantasScreen> {
     }
   }
 
-
+  /// Método `build`
+  ///
+  /// Construye la interfaz gráfica de la pantalla.
+  /// Muestra un `CircularProgressIndicator` mientras se cargan los datos,
+  /// un mensaje de error si falla, o una lista de consejos si la carga es exitosa.
+  ///
+  /// @param context Representa la ubicación del widget en el árbol de widgets.
+  /// Se utiliza para acceder a recursos como traducciones, temas o navegación.
+  /// @return Widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(

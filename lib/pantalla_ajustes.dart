@@ -3,6 +3,9 @@ import 'package:greeninhouse2/botones_inicio.dart';
 import 'package:greeninhouse2/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Pantalla de ajustes de la aplicación.
+/// Permite al usuario configurar la visualización de las gráficas y los hitos,
+/// así como la frecuencia de algunos eventos como el cambio de tierra y fertilización.
 class Ajustes extends StatefulWidget {
   const Ajustes({super.key});
 
@@ -10,6 +13,25 @@ class Ajustes extends StatefulWidget {
   State<Ajustes> createState() => _AjustesState();
 }
 
+/// Estado de la pantalla de ajustes.
+///
+/// Atributos:
+/// - `frecuenciaCambioTierra`: Frecuencia configurada para el cambio de tierra.
+/// - `frecuenciaFertilizante`: Frecuencia configurada para la fertilización.
+/// - `mostrarGraficaHumedad`: Configuración para mostrar la gráfica de humedad del suelo.
+/// - `mostrarGraficaHumedadAmbiente`: Configuración para mostrar la gráfica de humedad ambiente.
+/// - `mostrarGraficaLuz`: Configuración para mostrar la gráfica de luz.
+/// - `mostrarGraficaTemperatura`: Configuración para mostrar la gráfica de temperatura.
+/// - `mostrarHitoHumedadSuelo`: Configuración para mostrar el hito de humedad del suelo.
+/// - `mostrarHitoHumedadAmbiente`: Configuración para mostrar el hito de humedad ambiente.
+/// - `mostrarHitoLuz`: Configuración para mostrar el hito de luz.
+/// - `mostrarHitoTemperatura`: Configuración para mostrar el hito de temperatura.
+/// - `mostrarHitoCambioTierra`: Configuración para mostrar el hito de cambio de tierra.
+/// - `mostrarHitoFertilizante`: Configuración para mostrar el hito de fertilización.
+/// - `_currentIndex`: Índice actual de la barra de navegación inferior.
+///
+/// Este estado maneja la carga y el almacenamiento de preferencias de configuración.
+/// Los cambios realizados por el usuario se reflejan inmediatamente y se guardan en `SharedPreferences`.
 class _AjustesState extends State<Ajustes> {
   int frecuenciaCambioTierra = 90;
   int frecuenciaFertilizante = 90;
@@ -28,6 +50,7 @@ class _AjustesState extends State<Ajustes> {
 
   int _currentIndex = 3;
 
+  /// Actualiza el índice de la pestaña seleccionada en la barra de navegación inferior.
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -40,6 +63,8 @@ class _AjustesState extends State<Ajustes> {
     cargarPreferencias();
   }
 
+  /// Carga las preferencias del usuario desde `SharedPreferences`.
+  /// Obtiene las configuraciones relacionadas con las gráficas, los hitos y las frecuencias de eventos.
   Future<void> cargarPreferencias() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -60,6 +85,7 @@ class _AjustesState extends State<Ajustes> {
     });
   }
 
+  /// Guarda las preferencias del usuario en `SharedPreferences`.
   Future<void> guardarPreferencias() async {
     final prefs = await SharedPreferences.getInstance();
 

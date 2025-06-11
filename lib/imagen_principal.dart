@@ -4,6 +4,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:greeninhouse2/generated/l10n.dart';
 
+/// Widget para mostrar y gestionar la imagen principal de una planta.
+/// Permite seleccionar una imagen desde la cámara o galería, o eliminarla.
+///
+/// Atributos:
+/// - `width`: Ancho de la imagen mostrada (opcional).
+/// - `height`: Alto de la imagen mostrada (opcional).
+/// - `fit`: Cómo se ajustará la imagen dentro del contenedor (opcional).
+///
+/// Este widget muestra la imagen asociada a la planta activa. Si no hay imagen seleccionada,
+/// se muestra un contenedor vacío con un ícono y un texto invitando al usuario a añadir una foto.
+/// Al tocar el widget, permite elegir entre tomar una foto o seleccionar una imagen desde la galería.
+/// Si ya hay una imagen, también se puede eliminar.
 class ImagenPrincipal extends StatefulWidget {
   final double? width;
   final double? height;
@@ -15,6 +27,15 @@ class ImagenPrincipal extends StatefulWidget {
   State<ImagenPrincipal> createState() => _ImagenPrincipalState();
 }
 
+/// Estado para manejar la lógica de la imagen principal de la planta.
+///
+/// Atributos:
+/// - `_imagen`: Archivo de la imagen seleccionada.
+/// - `_hayPlantaActiva`: Indica si hay una planta activa registrada.
+/// - `_mostrandoSnackBar`: Controla la visualización del mensaje informativo.
+///
+/// Este estado maneja la lógica de visualización, selección, y eliminación de la imagen principal de una planta.
+/// Verifica si existe una planta activa, y si no es así, muestra un mensaje para informar al usuario.
 class _ImagenPrincipalState extends State<ImagenPrincipal> {
   File? _imagen;
   bool _hayPlantaActiva = false;
@@ -26,6 +47,13 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
     _verificarPlantaActiva();
   }
 
+  /// Verifica si hay una planta activa y carga la imagen asociada desde `SharedPreferences`.
+  ///
+  /// Atributos:
+  /// - `path`: Ruta de la imagen guardada en `SharedPreferences`.
+  /// - `nombrePlanta`: Nombre de la planta activa guardado en `SharedPreferences`.
+  ///
+  /// Si se encuentra una imagen previamente guardada, la carga en el estado.
   Future<void> _verificarPlantaActiva() async {
     final prefs = await SharedPreferences.getInstance();
     final path = prefs.getString('imagen_path');
@@ -37,6 +65,10 @@ class _ImagenPrincipalState extends State<ImagenPrincipal> {
     });
   }
 
+  /// Permite al usuario seleccionar una imagen desde la cámara o la galería,
+  /// o eliminar la imagen actual si ya existe.
+  ///
+  /// Si no hay planta activa, se muestra un `SnackBar` informando al usuario.
   Future<void> _seleccionarImagen() async {
     if (!_hayPlantaActiva) {
       if (!_mostrandoSnackBar && mounted) {

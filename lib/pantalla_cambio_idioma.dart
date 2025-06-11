@@ -3,6 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:greeninhouse2/locale_provider.dart';
 import 'generated/l10n.dart';
 
+/// Pantalla para cambiar el idioma de la aplicación.
+/// Permite al usuario seleccionar entre los idiomas disponibles (inglés y español).
+/// El idioma seleccionado se guarda y aplica en toda la aplicación mediante el proveedor `LocaleProvider`.
+///
+/// Atributos:
+/// - `build`: Método que construye la UI de la pantalla.
+/// - `provider`: Instancia de `LocaleProvider` que maneja la configuración del idioma.
+/// - `currentLocale`: Idioma actualmente seleccionado.
 class PantallaCambioIdioma extends StatelessWidget {
   const PantallaCambioIdioma({super.key});
 
@@ -41,6 +49,15 @@ class PantallaCambioIdioma extends StatelessWidget {
     );
   }
 
+  /// Crea una fila de lista con el idioma, su bandera y un ícono de selección.
+  /// Permite al usuario seleccionar un idioma y actualizar la configuración.
+  ///
+  /// Atributos:
+  /// - `context`: Contexto de la aplicación.
+  /// - `locale`: El código de idioma asociado al `ListTile`.
+  /// - `language`: El nombre del idioma a mostrar.
+  /// - `flag`: Ruta del archivo de la bandera del país.
+  /// - `isSelected`: Booleano que indica si este idioma está seleccionado.
   Widget _buildTile(BuildContext context, {
     required Locale locale,
     required String language,

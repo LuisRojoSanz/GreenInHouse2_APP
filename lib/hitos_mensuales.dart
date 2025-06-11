@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:greeninhouse2/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Registra la fecha de cambio de tierra en `SharedPreferences` y actualiza el estado del hito.
+///
+/// Atributos:
+/// - `setStateCallback`: Función de actualización del estado de la pantalla.
+///
+/// Este método guarda la fecha actual como la fecha de cambio de tierra y luego
+/// llama a `setStateCallback` con `true` para indicar que el hito de cambio de tierra ha sido realizado.
 Future<void> confirmarCambioTierra(Function setStateCallback) async {
   final prefs = await SharedPreferences.getInstance();
   DateTime ahora = DateTime.now();
@@ -10,6 +17,13 @@ Future<void> confirmarCambioTierra(Function setStateCallback) async {
   setStateCallback(true);
 }
 
+/// Registra la fecha de fertilización en `SharedPreferences` y actualiza el estado del hito.
+///
+/// Atributos:
+/// - `setStateCallback`: Función de actualización del estado de la pantalla.
+///
+/// Este método guarda la fecha actual como la fecha de fertilización y luego
+/// llama a `setStateCallback` con `true` para indicar que el hito de fertilización ha sido realizado.
 Future<void> confirmarFertilizante(Function setStateCallback) async {
   final prefs = await SharedPreferences.getInstance();
   DateTime ahora = DateTime.now();
@@ -18,6 +32,18 @@ Future<void> confirmarFertilizante(Function setStateCallback) async {
   setStateCallback(true);
 }
 
+/// Construye un widget de tarjeta para representar el estado del hito de cambio de tierra,
+/// mostrando su estado (pendiente, realizado, etc.) y detalles adicionales.
+///
+/// Atributos:
+/// - `cumplido`: Indica si el hito de cambio de tierra ha sido completado.
+/// - `icono`: El icono asociado al hito.
+/// - `isCambioTierra`: Booleano que indica si el hito corresponde a un cambio de tierra.
+/// - `onEstadoCambioTierraActualizado`: Callback que se ejecuta al actualizar el estado del hito.
+///
+/// Esta función muestra un `Card` con el estado del hito de cambio de tierra. Los colores y los
+/// iconos cambian según el estado del hito, y si el hito no está cumplido, se presenta un diálogo
+/// de confirmación al tocar la tarjeta.
 Widget buildHitoCardTierra({
   required bool? cumplido,
   required IconData icono,
@@ -34,6 +60,7 @@ Widget buildHitoCardTierra({
       bool isCompletado = false;
       IconData estadoIcono = Icons.hourglass_empty;
 
+      // Lógica para manejar los estados de la tarjeta
       if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
         final prefs = snapshot.data!;
         String? nombrePlanta = prefs.getString('nombrePlantaActiva');
@@ -59,6 +86,7 @@ Widget buildHitoCardTierra({
           DateTime proximoCambio = fechaCambio.add(Duration(days: frecuencia));
           int diasRestantes = proximoCambio.difference(DateTime.now()).inDays;
 
+          // Cambios en el estado de la tarjeta según la fecha de cambio de tierra
           if (diasRestantes > 30) {
             cardColor = Colors.green[100]!;
             iconColor = Colors.green;
@@ -182,6 +210,18 @@ Widget buildHitoCardTierra({
   );
 }
 
+/// Construye un widget de tarjeta para representar el estado del hito de fertilización,
+/// mostrando su estado (pendiente, realizado, etc.) y detalles adicionales.
+///
+/// Atributos:
+/// - `cumplido`: Indica si el hito de fertilización ha sido completado.
+/// - `icono`: El icono asociado al hito.
+/// - `isFertilizante`: Booleano que indica si el hito corresponde a un fertilizante.
+/// - `onEstadoFertilizanteActualizado`: Callback que se ejecuta al actualizar el estado del hito.
+///
+/// Esta función muestra un `Card` con el estado del hito de fertilización. Los colores y los
+/// iconos cambian según el estado del hito, y si el hito no está cumplido, se presenta un diálogo
+/// de confirmación al tocar la tarjeta.
 Widget buildHitoCardFertilizante({
   required bool? cumplido,
   required IconData icono,

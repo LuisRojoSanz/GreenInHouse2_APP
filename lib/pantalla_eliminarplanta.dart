@@ -5,6 +5,16 @@ import 'api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'generated/l10n.dart';
 
+
+/// Pantalla que permite al usuario seleccionar una planta activa y eliminarla.
+/// El proceso incluye la eliminación de la planta tanto en la base de datos como en los datos locales
+/// (SharedPreferences).
+///
+/// Atributos:
+/// - `plantasActivas`: Lista de plantas activas obtenidas de la base de datos.
+/// - `plantaSeleccionada`: Planta seleccionada para ser eliminada.
+/// - `isLoading`: Indica si se están cargando los datos.
+/// - `apiService`: Instancia de `ApiService` para manejar las peticiones HTTP.
 class EliminarPlantaScreen extends StatefulWidget {
   const EliminarPlantaScreen({super.key});
 
@@ -25,6 +35,8 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
     _verificarConexionInicial();
   }
 
+  /// Verifica la conexión inicial al servidor y obtiene la lista de plantas activas.
+  /// Si hay un error de conexión o los datos son nulos, muestra un diálogo de error.
   Future<void> _verificarConexionInicial() async {
     setState(() => isLoading = true);
 
@@ -51,6 +63,7 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
     }
   }
 
+  /// Elimina la planta seleccionada tanto en la base de datos como en los datos locales (SharedPreferences).
   Future<void> eliminarPlanta() async {
     if (plantaSeleccionada == null) {
       if (mounted) {
@@ -78,6 +91,7 @@ class _EliminarPlantaScreenState extends State<EliminarPlantaScreen> {
           await prefs.remove('imagen_planta');
           await prefs.remove('frecuenciaCambioTierra');
           await prefs.remove('frecuenciaFertilizante');
+          await prefs.setBool('dialogoPlantaMostrado', false);
         }
 
         if (mounted) {

@@ -22,6 +22,17 @@ class PantallaInicio extends StatefulWidget {
   PantallaInicioState createState() => PantallaInicioState();
 }
 
+/// Estado de la pantalla `PantallaInicio`, que gestiona la carga de información sobre la planta
+/// activa y la navegación a otras pantallas, como la modificación y eliminación de plantas.
+/// También maneja la visualización de la información de la planta activa, como los días con vida o
+/// el nombre de la planta.
+///
+/// Atributos creados:
+/// - `diasConVida`: Almacena los días transcurridos desde que se plantó la planta activa.
+/// - `_currentIndex`: Índice que indica qué pestaña está seleccionada en la barra de navegación.
+/// - `hayPlantaActiva`: Determina si hay una planta activa registrada.
+/// - `cargandoEstadoPlanta`: Booleano que indica si se está recuperando el estado de la planta.
+/// - `plantName`: Nombre de la planta activa.
 class PantallaInicioState extends State<PantallaInicio> {
   int diasConVida = 0;
   int _currentIndex = 0;
@@ -29,7 +40,7 @@ class PantallaInicioState extends State<PantallaInicio> {
   bool cargandoEstadoPlanta = true;
   String plantName = '';
 
-
+  /// Método para cambiar el índice de la pestaña seleccionada en la barra de navegación.
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -44,7 +55,7 @@ class PantallaInicioState extends State<PantallaInicio> {
     _cargarDiasConVida();
   }
 
-
+  /// Calcula el número de días que la planta ha estado viva desde su plantación.
   Future<void> _cargarDiasConVida() async {
     final fecha = await PlantaService.obtenerFechaPlantacion();
     if (fecha != null) {
@@ -56,7 +67,7 @@ class PantallaInicioState extends State<PantallaInicio> {
     }
   }
 
-
+  /// Carga el nombre de la planta activa desde `PlantaService`.
   Future<void> _cargarNombrePlanta() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
     if (mounted && nombre != null && nombre.isNotEmpty) {
@@ -66,12 +77,13 @@ class PantallaInicioState extends State<PantallaInicio> {
     }
   }
 
+  /// Verifica si hay una planta activa registrada y muestra un diálogo si no hay ninguna.
   Future<void> _verificarPlantaActiva() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final yaMostrado = prefs.getBool('dialogoPlantaMostrado') ?? false;
 
-      if (yaMostrado) return;
+      if (yaMostrado) return; // Si ya se mostró, salimos
 
       final nombre = await PlantaService.obtenerNombrePlantaActiva();
       final hayPlanta = nombre != null && nombre.isNotEmpty;
@@ -247,7 +259,7 @@ class PantallaInicioState extends State<PantallaInicio> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        //Llamda a la clase que muestra por pantalla la barra del estado de la planta
+                        //Llamada a la clase que muestra por pantalla la barra del estado de la planta
                         const PorcentajeEstadoPlanta(),
 
                         const SizedBox(height: 10),

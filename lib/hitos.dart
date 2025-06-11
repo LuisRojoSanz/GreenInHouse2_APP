@@ -8,13 +8,52 @@ import 'hitos_mensuales.dart';
 import 'hitos_diarios.dart';
 import 'planta_service.dart';
 
-
+/// Widget `Hitos` que representa la pantalla que muestra los hitos diarios y mensuales
+/// asociados al cuidado de la planta activa, como la humedad del suelo, la humedad del ambiente,
+/// la luminosidad, la temperatura, el cambio de tierra y la fertilización.
+/// Además, permite gestionar la visualización de estos hitos según las preferencias del usuario.
 class Hitos extends StatefulWidget {
   const Hitos({super.key});
 
   @override
   State<Hitos> createState() => _HitosState();
 }
+
+/// Estado del widget `Hitos`, encargado de gestionar la obtención de datos y la visualización de hitos
+/// diarios y mensuales relacionados con el cuidado de la planta. Los hitos incluyen mediciones como
+/// la humedad del suelo, la humedad del ambiente, la luminosidad, la temperatura, el cambio de tierra
+/// y la fertilización.
+///
+/// Atributos creados:
+/// - `humedadSueloCumplida`: Indica si el hito de humedad del suelo se ha cumplido.
+/// - `mensajeHumedadSuelo`: Mensaje asociado al estado del hito de humedad del suelo.
+/// - `humedadAmbienteCumplida`: Indica si el hito de humedad ambiente se ha cumplido.
+/// - `mensajeHumedadAmbiente`: Mensaje asociado al estado del hito de humedad ambiente.
+/// - `luzCumplida`: Indica si el hito de luminosidad se ha cumplido.
+/// - `mensajeLuz`: Mensaje asociado al estado del hito de luminosidad.
+/// - `temperaturaCumplida`: Indica si el hito de temperatura se ha cumplido.
+/// - `mensajeTemperatura`: Mensaje asociado al estado del hito de temperatura.
+/// - `cambioTierraCumplida`: Indica si el hito de cambio de tierra se ha cumplido.
+/// - `mensajeCambioTierra`: Mensaje asociado al estado del hito de cambio de tierra.
+/// - `fertilizanteCumplido`: Indica si el hito de fertilizante se ha cumplido.
+/// - `mensajeFertilizante`: Mensaje asociado al estado del hito de fertilizante.
+/// - `_currentIndex`: Índice actual de la barra de navegación inferior.
+/// - `plantName`: Nombre de la planta activa.
+/// - `mostrarHitoHumedadSuelo`, `mostrarHitoHumedadAmbiente`, `mostrarHitoLuz`, `mostrarHitoTemperatura`,
+///   `mostrarHitoCambioTierra`, `mostrarHitoFertilizante`: Controladores booleanos que indican si se deben mostrar o no los hitos en la interfaz.
+///
+/// La clase realiza varias peticiones a una API REST para obtener:
+/// - Los datos de los sensores para cada tipo de hito (como humedad, temperatura, luz).
+/// - Los rangos óptimos para cada tipo de medición, como la humedad del suelo,
+/// humedad ambiente, luminosidad, etc.
+///
+/// Además, la clase maneja la carga de las preferencias del usuario para
+/// determinar si los hitos deben mostrarse o no,
+/// y si se han cumplido o no según los valores actuales obtenidos.
+///
+/// Los hitos se dividen en:
+/// - Hitos diarios: Como humedad de suelo, humedad ambiente, luz y temperatura.
+/// - Hitos mensuales: Como el cambio de tierra y fertilización.
 
 class _HitosState extends State<Hitos> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
@@ -64,6 +103,9 @@ class _HitosState extends State<Hitos> {
     });
   }
 
+  /// Verifica la conexión inicial y carga las preferencias y datos si la conexión es exitosa.
+  ///
+  /// @return Future<void>
   Future<void> _verificarConexionInicial() async {
     try {
       final response = await apiService.get('Plantas/All/Active');
@@ -82,6 +124,9 @@ class _HitosState extends State<Hitos> {
     }
   }
 
+  /// Carga el nombre de la planta activa y obtiene los datos de los hitos.
+  ///
+  /// @return Future<void>
   Future<void> cargarNombreYDatos() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
 
@@ -100,6 +145,9 @@ class _HitosState extends State<Hitos> {
     super.didChangeDependencies();
   }
 
+  /// Carga las preferencias de los hitos desde `SharedPreferences`.
+  ///
+  /// @return Future<void>
   Future<void> cargarPreferenciasHitos() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -112,6 +160,9 @@ class _HitosState extends State<Hitos> {
     });
   }
 
+  /// Recupera los datos de los sensores y los rangos de los hitos para calcular el estado de cada hito.
+  ///
+  /// @return Future<void>
   Future<void> fetchHitos() async {
     try {
       String endpointSensores =
@@ -212,6 +263,10 @@ class _HitosState extends State<Hitos> {
   }
 
 
+  /// Construye el widget principal que contiene la visualización de los hitos.
+  ///
+  /// @param context Contexto de la aplicación
+  /// @return Widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(

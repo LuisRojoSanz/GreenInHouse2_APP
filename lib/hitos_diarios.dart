@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/generated/l10n.dart';
 
+/// Construye un widget `Card` para representar un hito de la planta, mostrando su estado actual.
+/// La tarjeta tiene un icono, un mensaje y un estado que puede ser "completado", "pendiente" o "en carga".
+///
+/// Atributos:
+/// - `context`: El contexto de la aplicación, utilizado para acceder a recursos como traducciones.
+/// - `mensaje`: El texto que describe el hito.
+/// - `cumplido`: Un valor booleano que indica si el hito ha sido completado (`true`), está pendiente (`false`),
+///   o está en proceso de carga (`null`).
+/// - `icono`: El icono que representa el tipo de hito.
+///
+/// La tarjeta cambia su color y muestra un ícono diferente según el estado del hito:
+/// - Si `cumplido` es `null`, se muestra un ícono de "hora de espera" y un mensaje de carga.
+/// - Si `cumplido` es `true`, se muestra un ícono de "check" con un fondo verde.
+/// - Si `cumplido` es `false`, se muestra un ícono de "advertencia" con un fondo rojo.
 
 Widget buildHitoCard(BuildContext context, String mensaje, bool? cumplido, IconData icono) {
   Color cardColor;

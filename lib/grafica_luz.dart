@@ -6,6 +6,10 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import 'api_service.dart';
 
+
+/// Widget `LightGraph` que representa la pantalla que muestra un gráfico interactivo
+/// con la evolución de la luminosidad de una planta, permitiendo al usuario visualizar
+/// los datos históricos y ajustar el rango de días para los cuales se muestran los datos.
 class LightGraph extends StatefulWidget {
   const LightGraph({super.key});
 
@@ -13,6 +17,24 @@ class LightGraph extends StatefulWidget {
   LightGraphState createState() => LightGraphState();
 }
 
+/// Estado del widget `LightGraph`, encargado de obtener los datos históricos de luminosidad
+/// desde una API y gestionar la visualización del gráfico interactivo.
+///
+/// Atributos creados:
+/// - `lightData`: Lista de datos históricos de luminosidad.
+/// - `plantName`: Nombre de la planta activa.
+/// - `daysBack`: Número de días para la visualización de datos.
+/// - `selectedTime`: Fecha y hora seleccionadas.
+/// - `daysController`: controlador de texto para el número de días atrás.
+/// - `showGraph`: Controla la visibilidad del gráfico.
+/// - `optimalMin`, `optimalMax`: valores de luminosidad óptimos definidos por los consejos.
+/// - `isLoading`: Estado de la carga de los datos.
+///
+/// Además, el gráfico utiliza colores para mostrar visualmente en qué zonas
+/// se encuentran los valores.
+///
+/// Se incluye una representación visual con `SfCartesianChart` y una selección
+/// de días mediante `ListWheelScrollView`.
 class LightGraphState extends State<LightGraph> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   List<LightData> lightData = [];
@@ -33,6 +55,9 @@ class LightGraphState extends State<LightGraph> {
     cargarNombre();
   }
 
+  /// Obtiene el nombre de la planta activa y carga los datos del sensor y los rangos óptimos.
+  ///
+  /// @return Future<void>
   Future<void> cargarNombre() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
     setState(() {
@@ -50,12 +75,17 @@ class LightGraphState extends State<LightGraph> {
     }
   }
 
+  /// Recupera los datos de luminosidad ambiental desde la API y los filtra según la fecha de plantación.
+  ///
+  /// @return Future<void>
   Future<void> fetchSensorData() async {
     setState(() {
       isLoading = true;
     });
 
     try {
+      final DateTime? fechaPlantacion = await PlantaService.obtenerFechaPlantacion();
+
       String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
       String endpoint =
           'RegistrosSensores/Avg/FromPlant/AgroupByIntervals/ToGraph?np=$plantName&d=$daysBack&ff=$endDateStr';
@@ -69,20 +99,23 @@ class LightGraphState extends State<LightGraph> {
         List<dynamic> fechas = data['AMBIENTE']['LUMINOSIDAD']['lista_fechas_largas'];
         List<dynamic> valores = data['AMBIENTE']['LUMINOSIDAD']['lista_valores_medios'];
 
-        setState(() {
-          lightData = List.generate(fechas.length, (index) {
-            double rawValue = valores[index].toDouble();
-            double clampedValue = rawValue.clamp(0.0, 120.0);
-            return LightData(
-              dateTime: DateTime.parse(fechas[index]),
-              value: clampedValue,
-            );
-          });
+        final List<LightData> filtrados = [];
 
-          lightData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+        for (int i = 0; i < fechas.length; i++) {
+          final date = DateTime.parse(fechas[i]);
+
+          if (fechaPlantacion == null || date.isAfter(fechaPlantacion)) {
+            double rawValue = valores[i].toDouble();
+            double clampedValue = rawValue.clamp(0.0, 120.0);
+            filtrados.add(LightData(dateTime: date, value: clampedValue));
+          }
+        }
+
+        setState(() {
+          lightData = filtrados..sort((a, b) => a.dateTime.compareTo(b.dateTime));
         });
       } else {
-        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
+        throw Exception('Datos nulos o incompletos');
       }
     } catch (e) {
       if (mounted) {
@@ -97,6 +130,10 @@ class LightGraphState extends State<LightGraph> {
     }
   }
 
+  /// Recupera los valores óptimos de luminosidad ambiental definidos por los
+  /// consejos de la planta.
+  ///
+  /// @return Future<void>
   Future<void> fetchOptimalRanges() async {
     try {
       String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
@@ -123,6 +160,10 @@ class LightGraphState extends State<LightGraph> {
     }
   }
 
+  /// Devuelve la imagen correspondiente según el valor de luminosidad actual.
+  ///
+  /// @param value Valor de luminosidad
+  /// @return Widget con la imagen (enfadado, serio o feliz)
   Widget getFaceImage(double value) {
     double lowerSeriousLimit = optimalMin - 15;
     double upperSeriousLimit = optimalMax + 15;
@@ -137,6 +178,10 @@ class LightGraphState extends State<LightGraph> {
     }
   }
 
+  /// Muestra un selector de días para elegir cuántos días atrás ver en el gráfico.
+  ///
+  /// @param context Contexto de la aplicación
+  /// @return Future<void>
   Future<void> _showDayPicker(BuildContext context) async {
     int selectedDay = daysBack;
     showModalBottomSheet(
@@ -187,6 +232,10 @@ class LightGraphState extends State<LightGraph> {
     );
   }
 
+  /// Construye el widget principal que contiene el gráfico interactivo y los controles.
+  ///
+  /// @param context Contexto de la aplicación
+  /// @return Widget
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -280,6 +329,11 @@ class LightGraphState extends State<LightGraph> {
   }
 }
 
+/// Representa un punto de datos con la luminosidad medida y su correspondiente fecha.
+///
+/// Atributos:
+/// - `dateTime`: Fecha y hora del dato.
+/// - `value`: Valor numérico de la luminosidad.
 class LightData {
   final DateTime dateTime;
   final double value;

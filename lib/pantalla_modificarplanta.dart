@@ -3,6 +3,8 @@ import 'package:greeninhouse2/dialogos_excepciones.dart';
 import 'package:greeninhouse2/generated/l10n.dart';
 import 'api_service.dart';
 
+/// Pantalla para modificar el tipo de una planta activa. Permite al usuario seleccionar una planta
+/// de las activas y luego cambiar su tipo de planta.
 class ModificarPlantaScreen extends StatefulWidget {
   const ModificarPlantaScreen({super.key});
 
@@ -10,6 +12,16 @@ class ModificarPlantaScreen extends StatefulWidget {
   State<ModificarPlantaScreen> createState() => _ModificarPlantaScreenState();
 }
 
+/// Estado del widget `ModificarPlantaScreen`, responsable de cargar las plantas activas,
+/// los tipos de planta disponibles y gestionar la modificación del tipo de planta de una planta activa.
+///
+/// Atributos creados:
+/// - `plantasActivas`: Lista de nombres de las plantas activas que se pueden modificar.
+/// - `tiposPlantaDisponibles`: Lista de tipos de planta disponibles para asignar a la planta seleccionada.
+/// - `plantaSeleccionada`: Nombre de la planta seleccionada para modificar.
+/// - `tipoSeleccionado`: Tipo de planta seleccionado para modificar.
+/// - `tipoPlantaActual`: Tipo actual de la planta seleccionada.
+/// - `isLoading`: Indica si se está cargando la información.
 class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
 
@@ -28,6 +40,7 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
     _verificarConexionInicial();
   }
 
+  /// Verifica la conexión inicial con el servidor y carga las plantas activas y tipos disponibles.
   Future<void> _verificarConexionInicial() async {
     setState(() => isLoading = true);
 
@@ -54,6 +67,7 @@ class _ModificarPlantaScreenState extends State<ModificarPlantaScreen> {
     }
   }
 
+  /// Modifica el tipo de planta de la planta seleccionada.
   Future<void> modificarPlanta() async {
     if (plantaSeleccionada == null || tipoSeleccionado == null) {
       if (mounted) {

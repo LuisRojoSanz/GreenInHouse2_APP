@@ -5,10 +5,33 @@ import 'pantalla_inicio.dart';
 import 'generated/l10n.dart';
 import 'pantalla_ajustes.dart';
 
+
+/// Widget que representa una barra de navegación inferior personalizada para
+/// la aplicación.
+///
+/// Este widget permite al usuario navegar entre cuatro pantallas principales
+/// de la app:
+///
+/// - Inicio
+/// - Gráficas
+/// - Hitos
+/// - Ajustes
+///
+/// Además, ofrece la posibilidad de ejecutar una función adicional para cambiar
+/// el idioma si se proporciona.
+///
+/// Parámetros:
+/// - currentIndex: entero que indica cuál de las pestañas está actualmente
+/// seleccionada.
+/// - onTap: función que se ejecuta cada vez que el usuario pulsa sobre una
+/// pestaña, útil para actualizar el estado externo.
+/// - onLocaleChange: función que permite cambiar el idioma de la app desde
+/// la barra de navegación si se desea.
 class BottomNavigationCustom extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
   final ValueChanged<Locale>? onLocaleChange;
+
 
   const BottomNavigationCustom({
     super.key,
@@ -17,6 +40,10 @@ class BottomNavigationCustom extends StatelessWidget {
     this.onLocaleChange,
   });
 
+  /// Método que construye visualmente el widget.
+  ///
+  /// Retorna un [BottomNavigationBar] con cuatro ítems (Inicio, Gráficas,
+  /// Hitos, Ajustes).
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -45,6 +72,7 @@ class BottomNavigationCustom extends StatelessWidget {
       onTap: (index) {
         Widget? destination;
 
+        // Determina a qué pantalla se debe navegar según el índice pulsado
         switch (index) {
           case 0:
             destination = const PantallaInicio();
@@ -66,14 +94,8 @@ class BottomNavigationCustom extends StatelessWidget {
             MaterialPageRoute(builder: (_) => destination!),
           );
         }
-
         // Actualiza el índice si es necesario
         onTap(index);
-
-        // Cambia el idioma si se ha definido un callback
-        if (onLocaleChange != null) {
-          onLocaleChange!(Locale('es'));
-        }
       },
     );
   }

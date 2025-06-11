@@ -6,6 +6,10 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import 'api_service.dart';
 
+
+/// Widget `HumidityGraphAM` que representa la pantalla que muestra un gráfico interactivo
+/// con la evolución de la humedad ambiental de una planta, permitiendo al usuario
+/// visualizar los datos históricos y ajustar el rango de días para los cuales se muestran los datos.
 class HumidityGraphAM extends StatefulWidget {
   const HumidityGraphAM({super.key});
 
@@ -13,6 +17,25 @@ class HumidityGraphAM extends StatefulWidget {
   HumidityGraphAMState createState() => HumidityGraphAMState();
 }
 
+
+/// Estado del widget `HumidityGraphAM`, encargado de obtener los datos históricos de humedad ambiental
+/// desde una API y gestionar la visualización del gráfico interactivo.
+///
+/// Atributos creados:
+/// - `humidityData`: Lista de datos históricos de humedad.
+/// - `plantName`: Nombre de la planta activa.
+/// - `daysBack`: Número de días para la visualización de datos.
+/// - `selectedTime`: Fecha y hora seleccionadas.
+/// - `showGraph`: Controla la visibilidad del gráfico.
+/// - `daysController`: controlador de texto para el número de días atrás.
+/// - `optimalMin`, `optimalMax`: valores de humedad ambiente óptimos definidos por los consejos.
+/// - `isLoading`: Estado de la carga de los datos.
+///
+/// Además, el gráfico utiliza colores para mostrar visualmente en qué zonas
+/// se encuentran los valores.
+///
+/// Se incluye una representación visual con `SfCartesianChart` y una selección
+/// de días mediante `ListWheelScrollView`.
 class HumidityGraphAMState extends State<HumidityGraphAM> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   List<HumidityData> humidityData = [];
@@ -27,12 +50,16 @@ class HumidityGraphAMState extends State<HumidityGraphAM> {
   double optimalMin = 15.0;
   double optimalMax = 30.0;
 
+
   @override
   void initState() {
     super.initState();
     cargarNombre();
   }
 
+  /// Obtiene el nombre de la planta activa y carga los datos del sensor y los rangos óptimos.
+  ///
+  /// @return Future<void>
   Future<void> cargarNombre() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
     setState(() {
@@ -50,12 +77,18 @@ class HumidityGraphAMState extends State<HumidityGraphAM> {
     }
   }
 
+  /// Recupera los datos de humedad ambiental desde la API y los filtra según
+  /// la fecha de plantación.
+  ///
+  /// @return Future<void>
   Future<void> fetchSensorData() async {
     setState(() {
       isLoading = true;
     });
 
     try {
+      final DateTime? fechaPlantacion = await PlantaService.obtenerFechaPlantacion();
+
       String endDateStr = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
       String endpoint =
           'RegistrosSensores/Avg/FromPlant/AgroupByIntervals/ToGraph?np=$plantName&d=$daysBack&ff=$endDateStr';
@@ -67,20 +100,23 @@ class HumidityGraphAMState extends State<HumidityGraphAM> {
         List<dynamic> fechas = data['HUMEDAD']['AMBIENTE']['lista_fechas_largas'];
         List<dynamic> valores = data['HUMEDAD']['AMBIENTE']['lista_valores_medios'];
 
-        setState(() {
-          humidityData = List.generate(fechas.length, (index) {
-            double rawValue = valores[index].toDouble();
-            double clampedValue = rawValue.clamp(0.0, 100.0);
-            return HumidityData(
-              dateTime: DateTime.parse(fechas[index]),
-              value: clampedValue,
-            );
-          });
+        final List<HumidityData> filtrados = [];
 
-          humidityData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+        for (int i = 0; i < fechas.length; i++) {
+          final date = DateTime.parse(fechas[i]);
+
+          if (fechaPlantacion == null || date.isAfter(fechaPlantacion)) {
+            double rawValue = valores[i].toDouble();
+            double clampedValue = rawValue.clamp(0.0, 100.0);
+            filtrados.add(HumidityData(dateTime: date, value: clampedValue));
+          }
+        }
+
+        setState(() {
+          humidityData = filtrados..sort((a, b) => a.dateTime.compareTo(b.dateTime));
         });
       } else {
-        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
+        throw Exception('Datos nulos o incompletos');
       }
     } catch (e) {
       if (mounted) {
@@ -96,6 +132,9 @@ class HumidityGraphAMState extends State<HumidityGraphAM> {
   }
 
 
+  /// Recupera los valores óptimos de humedad ambiental definidos por los consejos de la planta.
+  ///
+  /// @return Future<void>
   Future<void> fetchOptimalRanges() async {
     try {
       String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
@@ -122,7 +161,10 @@ class HumidityGraphAMState extends State<HumidityGraphAM> {
     }
   }
 
-
+  /// Devuelve la imagen correspondiente según el valor de humedad actual.
+  ///
+  /// @param value Valor de humedad
+  /// @return Widget con la imagen (enfadado, serio o feliz)
   Widget getFaceImage(double value) {
     double lowerSeriousLimit = optimalMin - 15;
     double upperSeriousLimit = optimalMax + 15;
@@ -137,6 +179,10 @@ class HumidityGraphAMState extends State<HumidityGraphAM> {
     }
   }
 
+  /// Muestra un selector de días para elegir cuántos días atrás ver en el gráfico.
+  ///
+  /// @param context Contexto de la aplicación
+  /// @return Future<void>
   Future<void> _showDayPicker(BuildContext context) async {
     int selectedDay = daysBack;
     showModalBottomSheet(
@@ -187,6 +233,10 @@ class HumidityGraphAMState extends State<HumidityGraphAM> {
     );
   }
 
+  /// Construye el widget principal que contiene el gráfico interactivo y los controles.
+  ///
+  /// @param context Contexto de la aplicación
+  /// @return Widget
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -280,6 +330,11 @@ class HumidityGraphAMState extends State<HumidityGraphAM> {
   }
 }
 
+/// Representa un punto de datos con la humedad medida y su correspondiente fecha.
+///
+/// Atributos:
+/// - `dateTime`: Fecha y hora del dato.
+/// - `value`: Valor numérico de la humedad.
 class HumidityData {
   final DateTime dateTime;
   final double value;

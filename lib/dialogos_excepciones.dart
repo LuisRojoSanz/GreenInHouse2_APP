@@ -2,8 +2,23 @@ import 'package:flutter/material.dart';
 import 'pantalla_inicio.dart';
 import 'generated/l10n.dart';
 
+/// - `_mostrandoDialogoConexion`: variable booleana que impide que se muestren
+/// múltiples diálogos de conexión simultáneamente.
 bool _mostrandoDialogoConexion = false;
 
+/// Función que muestra un diálogo de error de conexión si no hay conexión disponible.
+///
+/// Verifica si ya se está mostrando un diálogo para evitar superposiciones.
+/// Si no se está mostrando, abre un `AlertDialog` que informa al usuario
+/// que no hay conexión a internet y permite volver a la pantalla principal al pulsar "Aceptar".
+///
+/// Este método se va a usar en todas las pantallas que requieran de realizar
+/// peticiones a la API.
+///
+/// @param context Representa la ubicación del widget en el árbol de widgets.
+/// Se utiliza para mostrar el diálogo y para acceder a traducciones mediante `S.of(context)`.
+///
+/// @return Un `Future<void>` que finaliza cuando se cierra el diálogo.
 Future<void> mostrarDialogoErrorConexion(BuildContext context) async {
   if (_mostrandoDialogoConexion || !context.mounted) return;
 
