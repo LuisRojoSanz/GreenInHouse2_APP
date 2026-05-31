@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'pantalla_inicio.dart';
 import 'generated/l10n.dart';
 import 'locale_provider.dart';
+import 'l10n/app_localizations.dart';
+
 
 /// Función principal que ejecuta la aplicación.
 /// Inicia la app y establece el proveedor para el cambio de idioma.
@@ -31,11 +33,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      locale: localeProvider.locale,
-      supportedLocales: const [
-        Locale('en'),
-        Locale('es'),
-      ],
+      locale: localeProvider.locale,supportedLocales: const [
+      Locale('en'),
+      Locale('es'),
+    ],
 
       // Delegados de localización necesarios para que Flutter maneje la traducción de la app
       localizationsDelegates: const [
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
         S.delegate,
       ],
+
       home: const PantallaInicio(),
     );
   }

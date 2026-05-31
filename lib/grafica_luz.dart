@@ -6,7 +6,6 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import 'api_service.dart';
 
-
 /// Widget `LightGraph` que representa la pantalla que muestra un gráfico interactivo
 /// con la evolución de la luminosidad de una planta, permitiendo al usuario visualizar
 /// los datos históricos y ajustar el rango de días para los cuales se muestran los datos.
@@ -20,21 +19,6 @@ class LightGraph extends StatefulWidget {
 /// Estado del widget `LightGraph`, encargado de obtener los datos históricos de luminosidad
 /// desde una API y gestionar la visualización del gráfico interactivo.
 ///
-/// Atributos creados:
-/// - `lightData`: Lista de datos históricos de luminosidad.
-/// - `plantName`: Nombre de la planta activa.
-/// - `daysBack`: Número de días para la visualización de datos.
-/// - `selectedTime`: Fecha y hora seleccionadas.
-/// - `daysController`: controlador de texto para el número de días atrás.
-/// - `showGraph`: Controla la visibilidad del gráfico.
-/// - `optimalMin`, `optimalMax`: valores de luminosidad óptimos definidos por los consejos.
-/// - `isLoading`: Estado de la carga de los datos.
-///
-/// Además, el gráfico utiliza colores para mostrar visualmente en qué zonas
-/// se encuentran los valores.
-///
-/// Se incluye una representación visual con `SfCartesianChart` y una selección
-/// de días mediante `ListWheelScrollView`.
 class LightGraphState extends State<LightGraph> {
   final ApiService apiService = ApiService('http://192.168.1.240:5000/api/v1');
   List<LightData> lightData = [];
@@ -56,8 +40,6 @@ class LightGraphState extends State<LightGraph> {
   }
 
   /// Obtiene el nombre de la planta activa y carga los datos del sensor y los rangos óptimos.
-  ///
-  /// @return Future<void>
   Future<void> cargarNombre() async {
     final nombre = await PlantaService.obtenerNombrePlantaActiva();
     setState(() {
@@ -76,8 +58,6 @@ class LightGraphState extends State<LightGraph> {
   }
 
   /// Recupera los datos de luminosidad ambiental desde la API y los filtra según la fecha de plantación.
-  ///
-  /// @return Future<void>
   Future<void> fetchSensorData() async {
     setState(() {
       isLoading = true;
@@ -132,8 +112,6 @@ class LightGraphState extends State<LightGraph> {
 
   /// Recupera los valores óptimos de luminosidad ambiental definidos por los
   /// consejos de la planta.
-  ///
-  /// @return Future<void>
   Future<void> fetchOptimalRanges() async {
     try {
       String endpoint = 'Consejos/Plantas/All/FromPlant?np=$plantName';
@@ -151,7 +129,7 @@ class LightGraphState extends State<LightGraph> {
           }
         }
       } else {
-        throw Exception('Datos nulos o incompletos'); // Forzamos la excepción para ir al catch
+        throw Exception('Datos nulos o incompletos');
       }
     } catch (e) {
       if (mounted) {
@@ -161,9 +139,6 @@ class LightGraphState extends State<LightGraph> {
   }
 
   /// Devuelve la imagen correspondiente según el valor de luminosidad actual.
-  ///
-  /// @param value Valor de luminosidad
-  /// @return Widget con la imagen (enfadado, serio o feliz)
   Widget getFaceImage(double value) {
     double lowerSeriousLimit = optimalMin - 15;
     double upperSeriousLimit = optimalMax + 15;
@@ -178,64 +153,40 @@ class LightGraphState extends State<LightGraph> {
     }
   }
 
-  /// Muestra un selector de días para elegir cuántos días atrás ver en el gráfico.
-  ///
-  /// @param context Contexto de la aplicación
-  /// @return Future<void>
-  Future<void> _showDayPicker(BuildContext context) async {
-    int selectedDay = daysBack;
-    showModalBottomSheet(
+  /// Selector de fecha con calendario para elegir el inicio de los datos a mostrar.
+  /// Reemplaza el antiguo TextButton de selección de días.
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
       context: context,
-      builder: (BuildContext builder) {
-        return Container(
-          height: 250,
-          color: Colors.white,
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              Text(S.of(context).selectDays, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Expanded(
-                child: ListWheelScrollView.useDelegate(
-                  itemExtent: 40,
-                  perspective: 0.005,
-                  physics: const FixedExtentScrollPhysics(),
-                  controller: FixedExtentScrollController(initialItem: selectedDay - 1),
-                  onSelectedItemChanged: (index) {
-                    selectedDay = index + 1;
-                  },
-                  childDelegate: ListWheelChildBuilderDelegate(
-                    builder: (context, index) {
-                      return Center(
-                        child: Text(
-                          S.of(context).daysCount(index + 1),
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      );
-                    },
-                    childCount: 30,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    daysBack = selectedDay;
-                  });
-                  Navigator.pop(context);
-                },
-                child: Text(S.of(context).accept),
-              ),
-            ],
+      initialDate: DateTime.now().subtract(Duration(days: daysBack)),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now(),
+      helpText: S.of(context).selectDays,
+      cancelText: S.of(context).cancel,
+      confirmText: S.of(context).accept,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.green,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            dialogTheme: DialogThemeData(backgroundColor: Colors.green[50],),
           ),
+          child: child!,
         );
       },
     );
+
+    if (picked != null && mounted) {
+      setState(() {
+        daysBack = DateTime.now().difference(picked).inDays + 1;
+      });
+    }
   }
 
   /// Construye el widget principal que contiene el gráfico interactivo y los controles.
-  ///
-  /// @param context Contexto de la aplicación
-  /// @return Widget
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -264,15 +215,26 @@ class LightGraphState extends State<LightGraph> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
+                    // Row con selector de fecha usando calendario
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(S.of(context).daysBack),
-                        TextButton(
-                          onPressed: () => _showDayPicker(context),
-                          child: Text(
-                            S.of(context).daysCount(daysBack),
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        Text(S.of(context).selectDays),
+                        const SizedBox(width: 10),
+                        ElevatedButton.icon(
+                          onPressed: () => _selectDate(context),
+                          icon: const Icon(Icons.calendar_today, size: 18),
+                          label: Text(
+                            DateFormat('dd/MM/yyyy').format(
+                              DateTime.now().subtract(Duration(days: daysBack - 1)),
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green.shade400,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
                       ],
@@ -305,14 +267,15 @@ class LightGraphState extends State<LightGraph> {
                     maximum: 120,
                     interval: 10,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: optimalMin - 12, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
-                      PlotBand(start: optimalMin - 12, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3)),
-                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3)),
-                      PlotBand(start: optimalMax, end: optimalMax + 12, color: const Color(0xFFFFF59D).withOpacity(0.3)),
-                      PlotBand(start: optimalMax + 12, end: 120, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
+                      PlotBand(start: 0, end: optimalMin - 12, color: const Color(0xFFFCBBBB).withAlpha((0.7 * 255).round())),
+                      PlotBand(start: optimalMin - 12, end: optimalMin, color: const Color(0xFFFFF59D).withAlpha((0.7 * 255).round())),
+                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withAlpha((0.7 * 255).round())),
+                      PlotBand(start: optimalMax, end: optimalMax + 12, color: const Color(0xFFFFF59D).withAlpha((0.3 * 255).round())),
+                      PlotBand(start: optimalMax + 12, end: 120, color: const Color(0xFFFCBBBB).withAlpha((0.7 * 255).round())),
+
                     ],
                   ),
-                  series: <ChartSeries>[
+                  series: <CartesianSeries>[
                     LineSeries<LightData, DateTime>(
                       dataSource: lightData,
                       xValueMapper: (data, _) => data.dateTime,
@@ -330,10 +293,6 @@ class LightGraphState extends State<LightGraph> {
 }
 
 /// Representa un punto de datos con la luminosidad medida y su correspondiente fecha.
-///
-/// Atributos:
-/// - `dateTime`: Fecha y hora del dato.
-/// - `value`: Valor numérico de la luminosidad.
 class LightData {
   final DateTime dateTime;
   final double value;

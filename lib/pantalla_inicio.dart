@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greeninhouse2/pantalla_cambio_idioma.dart';
+import 'package:greeninhouse2/pantalla_cambio_planta.dart';
 import 'package:greeninhouse2/pantalla_modificarplanta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'porcentaje_estado_planta.dart';
@@ -66,6 +67,22 @@ class PantallaInicioState extends State<PantallaInicio> {
       });
     }
   }
+
+
+  void mostrarTodoSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys();
+
+    if (keys.isEmpty) {
+      debugPrint('🔍 No hay datos guardados en SharedPreferences.');
+    } else {
+      debugPrint('🔍 Datos en SharedPreferences:');
+      for (var key in keys) {
+        debugPrint('➡️ $key: ${prefs.get(key)}');
+      }
+    }
+  }
+
 
   /// Carga el nombre de la planta activa desde `PlantaService`.
   Future<void> _cargarNombrePlanta() async {
@@ -262,6 +279,11 @@ class PantallaInicioState extends State<PantallaInicio> {
                         //Llamada a la clase que muestra por pantalla la barra del estado de la planta
                         const PorcentajeEstadoPlanta(),
 
+                        ElevatedButton(
+                          onPressed: mostrarTodoSharedPreferences,
+                          child: const Text('Ver SharedPreferences'),
+                        ),
+
                         const SizedBox(height: 10),
                       ],
                     ),
@@ -337,6 +359,16 @@ class PantallaInicioState extends State<PantallaInicio> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const EliminarPlantaScreen()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text(S.of(context).menu_change_plant),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PantallaCambioPlanta()),
                 );
               },
             ),

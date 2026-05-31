@@ -1769,6 +1769,9 @@ class S {
       args: [],
     );
   }
+
+  String get menu_change_plant => "Cambio de Planta";
+
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

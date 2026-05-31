@@ -1,9 +1,9 @@
 {
   "@@locale": "es",
-  "MaterialApp": "GreenInHouse_2",
+  "materialApp": "GreenInHouse_2",
 
-  "PantallaMain": "1.0",
-  "MainTitle": "GreenInHouse_2",
+  "pantallaMain": "1.0",
+  "mainTitle": "GreenInHouse_2",
 
 
   "@@botones_inicio.dart": "1.0",
@@ -30,6 +30,7 @@
 
   "@@gráficos": "1.0",
   "selectDays": "Selecciona los días",
+  "selectDate": "Seleccionar fechas",
   "accept": "Aceptar",
   "daysBack": "Días atrás:",
   "updateGraph": "Actualizar Gráfico",
@@ -190,6 +191,7 @@
   "title": "Creación de Plantas",
   "menu_modify_plant": "Modificar Planta",
   "menu_delete_plant": "Eliminar Planta",
+  "menu_change_plant": "Cambio de Planta",
   "menu_sensor_check": "Comprobación Sensores",
 
 

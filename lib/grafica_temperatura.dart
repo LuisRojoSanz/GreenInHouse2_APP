@@ -128,7 +128,6 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     }
   }
 
-
   /// Recupera los valores óptimos de temperatura ambiental definidos por los
   /// consejos de la planta.
   ///
@@ -177,58 +176,36 @@ class TemperatureGraphState extends State<TemperatureGraph> {
     }
   }
 
-  /// Muestra un selector de días para elegir cuántos días atrás ver en el gráfico.
-  ///
-  /// @param context Contexto de la aplicación
-  /// @return Future<void>
-  Future<void> _showDayPicker(BuildContext context) async {
-    int selectedDay = daysBack;
-    showModalBottomSheet(
+  /// Selector de fecha con calendario para elegir el inicio de los datos a mostrar.
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
       context: context,
-      builder: (BuildContext builder) {
-        return Container(
-          height: 250,
-          color: Colors.white,
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              Text(S.of(context).selectDays, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Expanded(
-                child: ListWheelScrollView.useDelegate(
-                  itemExtent: 40,
-                  perspective: 0.005,
-                  physics: const FixedExtentScrollPhysics(),
-                  controller: FixedExtentScrollController(initialItem: selectedDay - 1),
-                  onSelectedItemChanged: (index) {
-                    selectedDay = index + 1;
-                  },
-                  childDelegate: ListWheelChildBuilderDelegate(
-                    builder: (context, index) {
-                      return Center(
-                        child: Text(
-                          S.of(context).daysCount(index + 1),
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      );
-                    },
-                    childCount: 30,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    daysBack = selectedDay;
-                  });
-                  Navigator.pop(context);
-                },
-                child: Text(S.of(context).accept),
-              ),
-            ],
+      initialDate: DateTime.now().subtract(Duration(days: daysBack)),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now(),
+      helpText: S.of(context).selectDays,
+      cancelText: S.of(context).cancel,
+      confirmText: S.of(context).accept,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.green,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            dialogTheme: DialogThemeData(backgroundColor: Colors.green[50],),
           ),
+          child: child!,
         );
       },
     );
+
+    if (picked != null && mounted) {
+      setState(() {
+        daysBack = DateTime.now().difference(picked).inDays + 1;
+      });
+    }
   }
 
   /// Construye el widget principal que contiene el gráfico interactivo y los controles.
@@ -263,15 +240,26 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
+                    // Row con selector de fecha usando calendario
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(S.of(context).daysBack),
-                        TextButton(
-                          onPressed: () => _showDayPicker(context),
-                          child: Text(
-                            S.of(context).daysCount(daysBack),
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        const SizedBox(width: 10),
+                        ElevatedButton.icon(
+                          onPressed: () => _selectDate(context),
+                          icon: const Icon(Icons.calendar_today, size: 18),
+                          label: Text(
+                            DateFormat('dd/MM/yyyy').format(
+                              DateTime.now().subtract(Duration(days: daysBack - 1)),
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green.shade400,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
                       ],
@@ -304,14 +292,15 @@ class TemperatureGraphState extends State<TemperatureGraph> {
                     maximum: 40,
                     interval: 5,
                     plotBands: <PlotBand>[
-                      PlotBand(start: 0, end: optimalMin - 4, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
-                      PlotBand(start: optimalMin - 4, end: optimalMin, color: const Color(0xFFFFF59D).withOpacity(0.3)),
-                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withOpacity(0.3)),
-                      PlotBand(start: optimalMax, end: optimalMax + 4, color: const Color(0xFFFFF59D).withOpacity(0.3)),
-                      PlotBand(start: optimalMax + 4, end: 40, color: const Color(0xFFFCBBBB).withOpacity(0.3)),
+                      PlotBand(start: 0, end: optimalMin - 4, color: const Color(0xFFFCBBBB).withAlpha((0.7*255).round())),
+                      PlotBand(start: optimalMin - 4, end: optimalMin, color: const Color(0xFFFFF59D).withAlpha((0.7*255).round())),
+                      PlotBand(start: optimalMin, end: optimalMax, color: const Color(0xFFB9F6CA).withAlpha((0.7*255).round())),
+                      PlotBand(start: optimalMax, end: optimalMax + 4, color: const Color(0xFFFFF59D).withAlpha((0.7*255).round())),
+                      PlotBand(start: optimalMax + 4, end: 40, color: const Color(0xFFFCBBBB).withAlpha((0.7*255).round())),
+
                     ],
                   ),
-                  series: <ChartSeries>[
+                  series: <CartesianSeries>[
                     LineSeries<TemperatureData, DateTime>(
                       dataSource: temperatureData,
                       xValueMapper: (data, _) => data.dateTime,
